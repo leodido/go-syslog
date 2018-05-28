@@ -1,11 +1,13 @@
 SHELL := /bin/bash
 
+rfc3164/machine.go: rfc3164/machine.go.rl rfc5424/rfc5424.rl
+
 rfc5424/machine.go: rfc5424/machine.go.rl rfc5424/rfc5424.rl
 
 rfc5424/builder.go: rfc5424/builder.go.rl rfc5424/rfc5424.rl
 
-rfc5424/builder.go rfc5424/machine.go:
-	ragel -Z -G2 -e -o $@ $<
+rfc5424/builder.go rfc5424/machine.go rfc3164/machine.go:
+	ragel -I rfc5424 -Z -G2 -e -o $@ $<
 	@gofmt -w -s $@
 	@sed -i '/^\/\/line/d' $@
 

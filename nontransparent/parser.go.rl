@@ -6,6 +6,7 @@ import (
     parser "github.com/leodido/ragel-machinery/parser"
     syslog "github.com/leodido/go-syslog/v4"
     "github.com/leodido/go-syslog/v4/rfc5424"
+    "github.com/leodido/go-syslog/v4/rfc3164"
 )
 
 %%{
@@ -111,6 +112,29 @@ func NewParser(options ...syslog.ParserOption) syslog.Parser {
     }
 
     return m
+}
+
+func NewParserRFC3164(options ...syslog.ParserOption) syslog.Parser {
+	m := &machine{
+		emit: func(*syslog.Result) { /* noop */ },
+	}
+
+	for _, opt := range options {
+		m = opt(m).(*machine)
+	}
+
+	// No error can happens since during its setting we check the trailer type passed in
+	trailer, _ := m.trailertyp.Value()
+	m.trailer = byte(trailer)
+
+	// Create internal parser depending on options
+	if m.bestEffort {
+		m.internal = rfc3164.NewMachine(rfc3164.WithBestEffort())
+	} else {
+		m.internal = rfc3164.NewMachine()
+	}
+
+	return m
 }
 
 // WithMaxMessageLength does nothing for this parser.

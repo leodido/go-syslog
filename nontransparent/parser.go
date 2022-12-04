@@ -4,6 +4,7 @@ import (
 	"io"
 
 	syslog "github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/rfc3164"
 	"github.com/leodido/go-syslog/v4/rfc5424"
 	parser "github.com/leodido/ragel-machinery/parser"
 )
@@ -176,21 +177,21 @@ func (m *machine) OnEOF(chunk []byte) {
 }
 
 func (m *machine) OnCompletion() {
-    if len(m.candidate) > 0 {
-        m.process()
-    }
-    // Try to parse last chunk as a candidate
-    if m.readError != nil && len(m.lastChunk) > 0 {
-        res, err := m.internal.Parse(m.lastChunk)
-        if err == nil && !m.bestEffort {
-            res = nil
-            err = m.readError
-        }
-        m.emit(&syslog.Result{
-            Message: res,
-            Error: err,
-        })
-    }
+	if len(m.candidate) > 0 {
+		m.process()
+	}
+	// Try to parse last chunk as a candidate
+	if m.readError != nil && len(m.lastChunk) > 0 {
+		res, err := m.internal.Parse(m.lastChunk)
+		if err == nil && !m.bestEffort {
+			res = nil
+			err = m.readError
+		}
+		m.emit(&syslog.Result{
+			Message: res,
+			Error:   err,
+		})
+	}
 }
 
 // NewParser returns a syslog.Parser suitable to parse syslog messages sent with non-transparent framing - ie. RFC 6587.
@@ -212,6 +213,29 @@ func NewParser(options ...syslog.ParserOption) syslog.Parser {
 		m.internal = rfc5424.NewMachine(rfc5424.WithBestEffort())
 	} else {
 		m.internal = rfc5424.NewMachine()
+	}
+
+	return m
+}
+
+func NewParserRFC3164(options ...syslog.ParserOption) syslog.Parser {
+	m := &machine{
+		emit: func(*syslog.Result) { /* noop */ },
+	}
+
+	for _, opt := range options {
+		m = opt(m).(*machine)
+	}
+
+	// No error can happens since during its setting we check the trailer type passed in
+	trailer, _ := m.trailertyp.Value()
+	m.trailer = byte(trailer)
+
+	// Create internal parser depending on options
+	if m.bestEffort {
+		m.internal = rfc3164.NewMachine(rfc3164.WithBestEffort())
+	} else {
+		m.internal = rfc3164.NewMachine()
 	}
 
 	return m

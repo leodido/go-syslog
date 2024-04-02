@@ -161,6 +161,22 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		input: []byte(`<132> Apr  4 19:32:33 ix2105  IP6[015]: Beyond scope for packet`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(132),
+				Facility:  syslogtesting.Uint8Address(16),
+				Severity:  syslogtesting.Uint8Address(4),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 4 19:32:33"),
+				Hostname:  syslogtesting.StringAddress("ix2105"),
+				Appname:   syslogtesting.StringAddress("IP6"),
+				ProcID:    syslogtesting.StringAddress("015"),
+				Message:   syslogtesting.StringAddress(`Beyond scope for packet`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

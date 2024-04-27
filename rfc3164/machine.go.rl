@@ -137,7 +137,7 @@ rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
 
 # note > RFC 3164 says "The Domain Name MUST NOT be included in the HOSTNAME field"
 # note > this could mean that the we may need to create and to use a labelrange = graph{1,63} here if we want the parser to be stricter.
-hostname = hostnamerange >mark %set_hostname $err(err_hostname);
+hostname = (hostnamerange -- ':') >mark %set_hostname $err(err_hostname);
 
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
@@ -158,8 +158,8 @@ msg = (tag content? ':' sp)? mex;
 
 fail := (any - [\n\r])* @err{ fgoto main; };
 
-# NOTE: relaxed spaces
-main := pri sp* (timestamp | (rfc3339 when { m.rfc3339 })) sp+ hostname sp+ msg;
+# NOTE: relaxed spaces + optionally no hostnames
+main := pri sp* (timestamp | (rfc3339 when { m.rfc3339 })) sp+ (hostname sp+)? msg;
 
 }%%
 

@@ -177,6 +177,52 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		// OpenBSD 7.5 syslog start
+		input: []byte(`<46>Apr 27 23:06:01 syslogd[68529]: start`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(46),
+				Facility:  syslogtesting.Uint8Address(5),
+				Severity:  syslogtesting.Uint8Address(6),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 27 23:06:01"),
+				Appname:   syslogtesting.StringAddress("syslogd"),
+				ProcID:    syslogtesting.StringAddress("68529"),
+				Message:   syslogtesting.StringAddress(`start`),
+			},
+		},
+	},
+	{
+		// OpenBSD 7.5 logger from cli
+		input: []byte(`<13>Apr 27 23:06:09 catap: some test from cli`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(13),
+				Facility:  syslogtesting.Uint8Address(1),
+				Severity:  syslogtesting.Uint8Address(5),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 27 23:06:09"),
+				Appname:   syslogtesting.StringAddress("catap"),
+				Message:   syslogtesting.StringAddress(`some test from cli`),
+			},
+		},
+	},
+	{
+		// OpenBSD 7.5 doas command
+		input: []byte(`<86>Apr 27 23:06:11 doas: catap ran command rcctl restart syslogd as root from /home`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(86),
+				Facility:  syslogtesting.Uint8Address(10),
+				Severity:  syslogtesting.Uint8Address(6),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 27 23:06:11"),
+				Appname:   syslogtesting.StringAddress("doas"),
+				Message:   syslogtesting.StringAddress(`catap ran command rcctl restart syslogd as root from /home`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

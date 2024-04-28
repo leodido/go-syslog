@@ -57,14 +57,12 @@ func getTestCases() []testCase {
 			false,
 			[]syslog.Result{
 				{
-					Message: (&rfc5424.SyslogMessage{}).SetPriority(3).SetVersion(1),
 					Error:   ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
 				},
 			},
 			[]syslog.Result{
 				{
 					Message: (&rfc5424.SyslogMessage{}).SetPriority(3).SetVersion(1),
-					Error:   ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
 				},
 			},
 		},
@@ -98,7 +96,6 @@ func getTestCases() []testCase {
 					Message: (&rfc5424.SyslogMessage{}).SetPriority(1).SetVersion(1),
 				},
 				{
-					Message: (&rfc5424.SyslogMessage{}).SetPriority(2).SetVersion(1),
 					Error:   ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
 				},
 			},
@@ -108,7 +105,6 @@ func getTestCases() []testCase {
 				},
 				{
 					Message: (&rfc5424.SyslogMessage{}).SetPriority(2).SetVersion(1),
-					Error:   ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
 				},
 			},
 		},

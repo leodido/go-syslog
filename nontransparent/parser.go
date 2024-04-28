@@ -176,20 +176,21 @@ func (m *machine) OnEOF(chunk []byte) {
 }
 
 func (m *machine) OnCompletion() {
-	if len(m.candidate) > 0 {
-		m.process()
-	}
-	// Try to parse last chunk as a candidate
-	if m.readError != nil && len(m.lastChunk) > 0 {
-		res, err := m.internal.Parse(m.lastChunk)
-		if err == nil {
-			err = m.readError
-		}
-		m.emit(&syslog.Result{
-			Message: res,
-			Error:   err,
-		})
-	}
+    if len(m.candidate) > 0 {
+        m.process()
+    }
+    // Try to parse last chunk as a candidate
+    if m.readError != nil && len(m.lastChunk) > 0 {
+        res, err := m.internal.Parse(m.lastChunk)
+        if err == nil && !m.bestEffort {
+            res = nil
+            err = m.readError
+        }
+        m.emit(&syslog.Result{
+            Message: res,
+            Error: err,
+        })
+    }
 }
 
 // NewParser returns a syslog.Parser suitable to parse syslog messages sent with non-transparent framing - ie. RFC 6587.

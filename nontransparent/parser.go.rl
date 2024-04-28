@@ -78,7 +78,8 @@ func (m *machine) OnCompletion() {
     // Try to parse last chunk as a candidate
     if m.readError != nil && len(m.lastChunk) > 0 {
         res, err := m.internal.Parse(m.lastChunk)
-        if err == nil {
+        if err == nil && !m.bestEffort {
+            res = nil
             err = m.readError
         }
         m.emit(&syslog.Result{

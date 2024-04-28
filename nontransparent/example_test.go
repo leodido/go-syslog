@@ -22,6 +22,24 @@ func Example_withoutTrailerAtEnd() {
 	// Output:
 	// ([]syslog.Result) (len=1) {
 	//  (syslog.Result) {
+	//   Message: (syslog.Message) <nil>,
+	//   Error: (*ragel.ReadingError)(unexpected EOF)
+	//  }
+	// }
+}
+
+func Example_bestEffortWithoutTrailerAtEnd() {
+	results := []syslog.Result{}
+	acc := func(res *syslog.Result) {
+		results = append(results, *res)
+	}
+	// Notice the message ends without trailer but we catch it anyway
+	r := strings.NewReader("<1>1 2003-10-11T22:14:15.003Z host.local - - - - mex")
+	NewParser(syslog.WithBestEffort(), syslog.WithListener(acc)).Parse(r)
+	output(results)
+	// Output:
+	// ([]syslog.Result) (len=1) {
+	//  (syslog.Result) {
 	//   Message: (*rfc5424.SyslogMessage)({
 	//    Base: (syslog.Base) {
 	//     Facility: (*uint8)(0),
@@ -37,7 +55,7 @@ func Example_withoutTrailerAtEnd() {
 	//    Version: (uint16) 1,
 	//    StructuredData: (*map[string]map[string]string)(<nil>)
 	//   }),
-	//   Error: (*ragel.ReadingError)(unexpected EOF)
+	//   Error: (error) <nil>
 	//  }
 	// }
 }

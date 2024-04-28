@@ -23,7 +23,7 @@ var (
 const start int = 1
 const firstFinal int = 73
 
-const enFail int = 938
+const enFail int = 939
 const enMain int = 1
 
 type machine struct {
@@ -1883,6 +1883,8 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			goto stCase936
 		case 937:
 			goto stCase937
+		case 938:
+			goto stCase938
 		case 21:
 			goto stCase21
 		case 22:
@@ -1987,8 +1989,8 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			goto stCase71
 		case 72:
 			goto stCase72
-		case 938:
-			goto stCase938
+		case 939:
+			goto stCase939
 		}
 		goto stOut
 	stCase1:
@@ -2002,7 +2004,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
@@ -2012,14 +2014,14 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		m.err = fmt.Errorf(errPri, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
@@ -2029,7 +2031,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
@@ -2039,14 +2041,14 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		m.err = fmt.Errorf(errTag, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
@@ -2056,54 +2058,54 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
-	tr84:
+	tr85:
 
 		m.err = fmt.Errorf(errHostname, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
-	tr90:
+	tr91:
 
 		m.err = fmt.Errorf(errTag, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
-	tr126:
+	tr127:
 
 		m.err = fmt.Errorf(errContentStart, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
-	tr416:
+	tr417:
 
 		m.err = fmt.Errorf(errHostname, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		m.err = fmt.Errorf(errContentStart, m.p)
 		(m.p)--
 
 		{
-			goto st938
+			goto st939
 		}
 
 		goto st0
@@ -2338,7 +2340,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			(m.p)--
 
 			{
-				goto st938
+				goto st939
 			}
 		} else {
 			if m.timezone != nil {
@@ -2359,7 +2361,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			(m.p)--
 
 			{
-				goto st938
+				goto st939
 			}
 		} else {
 			output.timestamp = t
@@ -2404,6 +2406,8 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase73:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
 			goto tr38
 		case 91:
@@ -2424,9 +2428,9 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			goto tr39
 		}
 		goto tr40
-	tr39:
+	tr84:
 
-		m.pb = m.p
+		output.message = string(m.text())
 
 		goto st74
 	st74:
@@ -2434,33 +2438,10 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			goto _testEof74
 		}
 	stCase74:
-		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr88
-		case 127:
-			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] > 31:
-			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st114
-			}
-		default:
-			goto tr84
-		}
-		goto st77
-	tr91:
+		goto st0
+	tr39:
 
 		m.pb = m.p
-
-		goto st75
-	tr85:
-
-		output.hostname = string(m.text())
 
 		goto st75
 	st75:
@@ -2469,32 +2450,34 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase75:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr91
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr89
 		case 127:
-			goto tr90
+			goto tr85
 		}
 		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr90
-			}
-		case (m.data)[(m.p)] > 57:
-			switch {
-			case (m.data)[(m.p)] > 90:
-				if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-					goto tr92
-				}
-			case (m.data)[(m.p)] >= 59:
-				goto tr92
+		case (m.data)[(m.p)] > 31:
+			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st115
 			}
 		default:
-			goto tr92
+			goto tr85
 		}
-		goto tr40
+		goto st78
 	tr92:
 
 		m.pb = m.p
+
+		goto st76
+	tr86:
+
+		output.hostname = string(m.text())
 
 		goto st76
 	st76:
@@ -2503,23 +2486,32 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase76:
 		switch (m.data)[(m.p)] {
-		case 58:
-			goto tr87
-		case 91:
-			goto tr94
+		case 10:
+			goto tr84
+		case 32:
+			goto tr92
 		case 127:
-			goto st0
+			goto tr91
 		}
 		switch {
-		case (m.data)[(m.p)] > 31:
-			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st78
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr91
+			}
+		case (m.data)[(m.p)] > 57:
+			switch {
+			case (m.data)[(m.p)] > 90:
+				if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+					goto tr93
+				}
+			case (m.data)[(m.p)] >= 59:
+				goto tr93
 			}
 		default:
-			goto st0
+			goto tr93
 		}
-		goto st77
-	tr40:
+		goto tr40
+	tr93:
 
 		m.pb = m.p
 
@@ -2529,23 +2521,13 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			goto _testEof77
 		}
 	stCase77:
-		if (m.data)[(m.p)] == 127 {
-			goto st0
-		}
-		if (m.data)[(m.p)] <= 31 {
-			goto st0
-		}
-		goto st77
-	st78:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof78
-		}
-	stCase78:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2557,17 +2539,39 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
+	tr40:
+
+		m.pb = m.p
+
+		goto st78
+	st78:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof78
+		}
+	stCase78:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 127:
+			goto st0
+		}
+		if (m.data)[(m.p)] <= 31 {
+			goto st0
+		}
+		goto st78
 	st79:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof79
 		}
 	stCase79:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2579,17 +2583,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st80:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof80
 		}
 	stCase80:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2601,17 +2607,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st81:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof81
 		}
 	stCase81:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2623,17 +2631,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st82:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof82
 		}
 	stCase82:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2645,17 +2655,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st83:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof83
 		}
 	stCase83:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2667,17 +2679,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st84:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof84
 		}
 	stCase84:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2689,17 +2703,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st85:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof85
 		}
 	stCase85:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2711,17 +2727,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st86:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof86
 		}
 	stCase86:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2733,17 +2751,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st87:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof87
 		}
 	stCase87:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2755,17 +2775,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st88:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof88
 		}
 	stCase88:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2777,17 +2799,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st89:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof89
 		}
 	stCase89:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2799,17 +2823,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st90:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof90
 		}
 	stCase90:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2821,17 +2847,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st91:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof91
 		}
 	stCase91:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2843,17 +2871,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st92:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof92
 		}
 	stCase92:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2865,17 +2895,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st93:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof93
 		}
 	stCase93:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2887,17 +2919,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st94:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof94
 		}
 	stCase94:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2909,17 +2943,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st95:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof95
 		}
 	stCase95:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2931,17 +2967,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st96:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof96
 		}
 	stCase96:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2953,17 +2991,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st97:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof97
 		}
 	stCase97:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2975,17 +3015,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st98:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof98
 		}
 	stCase98:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -2997,17 +3039,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st99:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof99
 		}
 	stCase99:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3019,17 +3063,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st100:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof100
 		}
 	stCase100:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3041,17 +3087,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st101:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof101
 		}
 	stCase101:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3063,17 +3111,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st102:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof102
 		}
 	stCase102:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3085,17 +3135,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st103:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof103
 		}
 	stCase103:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3107,17 +3159,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st104:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof104
 		}
 	stCase104:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3129,17 +3183,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st105:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof105
 		}
 	stCase105:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3151,17 +3207,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st106:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof106
 		}
 	stCase106:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3173,17 +3231,19 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st107:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof107
 		}
 	stCase107:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
@@ -3195,88 +3255,90 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st0
 		}
-		goto st77
+		goto st78
 	st108:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof108
 		}
 	stCase108:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
+			goto tr88
 		case 91:
-			goto tr94
+			goto tr95
 		case 127:
 			goto st0
 		}
-		if (m.data)[(m.p)] <= 31 {
+		switch {
+		case (m.data)[(m.p)] > 31:
+			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st109
+			}
+		default:
 			goto st0
 		}
-		goto st77
-	tr87:
-
-		output.tag = string(m.text())
-
-		goto st109
+		goto st78
 	st109:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof109
 		}
 	stCase109:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto st110
+		case 10:
+			goto tr84
+		case 58:
+			goto tr88
+		case 91:
+			goto tr95
 		case 127:
 			goto st0
 		}
 		if (m.data)[(m.p)] <= 31 {
 			goto st0
 		}
-		goto st77
+		goto st78
+	tr88:
+
+		output.tag = string(m.text())
+
+		goto st110
 	st110:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof110
 		}
 	stCase110:
-		if (m.data)[(m.p)] == 127 {
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto st111
+		case 127:
 			goto st0
 		}
 		if (m.data)[(m.p)] <= 31 {
 			goto st0
 		}
-		goto tr40
-	tr94:
-
-		output.tag = string(m.text())
-
-		goto st111
+		goto st78
 	st111:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof111
 		}
 	stCase111:
 		switch (m.data)[(m.p)] {
-		case 93:
-			goto tr128
+		case 10:
+			goto tr84
 		case 127:
-			goto tr126
+			goto st0
 		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr126
-			}
-		case (m.data)[(m.p)] > 90:
-			if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr127
-			}
-		default:
-			goto tr127
+		if (m.data)[(m.p)] <= 31 {
+			goto st0
 		}
-		goto st77
-	tr127:
+		goto tr40
+	tr95:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st112
 	st112:
@@ -3285,34 +3347,29 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase112:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 93:
-			goto tr130
+			goto tr129
 		case 127:
-			goto tr126
+			goto tr127
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr126
+				goto tr127
 			}
 		case (m.data)[(m.p)] > 90:
 			if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st112
+				goto tr128
 			}
 		default:
-			goto st112
+			goto tr128
 		}
-		goto st77
+		goto st78
 	tr128:
 
 		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st113
-	tr130:
-
-		output.content = string(m.text())
 
 		goto st113
 	st113:
@@ -3321,53 +3378,71 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase113:
 		switch (m.data)[(m.p)] {
-		case 58:
-			goto st109
+		case 10:
+			goto tr84
+		case 93:
+			goto tr131
 		case 127:
-			goto st0
+			goto tr127
 		}
-		if (m.data)[(m.p)] <= 31 {
-			goto st0
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr127
+			}
+		case (m.data)[(m.p)] > 90:
+			if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st113
+			}
+		default:
+			goto st113
 		}
-		goto st77
+		goto st78
+	tr129:
+
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st114
+	tr131:
+
+		output.content = string(m.text())
+
+		goto st114
 	st114:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof114
 		}
 	stCase114:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
+		case 10:
+			goto tr84
 		case 58:
-			goto tr87
-		case 91:
-			goto tr133
+			goto st110
 		case 127:
-			goto tr84
+			goto st0
 		}
-		switch {
-		case (m.data)[(m.p)] > 31:
-			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st115
-			}
-		default:
-			goto tr84
+		if (m.data)[(m.p)] <= 31 {
+			goto st0
 		}
-		goto st77
+		goto st78
 	st115:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof115
 		}
 	stCase115:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr135
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr134
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3375,23 +3450,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st116
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st116:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof116
 		}
 	stCase116:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr137
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr136
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3399,23 +3476,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st117
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st117:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof117
 		}
 	stCase117:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr139
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr138
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3423,23 +3502,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st118
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st118:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof118
 		}
 	stCase118:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr141
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr140
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3447,23 +3528,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st119
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st119:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof119
 		}
 	stCase119:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr143
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr142
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3471,23 +3554,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st120
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st120:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof120
 		}
 	stCase120:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr145
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr144
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3495,23 +3580,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st121
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st121:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof121
 		}
 	stCase121:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr147
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr146
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3519,23 +3606,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st122
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st122:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof122
 		}
 	stCase122:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr149
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr148
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3543,23 +3632,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st123
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st123:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof123
 		}
 	stCase123:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr151
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr150
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3567,23 +3658,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st124
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st124:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof124
 		}
 	stCase124:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr153
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr152
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3591,23 +3684,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st125
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st125:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof125
 		}
 	stCase125:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr155
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr154
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3615,23 +3710,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st126
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st126:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof126
 		}
 	stCase126:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr157
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr156
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3639,23 +3736,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st127
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st127:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof127
 		}
 	stCase127:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr159
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr158
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3663,23 +3762,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st128
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st128:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof128
 		}
 	stCase128:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr161
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr160
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3687,23 +3788,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st129
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st129:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof129
 		}
 	stCase129:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr163
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr162
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3711,23 +3814,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st130
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st130:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof130
 		}
 	stCase130:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr165
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr164
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3735,23 +3840,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st131
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st131:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof131
 		}
 	stCase131:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr167
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr166
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3759,23 +3866,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st132
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st132:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof132
 		}
 	stCase132:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr169
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr168
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3783,23 +3892,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st133
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st133:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof133
 		}
 	stCase133:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr171
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr170
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3807,23 +3918,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st134
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st134:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof134
 		}
 	stCase134:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr173
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr172
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3831,23 +3944,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st135
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st135:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof135
 		}
 	stCase135:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr175
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr174
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3855,23 +3970,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st136
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st136:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof136
 		}
 	stCase136:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr177
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr176
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3879,23 +3996,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st137
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st137:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof137
 		}
 	stCase137:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr179
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr178
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3903,23 +4022,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st138
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st138:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof138
 		}
 	stCase138:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr181
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr180
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3927,23 +4048,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st139
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st139:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof139
 		}
 	stCase139:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr183
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr182
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3951,23 +4074,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st140
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st140:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof140
 		}
 	stCase140:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr185
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr184
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3975,23 +4100,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st141
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st141:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof141
 		}
 	stCase141:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr187
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr186
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -3999,23 +4126,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st142
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st142:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof142
 		}
 	stCase142:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr189
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr188
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -4023,23 +4152,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st143
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st143:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof143
 		}
 	stCase143:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr191
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr190
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -4047,23 +4178,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st144
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st144:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof144
 		}
 	stCase144:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto tr87
-		case 91:
-			goto tr193
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr192
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -4071,48 +4204,52 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st145
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st145:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof145
 		}
 	stCase145:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto tr88
+		case 91:
+			goto tr194
+		case 127:
+			goto tr85
 		}
 		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+		case (m.data)[(m.p)] > 31:
+			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
 				goto st146
 			}
 		default:
-			goto st146
+			goto tr85
 		}
-		goto st77
+		goto st78
 	st146:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof146
 		}
 	stCase146:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4121,22 +4258,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st147
 		}
-		goto st77
+		goto st78
 	st147:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof147
 		}
 	stCase147:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4145,22 +4284,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st148
 		}
-		goto st77
+		goto st78
 	st148:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof148
 		}
 	stCase148:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4169,22 +4310,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st149
 		}
-		goto st77
+		goto st78
 	st149:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof149
 		}
 	stCase149:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4193,22 +4336,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st150
 		}
-		goto st77
+		goto st78
 	st150:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof150
 		}
 	stCase150:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4217,22 +4362,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st151
 		}
-		goto st77
+		goto st78
 	st151:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof151
 		}
 	stCase151:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4241,22 +4388,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st152
 		}
-		goto st77
+		goto st78
 	st152:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof152
 		}
 	stCase152:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4265,22 +4414,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st153
 		}
-		goto st77
+		goto st78
 	st153:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof153
 		}
 	stCase153:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4289,22 +4440,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st154
 		}
-		goto st77
+		goto st78
 	st154:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof154
 		}
 	stCase154:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4313,22 +4466,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st155
 		}
-		goto st77
+		goto st78
 	st155:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof155
 		}
 	stCase155:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4337,22 +4492,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st156
 		}
-		goto st77
+		goto st78
 	st156:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof156
 		}
 	stCase156:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4361,22 +4518,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st157
 		}
-		goto st77
+		goto st78
 	st157:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof157
 		}
 	stCase157:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4385,22 +4544,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st158
 		}
-		goto st77
+		goto st78
 	st158:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof158
 		}
 	stCase158:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4409,22 +4570,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st159
 		}
-		goto st77
+		goto st78
 	st159:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof159
 		}
 	stCase159:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4433,22 +4596,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st160
 		}
-		goto st77
+		goto st78
 	st160:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof160
 		}
 	stCase160:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4457,22 +4622,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st161
 		}
-		goto st77
+		goto st78
 	st161:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof161
 		}
 	stCase161:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4481,22 +4648,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st162
 		}
-		goto st77
+		goto st78
 	st162:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof162
 		}
 	stCase162:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4505,22 +4674,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st163
 		}
-		goto st77
+		goto st78
 	st163:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof163
 		}
 	stCase163:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4529,22 +4700,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st164
 		}
-		goto st77
+		goto st78
 	st164:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof164
 		}
 	stCase164:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4553,22 +4726,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st165
 		}
-		goto st77
+		goto st78
 	st165:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof165
 		}
 	stCase165:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4577,22 +4752,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st166
 		}
-		goto st77
+		goto st78
 	st166:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof166
 		}
 	stCase166:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4601,22 +4778,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st167
 		}
-		goto st77
+		goto st78
 	st167:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof167
 		}
 	stCase167:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4625,22 +4804,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st168
 		}
-		goto st77
+		goto st78
 	st168:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof168
 		}
 	stCase168:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4649,22 +4830,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st169
 		}
-		goto st77
+		goto st78
 	st169:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof169
 		}
 	stCase169:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4673,22 +4856,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st170
 		}
-		goto st77
+		goto st78
 	st170:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof170
 		}
 	stCase170:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4697,22 +4882,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st171
 		}
-		goto st77
+		goto st78
 	st171:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof171
 		}
 	stCase171:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4721,22 +4908,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st172
 		}
-		goto st77
+		goto st78
 	st172:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof172
 		}
 	stCase172:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4745,22 +4934,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st173
 		}
-		goto st77
+		goto st78
 	st173:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof173
 		}
 	stCase173:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4769,22 +4960,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st174
 		}
-		goto st77
+		goto st78
 	st174:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof174
 		}
 	stCase174:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4793,22 +4986,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st175
 		}
-		goto st77
+		goto st78
 	st175:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof175
 		}
 	stCase175:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4817,22 +5012,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st176
 		}
-		goto st77
+		goto st78
 	st176:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof176
 		}
 	stCase176:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4841,22 +5038,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st177
 		}
-		goto st77
+		goto st78
 	st177:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof177
 		}
 	stCase177:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4865,22 +5064,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st178
 		}
-		goto st77
+		goto st78
 	st178:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof178
 		}
 	stCase178:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4889,22 +5090,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st179
 		}
-		goto st77
+		goto st78
 	st179:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof179
 		}
 	stCase179:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4913,22 +5116,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st180
 		}
-		goto st77
+		goto st78
 	st180:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof180
 		}
 	stCase180:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4937,22 +5142,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st181
 		}
-		goto st77
+		goto st78
 	st181:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof181
 		}
 	stCase181:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4961,22 +5168,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st182
 		}
-		goto st77
+		goto st78
 	st182:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof182
 		}
 	stCase182:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -4985,22 +5194,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st183
 		}
-		goto st77
+		goto st78
 	st183:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof183
 		}
 	stCase183:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5009,22 +5220,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st184
 		}
-		goto st77
+		goto st78
 	st184:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof184
 		}
 	stCase184:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5033,22 +5246,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st185
 		}
-		goto st77
+		goto st78
 	st185:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof185
 		}
 	stCase185:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5057,22 +5272,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st186
 		}
-		goto st77
+		goto st78
 	st186:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof186
 		}
 	stCase186:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5081,22 +5298,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st187
 		}
-		goto st77
+		goto st78
 	st187:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof187
 		}
 	stCase187:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5105,22 +5324,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st188
 		}
-		goto st77
+		goto st78
 	st188:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof188
 		}
 	stCase188:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5129,22 +5350,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st189
 		}
-		goto st77
+		goto st78
 	st189:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof189
 		}
 	stCase189:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5153,22 +5376,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st190
 		}
-		goto st77
+		goto st78
 	st190:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof190
 		}
 	stCase190:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5177,22 +5402,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st191
 		}
-		goto st77
+		goto st78
 	st191:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof191
 		}
 	stCase191:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5201,22 +5428,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st192
 		}
-		goto st77
+		goto st78
 	st192:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof192
 		}
 	stCase192:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5225,22 +5454,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st193
 		}
-		goto st77
+		goto st78
 	st193:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof193
 		}
 	stCase193:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5249,22 +5480,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st194
 		}
-		goto st77
+		goto st78
 	st194:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof194
 		}
 	stCase194:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5273,22 +5506,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st195
 		}
-		goto st77
+		goto st78
 	st195:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof195
 		}
 	stCase195:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5297,22 +5532,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st196
 		}
-		goto st77
+		goto st78
 	st196:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof196
 		}
 	stCase196:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5321,22 +5558,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st197
 		}
-		goto st77
+		goto st78
 	st197:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof197
 		}
 	stCase197:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5345,22 +5584,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st198
 		}
-		goto st77
+		goto st78
 	st198:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof198
 		}
 	stCase198:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5369,22 +5610,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st199
 		}
-		goto st77
+		goto st78
 	st199:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof199
 		}
 	stCase199:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5393,22 +5636,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st200
 		}
-		goto st77
+		goto st78
 	st200:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof200
 		}
 	stCase200:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5417,22 +5662,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st201
 		}
-		goto st77
+		goto st78
 	st201:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof201
 		}
 	stCase201:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5441,22 +5688,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st202
 		}
-		goto st77
+		goto st78
 	st202:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof202
 		}
 	stCase202:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5465,22 +5714,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st203
 		}
-		goto st77
+		goto st78
 	st203:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof203
 		}
 	stCase203:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5489,22 +5740,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st204
 		}
-		goto st77
+		goto st78
 	st204:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof204
 		}
 	stCase204:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5513,22 +5766,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st205
 		}
-		goto st77
+		goto st78
 	st205:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof205
 		}
 	stCase205:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5537,22 +5792,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st206
 		}
-		goto st77
+		goto st78
 	st206:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof206
 		}
 	stCase206:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5561,22 +5818,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st207
 		}
-		goto st77
+		goto st78
 	st207:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof207
 		}
 	stCase207:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5585,22 +5844,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st208
 		}
-		goto st77
+		goto st78
 	st208:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof208
 		}
 	stCase208:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5609,22 +5870,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st209
 		}
-		goto st77
+		goto st78
 	st209:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof209
 		}
 	stCase209:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5633,22 +5896,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st210
 		}
-		goto st77
+		goto st78
 	st210:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof210
 		}
 	stCase210:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5657,22 +5922,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st211
 		}
-		goto st77
+		goto st78
 	st211:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof211
 		}
 	stCase211:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5681,22 +5948,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st212
 		}
-		goto st77
+		goto st78
 	st212:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof212
 		}
 	stCase212:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5705,22 +5974,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st213
 		}
-		goto st77
+		goto st78
 	st213:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof213
 		}
 	stCase213:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5729,22 +6000,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st214
 		}
-		goto st77
+		goto st78
 	st214:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof214
 		}
 	stCase214:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5753,22 +6026,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st215
 		}
-		goto st77
+		goto st78
 	st215:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof215
 		}
 	stCase215:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5777,22 +6052,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st216
 		}
-		goto st77
+		goto st78
 	st216:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof216
 		}
 	stCase216:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5801,22 +6078,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st217
 		}
-		goto st77
+		goto st78
 	st217:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof217
 		}
 	stCase217:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5825,22 +6104,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st218
 		}
-		goto st77
+		goto st78
 	st218:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof218
 		}
 	stCase218:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5849,22 +6130,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st219
 		}
-		goto st77
+		goto st78
 	st219:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof219
 		}
 	stCase219:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5873,22 +6156,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st220
 		}
-		goto st77
+		goto st78
 	st220:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof220
 		}
 	stCase220:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5897,22 +6182,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st221
 		}
-		goto st77
+		goto st78
 	st221:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof221
 		}
 	stCase221:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5921,22 +6208,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st222
 		}
-		goto st77
+		goto st78
 	st222:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof222
 		}
 	stCase222:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5945,22 +6234,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st223
 		}
-		goto st77
+		goto st78
 	st223:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof223
 		}
 	stCase223:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5969,22 +6260,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st224
 		}
-		goto st77
+		goto st78
 	st224:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof224
 		}
 	stCase224:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -5993,22 +6286,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st225
 		}
-		goto st77
+		goto st78
 	st225:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof225
 		}
 	stCase225:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6017,22 +6312,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st226
 		}
-		goto st77
+		goto st78
 	st226:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof226
 		}
 	stCase226:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6041,22 +6338,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st227
 		}
-		goto st77
+		goto st78
 	st227:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof227
 		}
 	stCase227:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6065,22 +6364,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st228
 		}
-		goto st77
+		goto st78
 	st228:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof228
 		}
 	stCase228:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6089,22 +6390,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st229
 		}
-		goto st77
+		goto st78
 	st229:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof229
 		}
 	stCase229:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6113,22 +6416,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st230
 		}
-		goto st77
+		goto st78
 	st230:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof230
 		}
 	stCase230:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6137,22 +6442,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st231
 		}
-		goto st77
+		goto st78
 	st231:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof231
 		}
 	stCase231:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6161,22 +6468,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st232
 		}
-		goto st77
+		goto st78
 	st232:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof232
 		}
 	stCase232:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6185,22 +6494,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st233
 		}
-		goto st77
+		goto st78
 	st233:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof233
 		}
 	stCase233:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6209,22 +6520,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st234
 		}
-		goto st77
+		goto st78
 	st234:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof234
 		}
 	stCase234:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6233,22 +6546,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st235
 		}
-		goto st77
+		goto st78
 	st235:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof235
 		}
 	stCase235:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6257,22 +6572,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st236
 		}
-		goto st77
+		goto st78
 	st236:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof236
 		}
 	stCase236:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6281,22 +6598,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st237
 		}
-		goto st77
+		goto st78
 	st237:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof237
 		}
 	stCase237:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6305,22 +6624,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st238
 		}
-		goto st77
+		goto st78
 	st238:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof238
 		}
 	stCase238:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6329,22 +6650,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st239
 		}
-		goto st77
+		goto st78
 	st239:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof239
 		}
 	stCase239:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6353,22 +6676,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st240
 		}
-		goto st77
+		goto st78
 	st240:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof240
 		}
 	stCase240:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6377,22 +6702,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st241
 		}
-		goto st77
+		goto st78
 	st241:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof241
 		}
 	stCase241:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6401,22 +6728,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st242
 		}
-		goto st77
+		goto st78
 	st242:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof242
 		}
 	stCase242:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6425,22 +6754,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st243
 		}
-		goto st77
+		goto st78
 	st243:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof243
 		}
 	stCase243:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6449,22 +6780,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st244
 		}
-		goto st77
+		goto st78
 	st244:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof244
 		}
 	stCase244:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6473,22 +6806,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st245
 		}
-		goto st77
+		goto st78
 	st245:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof245
 		}
 	stCase245:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6497,22 +6832,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st246
 		}
-		goto st77
+		goto st78
 	st246:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof246
 		}
 	stCase246:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6521,22 +6858,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st247
 		}
-		goto st77
+		goto st78
 	st247:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof247
 		}
 	stCase247:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6545,22 +6884,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st248
 		}
-		goto st77
+		goto st78
 	st248:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof248
 		}
 	stCase248:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6569,22 +6910,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st249
 		}
-		goto st77
+		goto st78
 	st249:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof249
 		}
 	stCase249:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6593,22 +6936,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st250
 		}
-		goto st77
+		goto st78
 	st250:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof250
 		}
 	stCase250:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6617,22 +6962,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st251
 		}
-		goto st77
+		goto st78
 	st251:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof251
 		}
 	stCase251:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6641,22 +6988,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st252
 		}
-		goto st77
+		goto st78
 	st252:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof252
 		}
 	stCase252:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6665,22 +7014,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st253
 		}
-		goto st77
+		goto st78
 	st253:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof253
 		}
 	stCase253:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6689,22 +7040,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st254
 		}
-		goto st77
+		goto st78
 	st254:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof254
 		}
 	stCase254:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6713,22 +7066,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st255
 		}
-		goto st77
+		goto st78
 	st255:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof255
 		}
 	stCase255:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6737,22 +7092,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st256
 		}
-		goto st77
+		goto st78
 	st256:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof256
 		}
 	stCase256:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6761,22 +7118,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st257
 		}
-		goto st77
+		goto st78
 	st257:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof257
 		}
 	stCase257:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6785,22 +7144,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st258
 		}
-		goto st77
+		goto st78
 	st258:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof258
 		}
 	stCase258:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6809,22 +7170,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st259
 		}
-		goto st77
+		goto st78
 	st259:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof259
 		}
 	stCase259:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6833,22 +7196,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st260
 		}
-		goto st77
+		goto st78
 	st260:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof260
 		}
 	stCase260:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6857,22 +7222,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st261
 		}
-		goto st77
+		goto st78
 	st261:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof261
 		}
 	stCase261:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6881,22 +7248,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st262
 		}
-		goto st77
+		goto st78
 	st262:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof262
 		}
 	stCase262:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6905,22 +7274,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st263
 		}
-		goto st77
+		goto st78
 	st263:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof263
 		}
 	stCase263:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6929,22 +7300,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st264
 		}
-		goto st77
+		goto st78
 	st264:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof264
 		}
 	stCase264:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6953,22 +7326,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st265
 		}
-		goto st77
+		goto st78
 	st265:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof265
 		}
 	stCase265:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -6977,22 +7352,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st266
 		}
-		goto st77
+		goto st78
 	st266:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof266
 		}
 	stCase266:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7001,22 +7378,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st267
 		}
-		goto st77
+		goto st78
 	st267:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof267
 		}
 	stCase267:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7025,22 +7404,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st268
 		}
-		goto st77
+		goto st78
 	st268:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof268
 		}
 	stCase268:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7049,22 +7430,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st269
 		}
-		goto st77
+		goto st78
 	st269:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof269
 		}
 	stCase269:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7073,22 +7456,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st270
 		}
-		goto st77
+		goto st78
 	st270:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof270
 		}
 	stCase270:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7097,22 +7482,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st271
 		}
-		goto st77
+		goto st78
 	st271:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof271
 		}
 	stCase271:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7121,22 +7508,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st272
 		}
-		goto st77
+		goto st78
 	st272:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof272
 		}
 	stCase272:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7145,22 +7534,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st273
 		}
-		goto st77
+		goto st78
 	st273:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof273
 		}
 	stCase273:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7169,22 +7560,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st274
 		}
-		goto st77
+		goto st78
 	st274:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof274
 		}
 	stCase274:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7193,22 +7586,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st275
 		}
-		goto st77
+		goto st78
 	st275:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof275
 		}
 	stCase275:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7217,22 +7612,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st276
 		}
-		goto st77
+		goto st78
 	st276:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof276
 		}
 	stCase276:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7241,22 +7638,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st277
 		}
-		goto st77
+		goto st78
 	st277:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof277
 		}
 	stCase277:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7265,22 +7664,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st278
 		}
-		goto st77
+		goto st78
 	st278:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof278
 		}
 	stCase278:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7289,22 +7690,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st279
 		}
-		goto st77
+		goto st78
 	st279:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof279
 		}
 	stCase279:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7313,22 +7716,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st280
 		}
-		goto st77
+		goto st78
 	st280:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof280
 		}
 	stCase280:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7337,22 +7742,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st281
 		}
-		goto st77
+		goto st78
 	st281:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof281
 		}
 	stCase281:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7361,22 +7768,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st282
 		}
-		goto st77
+		goto st78
 	st282:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof282
 		}
 	stCase282:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7385,22 +7794,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st283
 		}
-		goto st77
+		goto st78
 	st283:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof283
 		}
 	stCase283:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7409,22 +7820,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st284
 		}
-		goto st77
+		goto st78
 	st284:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof284
 		}
 	stCase284:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7433,22 +7846,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st285
 		}
-		goto st77
+		goto st78
 	st285:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof285
 		}
 	stCase285:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7457,22 +7872,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st286
 		}
-		goto st77
+		goto st78
 	st286:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof286
 		}
 	stCase286:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7481,22 +7898,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st287
 		}
-		goto st77
+		goto st78
 	st287:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof287
 		}
 	stCase287:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7505,22 +7924,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st288
 		}
-		goto st77
+		goto st78
 	st288:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof288
 		}
 	stCase288:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7529,22 +7950,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st289
 		}
-		goto st77
+		goto st78
 	st289:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof289
 		}
 	stCase289:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7553,22 +7976,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st290
 		}
-		goto st77
+		goto st78
 	st290:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof290
 		}
 	stCase290:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7577,22 +8002,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st291
 		}
-		goto st77
+		goto st78
 	st291:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof291
 		}
 	stCase291:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7601,22 +8028,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st292
 		}
-		goto st77
+		goto st78
 	st292:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof292
 		}
 	stCase292:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7625,22 +8054,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st293
 		}
-		goto st77
+		goto st78
 	st293:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof293
 		}
 	stCase293:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7649,22 +8080,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st294
 		}
-		goto st77
+		goto st78
 	st294:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof294
 		}
 	stCase294:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7673,22 +8106,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st295
 		}
-		goto st77
+		goto st78
 	st295:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof295
 		}
 	stCase295:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7697,22 +8132,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st296
 		}
-		goto st77
+		goto st78
 	st296:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof296
 		}
 	stCase296:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7721,22 +8158,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st297
 		}
-		goto st77
+		goto st78
 	st297:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof297
 		}
 	stCase297:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7745,22 +8184,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st298
 		}
-		goto st77
+		goto st78
 	st298:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof298
 		}
 	stCase298:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7769,22 +8210,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st299
 		}
-		goto st77
+		goto st78
 	st299:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof299
 		}
 	stCase299:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7793,22 +8236,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st300
 		}
-		goto st77
+		goto st78
 	st300:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof300
 		}
 	stCase300:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7817,22 +8262,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st301
 		}
-		goto st77
+		goto st78
 	st301:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof301
 		}
 	stCase301:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7841,22 +8288,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st302
 		}
-		goto st77
+		goto st78
 	st302:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof302
 		}
 	stCase302:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7865,22 +8314,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st303
 		}
-		goto st77
+		goto st78
 	st303:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof303
 		}
 	stCase303:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7889,22 +8340,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st304
 		}
-		goto st77
+		goto st78
 	st304:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof304
 		}
 	stCase304:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7913,22 +8366,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st305
 		}
-		goto st77
+		goto st78
 	st305:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof305
 		}
 	stCase305:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7937,22 +8392,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st306
 		}
-		goto st77
+		goto st78
 	st306:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof306
 		}
 	stCase306:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7961,22 +8418,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st307
 		}
-		goto st77
+		goto st78
 	st307:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof307
 		}
 	stCase307:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -7985,22 +8444,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st308
 		}
-		goto st77
+		goto st78
 	st308:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof308
 		}
 	stCase308:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8009,22 +8470,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st309
 		}
-		goto st77
+		goto st78
 	st309:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof309
 		}
 	stCase309:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8033,22 +8496,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st310
 		}
-		goto st77
+		goto st78
 	st310:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof310
 		}
 	stCase310:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8057,22 +8522,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st311
 		}
-		goto st77
+		goto st78
 	st311:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof311
 		}
 	stCase311:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8081,22 +8548,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st312
 		}
-		goto st77
+		goto st78
 	st312:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof312
 		}
 	stCase312:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8105,22 +8574,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st313
 		}
-		goto st77
+		goto st78
 	st313:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof313
 		}
 	stCase313:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8129,22 +8600,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st314
 		}
-		goto st77
+		goto st78
 	st314:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof314
 		}
 	stCase314:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8153,22 +8626,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st315
 		}
-		goto st77
+		goto st78
 	st315:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof315
 		}
 	stCase315:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8177,22 +8652,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st316
 		}
-		goto st77
+		goto st78
 	st316:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof316
 		}
 	stCase316:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8201,22 +8678,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st317
 		}
-		goto st77
+		goto st78
 	st317:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof317
 		}
 	stCase317:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8225,22 +8704,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st318
 		}
-		goto st77
+		goto st78
 	st318:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof318
 		}
 	stCase318:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8249,22 +8730,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st319
 		}
-		goto st77
+		goto st78
 	st319:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof319
 		}
 	stCase319:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8273,22 +8756,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st320
 		}
-		goto st77
+		goto st78
 	st320:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof320
 		}
 	stCase320:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8297,22 +8782,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st321
 		}
-		goto st77
+		goto st78
 	st321:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof321
 		}
 	stCase321:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8321,22 +8808,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st322
 		}
-		goto st77
+		goto st78
 	st322:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof322
 		}
 	stCase322:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8345,22 +8834,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st323
 		}
-		goto st77
+		goto st78
 	st323:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof323
 		}
 	stCase323:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8369,22 +8860,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st324
 		}
-		goto st77
+		goto st78
 	st324:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof324
 		}
 	stCase324:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8393,22 +8886,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st325
 		}
-		goto st77
+		goto st78
 	st325:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof325
 		}
 	stCase325:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8417,22 +8912,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st326
 		}
-		goto st77
+		goto st78
 	st326:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof326
 		}
 	stCase326:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8441,22 +8938,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st327
 		}
-		goto st77
+		goto st78
 	st327:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof327
 		}
 	stCase327:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8465,22 +8964,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st328
 		}
-		goto st77
+		goto st78
 	st328:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof328
 		}
 	stCase328:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8489,22 +8990,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st329
 		}
-		goto st77
+		goto st78
 	st329:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof329
 		}
 	stCase329:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8513,22 +9016,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st330
 		}
-		goto st77
+		goto st78
 	st330:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof330
 		}
 	stCase330:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8537,22 +9042,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st331
 		}
-		goto st77
+		goto st78
 	st331:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof331
 		}
 	stCase331:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8561,22 +9068,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st332
 		}
-		goto st77
+		goto st78
 	st332:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof332
 		}
 	stCase332:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8585,22 +9094,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st333
 		}
-		goto st77
+		goto st78
 	st333:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof333
 		}
 	stCase333:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8609,22 +9120,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st334
 		}
-		goto st77
+		goto st78
 	st334:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof334
 		}
 	stCase334:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8633,22 +9146,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st335
 		}
-		goto st77
+		goto st78
 	st335:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof335
 		}
 	stCase335:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8657,22 +9172,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st336
 		}
-		goto st77
+		goto st78
 	st336:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof336
 		}
 	stCase336:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8681,22 +9198,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st337
 		}
-		goto st77
+		goto st78
 	st337:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof337
 		}
 	stCase337:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8705,22 +9224,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st338
 		}
-		goto st77
+		goto st78
 	st338:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof338
 		}
 	stCase338:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8729,22 +9250,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st339
 		}
-		goto st77
+		goto st78
 	st339:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof339
 		}
 	stCase339:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8753,22 +9276,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st340
 		}
-		goto st77
+		goto st78
 	st340:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof340
 		}
 	stCase340:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8777,22 +9302,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st341
 		}
-		goto st77
+		goto st78
 	st341:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof341
 		}
 	stCase341:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8801,22 +9328,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st342
 		}
-		goto st77
+		goto st78
 	st342:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof342
 		}
 	stCase342:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8825,22 +9354,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st343
 		}
-		goto st77
+		goto st78
 	st343:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof343
 		}
 	stCase343:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8849,22 +9380,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st344
 		}
-		goto st77
+		goto st78
 	st344:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof344
 		}
 	stCase344:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8873,22 +9406,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st345
 		}
-		goto st77
+		goto st78
 	st345:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof345
 		}
 	stCase345:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8897,22 +9432,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st346
 		}
-		goto st77
+		goto st78
 	st346:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof346
 		}
 	stCase346:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8921,22 +9458,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st347
 		}
-		goto st77
+		goto st78
 	st347:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof347
 		}
 	stCase347:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8945,22 +9484,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st348
 		}
-		goto st77
+		goto st78
 	st348:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof348
 		}
 	stCase348:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8969,22 +9510,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st349
 		}
-		goto st77
+		goto st78
 	st349:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof349
 		}
 	stCase349:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -8993,22 +9536,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st350
 		}
-		goto st77
+		goto st78
 	st350:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof350
 		}
 	stCase350:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9017,22 +9562,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st351
 		}
-		goto st77
+		goto st78
 	st351:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof351
 		}
 	stCase351:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9041,22 +9588,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st352
 		}
-		goto st77
+		goto st78
 	st352:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof352
 		}
 	stCase352:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9065,22 +9614,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st353
 		}
-		goto st77
+		goto st78
 	st353:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof353
 		}
 	stCase353:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9089,22 +9640,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st354
 		}
-		goto st77
+		goto st78
 	st354:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof354
 		}
 	stCase354:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9113,22 +9666,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st355
 		}
-		goto st77
+		goto st78
 	st355:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof355
 		}
 	stCase355:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9137,22 +9692,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st356
 		}
-		goto st77
+		goto st78
 	st356:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof356
 		}
 	stCase356:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9161,22 +9718,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st357
 		}
-		goto st77
+		goto st78
 	st357:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof357
 		}
 	stCase357:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9185,22 +9744,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st358
 		}
-		goto st77
+		goto st78
 	st358:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof358
 		}
 	stCase358:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9209,22 +9770,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st359
 		}
-		goto st77
+		goto st78
 	st359:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof359
 		}
 	stCase359:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9233,22 +9796,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st360
 		}
-		goto st77
+		goto st78
 	st360:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof360
 		}
 	stCase360:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9257,22 +9822,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st361
 		}
-		goto st77
+		goto st78
 	st361:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof361
 		}
 	stCase361:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9281,22 +9848,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st362
 		}
-		goto st77
+		goto st78
 	st362:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof362
 		}
 	stCase362:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9305,22 +9874,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st363
 		}
-		goto st77
+		goto st78
 	st363:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof363
 		}
 	stCase363:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9329,22 +9900,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st364
 		}
-		goto st77
+		goto st78
 	st364:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof364
 		}
 	stCase364:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9353,22 +9926,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st365
 		}
-		goto st77
+		goto st78
 	st365:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof365
 		}
 	stCase365:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9377,22 +9952,24 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st366
 		}
-		goto st77
+		goto st78
 	st366:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof366
 		}
 	stCase366:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
@@ -9401,56 +9978,53 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		default:
 			goto st367
 		}
-		goto st77
+		goto st78
 	st367:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof367
 		}
 	stCase367:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 127:
-			goto tr84
+			goto tr85
 		}
-		if (m.data)[(m.p)] <= 31 {
-			goto tr84
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st368
+			}
+		default:
+			goto st368
 		}
-		goto st77
-	tr193:
-
-		output.tag = string(m.text())
-
-		goto st368
+		goto st78
 	st368:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof368
 		}
 	stCase368:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
-		case 58:
-			goto tr127
-		case 91:
-			goto st146
-		case 93:
-			goto tr418
+			goto tr86
 		case 127:
-			goto tr416
+			goto tr85
 		}
-		switch {
-		case (m.data)[(m.p)] > 31:
-			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr417
-			}
-		default:
-			goto tr416
+		if (m.data)[(m.p)] <= 31 {
+			goto tr85
 		}
-		goto st77
-	tr417:
+		goto st78
+	tr194:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st369
 	st369:
@@ -9459,42 +10033,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase369:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
 			goto st147
 		case 93:
-			goto tr420
+			goto tr419
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st370
+				goto tr418
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr418:
+
+		m.pb = m.p
+
+		goto st370
 	st370:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof370
 		}
 	stCase370:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st148
 		case 93:
-			goto tr422
+			goto tr421
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9502,25 +10085,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st371
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st371:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof371
 		}
 	stCase371:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st149
 		case 93:
-			goto tr424
+			goto tr423
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9528,25 +10113,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st372
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st372:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof372
 		}
 	stCase372:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st150
 		case 93:
-			goto tr426
+			goto tr425
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9554,25 +10141,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st373
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st373:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof373
 		}
 	stCase373:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st151
 		case 93:
-			goto tr428
+			goto tr427
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9580,25 +10169,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st374
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st374:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof374
 		}
 	stCase374:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st152
 		case 93:
-			goto tr430
+			goto tr429
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9606,25 +10197,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st375
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st375:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof375
 		}
 	stCase375:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st153
 		case 93:
-			goto tr432
+			goto tr431
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9632,25 +10225,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st376
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st376:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof376
 		}
 	stCase376:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st154
 		case 93:
-			goto tr434
+			goto tr433
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9658,25 +10253,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st377
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st377:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof377
 		}
 	stCase377:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st155
 		case 93:
-			goto tr436
+			goto tr435
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9684,25 +10281,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st378
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st378:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof378
 		}
 	stCase378:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st156
 		case 93:
-			goto tr438
+			goto tr437
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9710,25 +10309,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st379
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st379:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof379
 		}
 	stCase379:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st157
 		case 93:
-			goto tr440
+			goto tr439
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9736,25 +10337,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st380
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st380:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof380
 		}
 	stCase380:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st158
 		case 93:
-			goto tr442
+			goto tr441
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9762,25 +10365,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st381
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st381:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof381
 		}
 	stCase381:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st159
 		case 93:
-			goto tr444
+			goto tr443
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9788,25 +10393,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st382
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st382:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof382
 		}
 	stCase382:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st160
 		case 93:
-			goto tr446
+			goto tr445
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9814,25 +10421,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st383
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st383:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof383
 		}
 	stCase383:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st161
 		case 93:
-			goto tr448
+			goto tr447
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9840,25 +10449,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st384
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st384:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof384
 		}
 	stCase384:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st162
 		case 93:
-			goto tr450
+			goto tr449
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9866,25 +10477,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st385
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st385:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof385
 		}
 	stCase385:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st163
 		case 93:
-			goto tr452
+			goto tr451
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9892,25 +10505,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st386
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st386:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof386
 		}
 	stCase386:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st164
 		case 93:
-			goto tr454
+			goto tr453
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9918,25 +10533,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st387
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st387:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof387
 		}
 	stCase387:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st165
 		case 93:
-			goto tr456
+			goto tr455
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9944,25 +10561,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st388
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st388:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof388
 		}
 	stCase388:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st166
 		case 93:
-			goto tr458
+			goto tr457
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9970,25 +10589,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st389
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st389:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof389
 		}
 	stCase389:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st167
 		case 93:
-			goto tr460
+			goto tr459
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -9996,25 +10617,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st390
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st390:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof390
 		}
 	stCase390:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st168
 		case 93:
-			goto tr462
+			goto tr461
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10022,25 +10645,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st391
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st391:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof391
 		}
 	stCase391:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st169
 		case 93:
-			goto tr464
+			goto tr463
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10048,25 +10673,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st392
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st392:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof392
 		}
 	stCase392:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st170
 		case 93:
-			goto tr466
+			goto tr465
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10074,25 +10701,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st393
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st393:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof393
 		}
 	stCase393:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st171
 		case 93:
-			goto tr468
+			goto tr467
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10100,25 +10729,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st394
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st394:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof394
 		}
 	stCase394:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st172
 		case 93:
-			goto tr470
+			goto tr469
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10126,25 +10757,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st395
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st395:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof395
 		}
 	stCase395:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st173
 		case 93:
-			goto tr472
+			goto tr471
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10152,25 +10785,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st396
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st396:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof396
 		}
 	stCase396:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st174
 		case 93:
-			goto tr474
+			goto tr473
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10178,25 +10813,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st397
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st397:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof397
 		}
 	stCase397:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st175
 		case 93:
-			goto tr476
+			goto tr475
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10204,25 +10841,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st398
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st398:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof398
 		}
 	stCase398:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st176
 		case 93:
-			goto tr478
+			goto tr477
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10230,25 +10869,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st399
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st399:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof399
 		}
 	stCase399:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st177
 		case 93:
-			goto tr480
+			goto tr479
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10256,25 +10897,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st400
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st400:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof400
 		}
 	stCase400:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st178
 		case 93:
-			goto tr482
+			goto tr481
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10282,25 +10925,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st401
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st401:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof401
 		}
 	stCase401:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st179
 		case 93:
-			goto tr484
+			goto tr483
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10308,25 +10953,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st402
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st402:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof402
 		}
 	stCase402:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st180
 		case 93:
-			goto tr486
+			goto tr485
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10334,25 +10981,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st403
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st403:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof403
 		}
 	stCase403:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st181
 		case 93:
-			goto tr488
+			goto tr487
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10360,25 +11009,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st404
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st404:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof404
 		}
 	stCase404:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st182
 		case 93:
-			goto tr490
+			goto tr489
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10386,25 +11037,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st405
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st405:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof405
 		}
 	stCase405:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st183
 		case 93:
-			goto tr492
+			goto tr491
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10412,25 +11065,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st406
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st406:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof406
 		}
 	stCase406:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st184
 		case 93:
-			goto tr494
+			goto tr493
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10438,25 +11093,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st407
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st407:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof407
 		}
 	stCase407:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st185
 		case 93:
-			goto tr496
+			goto tr495
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10464,25 +11121,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st408
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st408:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof408
 		}
 	stCase408:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st186
 		case 93:
-			goto tr498
+			goto tr497
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10490,25 +11149,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st409
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st409:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof409
 		}
 	stCase409:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st187
 		case 93:
-			goto tr500
+			goto tr499
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10516,25 +11177,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st410
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st410:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof410
 		}
 	stCase410:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st188
 		case 93:
-			goto tr502
+			goto tr501
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10542,25 +11205,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st411
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st411:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof411
 		}
 	stCase411:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st189
 		case 93:
-			goto tr504
+			goto tr503
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10568,25 +11233,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st412
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st412:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof412
 		}
 	stCase412:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st190
 		case 93:
-			goto tr506
+			goto tr505
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10594,25 +11261,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st413
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st413:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof413
 		}
 	stCase413:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st191
 		case 93:
-			goto tr508
+			goto tr507
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10620,25 +11289,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st414
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st414:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof414
 		}
 	stCase414:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st192
 		case 93:
-			goto tr510
+			goto tr509
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10646,25 +11317,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st415
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st415:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof415
 		}
 	stCase415:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st193
 		case 93:
-			goto tr512
+			goto tr511
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10672,25 +11345,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st416
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st416:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof416
 		}
 	stCase416:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st194
 		case 93:
-			goto tr514
+			goto tr513
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10698,25 +11373,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st417
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st417:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof417
 		}
 	stCase417:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st195
 		case 93:
-			goto tr516
+			goto tr515
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10724,25 +11401,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st418
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st418:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof418
 		}
 	stCase418:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st196
 		case 93:
-			goto tr518
+			goto tr517
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10750,25 +11429,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st419
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st419:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof419
 		}
 	stCase419:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st197
 		case 93:
-			goto tr520
+			goto tr519
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10776,25 +11457,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st420
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st420:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof420
 		}
 	stCase420:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st198
 		case 93:
-			goto tr522
+			goto tr521
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10802,25 +11485,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st421
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st421:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof421
 		}
 	stCase421:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st199
 		case 93:
-			goto tr524
+			goto tr523
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10828,25 +11513,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st422
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st422:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof422
 		}
 	stCase422:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st200
 		case 93:
-			goto tr526
+			goto tr525
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10854,25 +11541,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st423
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st423:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof423
 		}
 	stCase423:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st201
 		case 93:
-			goto tr528
+			goto tr527
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10880,25 +11569,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st424
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st424:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof424
 		}
 	stCase424:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st202
 		case 93:
-			goto tr530
+			goto tr529
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10906,25 +11597,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st425
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st425:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof425
 		}
 	stCase425:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st203
 		case 93:
-			goto tr532
+			goto tr531
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10932,25 +11625,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st426
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st426:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof426
 		}
 	stCase426:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st204
 		case 93:
-			goto tr534
+			goto tr533
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10958,25 +11653,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st427
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st427:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof427
 		}
 	stCase427:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st205
 		case 93:
-			goto tr536
+			goto tr535
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -10984,25 +11681,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st428
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st428:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof428
 		}
 	stCase428:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st206
 		case 93:
-			goto tr538
+			goto tr537
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11010,25 +11709,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st429
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st429:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof429
 		}
 	stCase429:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st207
 		case 93:
-			goto tr540
+			goto tr539
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11036,25 +11737,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st430
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st430:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof430
 		}
 	stCase430:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st208
 		case 93:
-			goto tr542
+			goto tr541
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11062,25 +11765,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st431
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st431:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof431
 		}
 	stCase431:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st209
 		case 93:
-			goto tr544
+			goto tr543
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11088,25 +11793,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st432
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st432:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof432
 		}
 	stCase432:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st210
 		case 93:
-			goto tr546
+			goto tr545
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11114,25 +11821,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st433
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st433:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof433
 		}
 	stCase433:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st211
 		case 93:
-			goto tr548
+			goto tr547
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11140,25 +11849,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st434
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st434:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof434
 		}
 	stCase434:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st212
 		case 93:
-			goto tr550
+			goto tr549
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11166,25 +11877,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st435
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st435:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof435
 		}
 	stCase435:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st213
 		case 93:
-			goto tr552
+			goto tr551
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11192,25 +11905,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st436
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st436:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof436
 		}
 	stCase436:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st214
 		case 93:
-			goto tr554
+			goto tr553
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11218,25 +11933,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st437
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st437:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof437
 		}
 	stCase437:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st215
 		case 93:
-			goto tr556
+			goto tr555
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11244,25 +11961,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st438
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st438:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof438
 		}
 	stCase438:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st216
 		case 93:
-			goto tr558
+			goto tr557
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11270,25 +11989,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st439
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st439:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof439
 		}
 	stCase439:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st217
 		case 93:
-			goto tr560
+			goto tr559
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11296,25 +12017,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st440
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st440:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof440
 		}
 	stCase440:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st218
 		case 93:
-			goto tr562
+			goto tr561
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11322,25 +12045,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st441
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st441:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof441
 		}
 	stCase441:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st219
 		case 93:
-			goto tr564
+			goto tr563
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11348,25 +12073,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st442
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st442:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof442
 		}
 	stCase442:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st220
 		case 93:
-			goto tr566
+			goto tr565
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11374,25 +12101,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st443
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st443:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof443
 		}
 	stCase443:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st221
 		case 93:
-			goto tr568
+			goto tr567
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11400,25 +12129,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st444
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st444:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof444
 		}
 	stCase444:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st222
 		case 93:
-			goto tr570
+			goto tr569
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11426,25 +12157,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st445
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st445:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof445
 		}
 	stCase445:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st223
 		case 93:
-			goto tr572
+			goto tr571
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11452,25 +12185,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st446
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st446:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof446
 		}
 	stCase446:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st224
 		case 93:
-			goto tr574
+			goto tr573
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11478,25 +12213,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st447
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st447:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof447
 		}
 	stCase447:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st225
 		case 93:
-			goto tr576
+			goto tr575
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11504,25 +12241,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st448
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st448:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof448
 		}
 	stCase448:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st226
 		case 93:
-			goto tr578
+			goto tr577
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11530,25 +12269,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st449
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st449:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof449
 		}
 	stCase449:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st227
 		case 93:
-			goto tr580
+			goto tr579
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11556,25 +12297,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st450
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st450:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof450
 		}
 	stCase450:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st228
 		case 93:
-			goto tr582
+			goto tr581
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11582,25 +12325,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st451
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st451:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof451
 		}
 	stCase451:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st229
 		case 93:
-			goto tr584
+			goto tr583
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11608,25 +12353,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st452
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st452:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof452
 		}
 	stCase452:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st230
 		case 93:
-			goto tr586
+			goto tr585
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11634,25 +12381,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st453
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st453:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof453
 		}
 	stCase453:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st231
 		case 93:
-			goto tr588
+			goto tr587
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11660,25 +12409,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st454
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st454:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof454
 		}
 	stCase454:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st232
 		case 93:
-			goto tr590
+			goto tr589
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11686,25 +12437,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st455
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st455:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof455
 		}
 	stCase455:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st233
 		case 93:
-			goto tr592
+			goto tr591
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11712,25 +12465,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st456
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st456:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof456
 		}
 	stCase456:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st234
 		case 93:
-			goto tr594
+			goto tr593
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11738,25 +12493,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st457
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st457:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof457
 		}
 	stCase457:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st235
 		case 93:
-			goto tr596
+			goto tr595
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11764,25 +12521,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st458
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st458:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof458
 		}
 	stCase458:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st236
 		case 93:
-			goto tr598
+			goto tr597
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11790,25 +12549,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st459
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st459:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof459
 		}
 	stCase459:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st237
 		case 93:
-			goto tr600
+			goto tr599
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11816,25 +12577,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st460
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st460:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof460
 		}
 	stCase460:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st238
 		case 93:
-			goto tr602
+			goto tr601
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11842,25 +12605,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st461
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st461:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof461
 		}
 	stCase461:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st239
 		case 93:
-			goto tr604
+			goto tr603
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11868,25 +12633,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st462
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st462:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof462
 		}
 	stCase462:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st240
 		case 93:
-			goto tr606
+			goto tr605
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11894,25 +12661,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st463
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st463:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof463
 		}
 	stCase463:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st241
 		case 93:
-			goto tr608
+			goto tr607
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11920,25 +12689,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st464
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st464:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof464
 		}
 	stCase464:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st242
 		case 93:
-			goto tr610
+			goto tr609
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11946,25 +12717,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st465
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st465:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof465
 		}
 	stCase465:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st243
 		case 93:
-			goto tr612
+			goto tr611
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11972,25 +12745,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st466
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st466:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof466
 		}
 	stCase466:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st244
 		case 93:
-			goto tr614
+			goto tr613
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -11998,25 +12773,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st467
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st467:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof467
 		}
 	stCase467:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st245
 		case 93:
-			goto tr616
+			goto tr615
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12024,25 +12801,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st468
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st468:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof468
 		}
 	stCase468:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st246
 		case 93:
-			goto tr618
+			goto tr617
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12050,25 +12829,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st469
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st469:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof469
 		}
 	stCase469:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st247
 		case 93:
-			goto tr620
+			goto tr619
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12076,25 +12857,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st470
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st470:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof470
 		}
 	stCase470:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st248
 		case 93:
-			goto tr622
+			goto tr621
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12102,25 +12885,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st471
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st471:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof471
 		}
 	stCase471:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st249
 		case 93:
-			goto tr624
+			goto tr623
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12128,25 +12913,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st472
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st472:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof472
 		}
 	stCase472:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st250
 		case 93:
-			goto tr626
+			goto tr625
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12154,25 +12941,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st473
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st473:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof473
 		}
 	stCase473:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st251
 		case 93:
-			goto tr628
+			goto tr627
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12180,25 +12969,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st474
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st474:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof474
 		}
 	stCase474:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st252
 		case 93:
-			goto tr630
+			goto tr629
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12206,25 +12997,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st475
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st475:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof475
 		}
 	stCase475:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st253
 		case 93:
-			goto tr632
+			goto tr631
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12232,25 +13025,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st476
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st476:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof476
 		}
 	stCase476:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st254
 		case 93:
-			goto tr634
+			goto tr633
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12258,25 +13053,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st477
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st477:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof477
 		}
 	stCase477:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st255
 		case 93:
-			goto tr636
+			goto tr635
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12284,25 +13081,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st478
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st478:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof478
 		}
 	stCase478:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st256
 		case 93:
-			goto tr638
+			goto tr637
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12310,25 +13109,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st479
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st479:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof479
 		}
 	stCase479:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st257
 		case 93:
-			goto tr640
+			goto tr639
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12336,25 +13137,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st480
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st480:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof480
 		}
 	stCase480:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st258
 		case 93:
-			goto tr642
+			goto tr641
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12362,25 +13165,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st481
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st481:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof481
 		}
 	stCase481:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st259
 		case 93:
-			goto tr644
+			goto tr643
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12388,25 +13193,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st482
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st482:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof482
 		}
 	stCase482:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st260
 		case 93:
-			goto tr646
+			goto tr645
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12414,25 +13221,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st483
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st483:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof483
 		}
 	stCase483:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st261
 		case 93:
-			goto tr648
+			goto tr647
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12440,25 +13249,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st484
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st484:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof484
 		}
 	stCase484:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st262
 		case 93:
-			goto tr650
+			goto tr649
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12466,25 +13277,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st485
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st485:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof485
 		}
 	stCase485:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st263
 		case 93:
-			goto tr652
+			goto tr651
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12492,25 +13305,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st486
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st486:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof486
 		}
 	stCase486:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st264
 		case 93:
-			goto tr654
+			goto tr653
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12518,25 +13333,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st487
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st487:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof487
 		}
 	stCase487:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st265
 		case 93:
-			goto tr656
+			goto tr655
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12544,25 +13361,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st488
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st488:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof488
 		}
 	stCase488:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st266
 		case 93:
-			goto tr658
+			goto tr657
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12570,25 +13389,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st489
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st489:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof489
 		}
 	stCase489:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st267
 		case 93:
-			goto tr660
+			goto tr659
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12596,25 +13417,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st490
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st490:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof490
 		}
 	stCase490:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st268
 		case 93:
-			goto tr662
+			goto tr661
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12622,25 +13445,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st491
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st491:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof491
 		}
 	stCase491:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st269
 		case 93:
-			goto tr664
+			goto tr663
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12648,25 +13473,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st492
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st492:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof492
 		}
 	stCase492:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st270
 		case 93:
-			goto tr666
+			goto tr665
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12674,25 +13501,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st493
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st493:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof493
 		}
 	stCase493:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st271
 		case 93:
-			goto tr668
+			goto tr667
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12700,25 +13529,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st494
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st494:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof494
 		}
 	stCase494:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st272
 		case 93:
-			goto tr670
+			goto tr669
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12726,25 +13557,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st495
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st495:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof495
 		}
 	stCase495:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st273
 		case 93:
-			goto tr672
+			goto tr671
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12752,25 +13585,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st496
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st496:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof496
 		}
 	stCase496:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st274
 		case 93:
-			goto tr674
+			goto tr673
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12778,25 +13613,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st497
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st497:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof497
 		}
 	stCase497:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st275
 		case 93:
-			goto tr676
+			goto tr675
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12804,25 +13641,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st498
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st498:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof498
 		}
 	stCase498:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st276
 		case 93:
-			goto tr678
+			goto tr677
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12830,25 +13669,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st499
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st499:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof499
 		}
 	stCase499:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st277
 		case 93:
-			goto tr680
+			goto tr679
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12856,25 +13697,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st500
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st500:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof500
 		}
 	stCase500:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st278
 		case 93:
-			goto tr682
+			goto tr681
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12882,25 +13725,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st501
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st501:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof501
 		}
 	stCase501:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st279
 		case 93:
-			goto tr684
+			goto tr683
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12908,25 +13753,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st502
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st502:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof502
 		}
 	stCase502:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st280
 		case 93:
-			goto tr686
+			goto tr685
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12934,25 +13781,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st503
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st503:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof503
 		}
 	stCase503:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st281
 		case 93:
-			goto tr688
+			goto tr687
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12960,25 +13809,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st504
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st504:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof504
 		}
 	stCase504:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st282
 		case 93:
-			goto tr690
+			goto tr689
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -12986,25 +13837,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st505
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st505:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof505
 		}
 	stCase505:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st283
 		case 93:
-			goto tr692
+			goto tr691
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13012,25 +13865,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st506
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st506:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof506
 		}
 	stCase506:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st284
 		case 93:
-			goto tr694
+			goto tr693
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13038,25 +13893,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st507
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st507:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof507
 		}
 	stCase507:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st285
 		case 93:
-			goto tr696
+			goto tr695
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13064,25 +13921,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st508
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st508:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof508
 		}
 	stCase508:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st286
 		case 93:
-			goto tr698
+			goto tr697
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13090,25 +13949,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st509
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st509:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof509
 		}
 	stCase509:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st287
 		case 93:
-			goto tr700
+			goto tr699
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13116,25 +13977,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st510
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st510:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof510
 		}
 	stCase510:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st288
 		case 93:
-			goto tr702
+			goto tr701
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13142,25 +14005,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st511
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st511:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof511
 		}
 	stCase511:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st289
 		case 93:
-			goto tr704
+			goto tr703
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13168,25 +14033,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st512
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st512:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof512
 		}
 	stCase512:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st290
 		case 93:
-			goto tr706
+			goto tr705
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13194,25 +14061,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st513
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st513:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof513
 		}
 	stCase513:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st291
 		case 93:
-			goto tr708
+			goto tr707
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13220,25 +14089,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st514
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st514:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof514
 		}
 	stCase514:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st292
 		case 93:
-			goto tr710
+			goto tr709
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13246,25 +14117,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st515
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st515:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof515
 		}
 	stCase515:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st293
 		case 93:
-			goto tr712
+			goto tr711
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13272,25 +14145,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st516
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st516:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof516
 		}
 	stCase516:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st294
 		case 93:
-			goto tr714
+			goto tr713
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13298,25 +14173,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st517
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st517:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof517
 		}
 	stCase517:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st295
 		case 93:
-			goto tr716
+			goto tr715
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13324,25 +14201,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st518
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st518:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof518
 		}
 	stCase518:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st296
 		case 93:
-			goto tr718
+			goto tr717
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13350,25 +14229,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st519
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st519:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof519
 		}
 	stCase519:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st297
 		case 93:
-			goto tr720
+			goto tr719
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13376,25 +14257,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st520
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st520:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof520
 		}
 	stCase520:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st298
 		case 93:
-			goto tr722
+			goto tr721
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13402,25 +14285,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st521
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st521:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof521
 		}
 	stCase521:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st299
 		case 93:
-			goto tr724
+			goto tr723
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13428,25 +14313,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st522
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st522:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof522
 		}
 	stCase522:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st300
 		case 93:
-			goto tr726
+			goto tr725
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13454,25 +14341,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st523
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st523:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof523
 		}
 	stCase523:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st301
 		case 93:
-			goto tr728
+			goto tr727
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13480,25 +14369,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st524
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st524:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof524
 		}
 	stCase524:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st302
 		case 93:
-			goto tr730
+			goto tr729
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13506,25 +14397,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st525
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st525:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof525
 		}
 	stCase525:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st303
 		case 93:
-			goto tr732
+			goto tr731
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13532,25 +14425,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st526
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st526:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof526
 		}
 	stCase526:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st304
 		case 93:
-			goto tr734
+			goto tr733
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13558,25 +14453,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st527
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st527:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof527
 		}
 	stCase527:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st305
 		case 93:
-			goto tr736
+			goto tr735
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13584,25 +14481,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st528
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st528:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof528
 		}
 	stCase528:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st306
 		case 93:
-			goto tr738
+			goto tr737
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13610,25 +14509,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st529
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st529:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof529
 		}
 	stCase529:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st307
 		case 93:
-			goto tr740
+			goto tr739
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13636,25 +14537,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st530
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st530:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof530
 		}
 	stCase530:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st308
 		case 93:
-			goto tr742
+			goto tr741
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13662,25 +14565,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st531
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st531:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof531
 		}
 	stCase531:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st309
 		case 93:
-			goto tr744
+			goto tr743
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13688,25 +14593,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st532
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st532:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof532
 		}
 	stCase532:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st310
 		case 93:
-			goto tr746
+			goto tr745
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13714,25 +14621,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st533
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st533:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof533
 		}
 	stCase533:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st311
 		case 93:
-			goto tr748
+			goto tr747
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13740,25 +14649,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st534
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st534:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof534
 		}
 	stCase534:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st312
 		case 93:
-			goto tr750
+			goto tr749
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13766,25 +14677,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st535
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st535:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof535
 		}
 	stCase535:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st313
 		case 93:
-			goto tr752
+			goto tr751
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13792,25 +14705,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st536
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st536:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof536
 		}
 	stCase536:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st314
 		case 93:
-			goto tr754
+			goto tr753
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13818,25 +14733,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st537
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st537:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof537
 		}
 	stCase537:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st315
 		case 93:
-			goto tr756
+			goto tr755
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13844,25 +14761,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st538
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st538:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof538
 		}
 	stCase538:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st316
 		case 93:
-			goto tr758
+			goto tr757
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13870,25 +14789,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st539
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st539:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof539
 		}
 	stCase539:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st317
 		case 93:
-			goto tr760
+			goto tr759
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13896,25 +14817,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st540
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st540:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof540
 		}
 	stCase540:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st318
 		case 93:
-			goto tr762
+			goto tr761
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13922,25 +14845,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st541
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st541:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof541
 		}
 	stCase541:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st319
 		case 93:
-			goto tr764
+			goto tr763
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13948,25 +14873,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st542
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st542:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof542
 		}
 	stCase542:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st320
 		case 93:
-			goto tr766
+			goto tr765
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -13974,25 +14901,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st543
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st543:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof543
 		}
 	stCase543:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st321
 		case 93:
-			goto tr768
+			goto tr767
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14000,25 +14929,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st544
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st544:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof544
 		}
 	stCase544:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st322
 		case 93:
-			goto tr770
+			goto tr769
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14026,25 +14957,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st545
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st545:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof545
 		}
 	stCase545:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st323
 		case 93:
-			goto tr772
+			goto tr771
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14052,25 +14985,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st546
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st546:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof546
 		}
 	stCase546:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st324
 		case 93:
-			goto tr774
+			goto tr773
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14078,25 +15013,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st547
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st547:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof547
 		}
 	stCase547:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st325
 		case 93:
-			goto tr776
+			goto tr775
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14104,25 +15041,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st548
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st548:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof548
 		}
 	stCase548:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st326
 		case 93:
-			goto tr778
+			goto tr777
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14130,25 +15069,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st549
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st549:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof549
 		}
 	stCase549:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st327
 		case 93:
-			goto tr780
+			goto tr779
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14156,25 +15097,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st550
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st550:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof550
 		}
 	stCase550:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st328
 		case 93:
-			goto tr782
+			goto tr781
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14182,25 +15125,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st551
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st551:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof551
 		}
 	stCase551:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st329
 		case 93:
-			goto tr784
+			goto tr783
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14208,25 +15153,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st552
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st552:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof552
 		}
 	stCase552:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st330
 		case 93:
-			goto tr786
+			goto tr785
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14234,25 +15181,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st553
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st553:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof553
 		}
 	stCase553:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st331
 		case 93:
-			goto tr788
+			goto tr787
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14260,25 +15209,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st554
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st554:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof554
 		}
 	stCase554:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st332
 		case 93:
-			goto tr790
+			goto tr789
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14286,25 +15237,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st555
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st555:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof555
 		}
 	stCase555:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st333
 		case 93:
-			goto tr792
+			goto tr791
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14312,25 +15265,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st556
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st556:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof556
 		}
 	stCase556:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st334
 		case 93:
-			goto tr794
+			goto tr793
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14338,25 +15293,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st557
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st557:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof557
 		}
 	stCase557:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st335
 		case 93:
-			goto tr796
+			goto tr795
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14364,25 +15321,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st558
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st558:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof558
 		}
 	stCase558:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st336
 		case 93:
-			goto tr798
+			goto tr797
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14390,25 +15349,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st559
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st559:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof559
 		}
 	stCase559:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st337
 		case 93:
-			goto tr800
+			goto tr799
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14416,25 +15377,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st560
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st560:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof560
 		}
 	stCase560:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st338
 		case 93:
-			goto tr802
+			goto tr801
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14442,25 +15405,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st561
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st561:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof561
 		}
 	stCase561:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st339
 		case 93:
-			goto tr804
+			goto tr803
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14468,25 +15433,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st562
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st562:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof562
 		}
 	stCase562:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st340
 		case 93:
-			goto tr806
+			goto tr805
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14494,25 +15461,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st563
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st563:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof563
 		}
 	stCase563:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st341
 		case 93:
-			goto tr808
+			goto tr807
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14520,25 +15489,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st564
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st564:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof564
 		}
 	stCase564:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st342
 		case 93:
-			goto tr810
+			goto tr809
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14546,25 +15517,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st565
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st565:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof565
 		}
 	stCase565:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st343
 		case 93:
-			goto tr812
+			goto tr811
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14572,25 +15545,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st566
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st566:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof566
 		}
 	stCase566:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st344
 		case 93:
-			goto tr814
+			goto tr813
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14598,25 +15573,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st567
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st567:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof567
 		}
 	stCase567:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st345
 		case 93:
-			goto tr816
+			goto tr815
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14624,25 +15601,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st568
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st568:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof568
 		}
 	stCase568:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st346
 		case 93:
-			goto tr818
+			goto tr817
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14650,25 +15629,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st569
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st569:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof569
 		}
 	stCase569:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st347
 		case 93:
-			goto tr820
+			goto tr819
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14676,25 +15657,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st570
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st570:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof570
 		}
 	stCase570:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st348
 		case 93:
-			goto tr822
+			goto tr821
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14702,25 +15685,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st571
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st571:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof571
 		}
 	stCase571:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st349
 		case 93:
-			goto tr824
+			goto tr823
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14728,25 +15713,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st572
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st572:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof572
 		}
 	stCase572:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st350
 		case 93:
-			goto tr826
+			goto tr825
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14754,25 +15741,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st573
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st573:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof573
 		}
 	stCase573:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st351
 		case 93:
-			goto tr828
+			goto tr827
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14780,25 +15769,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st574
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st574:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof574
 		}
 	stCase574:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st352
 		case 93:
-			goto tr830
+			goto tr829
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14806,25 +15797,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st575
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st575:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof575
 		}
 	stCase575:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st353
 		case 93:
-			goto tr832
+			goto tr831
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14832,25 +15825,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st576
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st576:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof576
 		}
 	stCase576:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st354
 		case 93:
-			goto tr834
+			goto tr833
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14858,25 +15853,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st577
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st577:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof577
 		}
 	stCase577:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st355
 		case 93:
-			goto tr836
+			goto tr835
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14884,25 +15881,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st578
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st578:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof578
 		}
 	stCase578:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st356
 		case 93:
-			goto tr838
+			goto tr837
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14910,25 +15909,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st579
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st579:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof579
 		}
 	stCase579:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st357
 		case 93:
-			goto tr840
+			goto tr839
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14936,25 +15937,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st580
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st580:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof580
 		}
 	stCase580:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st358
 		case 93:
-			goto tr842
+			goto tr841
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14962,25 +15965,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st581
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st581:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof581
 		}
 	stCase581:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st359
 		case 93:
-			goto tr844
+			goto tr843
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -14988,25 +15993,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st582
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st582:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof582
 		}
 	stCase582:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st360
 		case 93:
-			goto tr846
+			goto tr845
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15014,25 +16021,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st583
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st583:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof583
 		}
 	stCase583:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st361
 		case 93:
-			goto tr848
+			goto tr847
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15040,25 +16049,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st584
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st584:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof584
 		}
 	stCase584:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st362
 		case 93:
-			goto tr850
+			goto tr849
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15066,25 +16077,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st585
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st585:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof585
 		}
 	stCase585:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st363
 		case 93:
-			goto tr852
+			goto tr851
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15092,25 +16105,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st586
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st586:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof586
 		}
 	stCase586:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st364
 		case 93:
-			goto tr854
+			goto tr853
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15118,25 +16133,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st587
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st587:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof587
 		}
 	stCase587:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st365
 		case 93:
-			goto tr856
+			goto tr855
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15144,25 +16161,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st588
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st588:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof588
 		}
 	stCase588:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st366
 		case 93:
-			goto tr858
+			goto tr857
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15170,25 +16189,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st589
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st589:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof589
 		}
 	stCase589:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto st113
 		case 91:
 			goto st367
 		case 93:
-			goto tr860
+			goto tr859
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -15196,58 +16217,66 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st590
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	st590:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof590
 		}
 	stCase590:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
+		case 58:
+			goto st113
+		case 91:
+			goto st368
 		case 93:
-			goto tr130
+			goto tr861
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr416
-			}
-		case (m.data)[(m.p)] > 90:
-			if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st112
+		case (m.data)[(m.p)] > 31:
+			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st591
 			}
 		default:
-			goto st112
+			goto tr417
 		}
-		goto st77
-	tr860:
-
-		output.content = string(m.text())
-
-		goto st591
+		goto st78
 	st591:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof591
 		}
 	stCase591:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
-		case 58:
-			goto st109
+			goto tr86
+		case 93:
+			goto tr131
 		case 127:
-			goto tr84
+			goto tr417
 		}
-		if (m.data)[(m.p)] <= 31 {
-			goto tr84
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr417
+			}
+		case (m.data)[(m.p)] > 90:
+			if 92 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st113
+			}
+		default:
+			goto st113
 		}
-		goto st77
-	tr858:
+		goto st78
+	tr861:
 
 		output.content = string(m.text())
 
@@ -15258,23 +16287,20 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase592:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st110
 		case 127:
-			goto tr84
+			goto tr85
 		}
-		switch {
-		case (m.data)[(m.p)] > 31:
-			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st367
-			}
-		default:
-			goto tr84
+		if (m.data)[(m.p)] <= 31 {
+			goto tr85
 		}
-		goto st77
-	tr856:
+		goto st78
+	tr859:
 
 		output.content = string(m.text())
 
@@ -15285,23 +16311,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase593:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st366
+				goto st368
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr854:
+		goto st78
+	tr857:
 
 		output.content = string(m.text())
 
@@ -15312,23 +16340,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase594:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st365
+				goto st367
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr852:
+		goto st78
+	tr855:
 
 		output.content = string(m.text())
 
@@ -15339,23 +16369,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase595:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st364
+				goto st366
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr850:
+		goto st78
+	tr853:
 
 		output.content = string(m.text())
 
@@ -15366,23 +16398,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase596:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st363
+				goto st365
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr848:
+		goto st78
+	tr851:
 
 		output.content = string(m.text())
 
@@ -15393,23 +16427,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase597:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st362
+				goto st364
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr846:
+		goto st78
+	tr849:
 
 		output.content = string(m.text())
 
@@ -15420,23 +16456,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase598:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st361
+				goto st363
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr844:
+		goto st78
+	tr847:
 
 		output.content = string(m.text())
 
@@ -15447,23 +16485,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase599:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st360
+				goto st362
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr842:
+		goto st78
+	tr845:
 
 		output.content = string(m.text())
 
@@ -15474,23 +16514,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase600:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st359
+				goto st361
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr840:
+		goto st78
+	tr843:
 
 		output.content = string(m.text())
 
@@ -15501,23 +16543,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase601:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st358
+				goto st360
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr838:
+		goto st78
+	tr841:
 
 		output.content = string(m.text())
 
@@ -15528,23 +16572,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase602:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st357
+				goto st359
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr836:
+		goto st78
+	tr839:
 
 		output.content = string(m.text())
 
@@ -15555,23 +16601,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase603:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st356
+				goto st358
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr834:
+		goto st78
+	tr837:
 
 		output.content = string(m.text())
 
@@ -15582,23 +16630,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase604:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st355
+				goto st357
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr832:
+		goto st78
+	tr835:
 
 		output.content = string(m.text())
 
@@ -15609,23 +16659,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase605:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st354
+				goto st356
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr830:
+		goto st78
+	tr833:
 
 		output.content = string(m.text())
 
@@ -15636,23 +16688,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase606:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st353
+				goto st355
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr828:
+		goto st78
+	tr831:
 
 		output.content = string(m.text())
 
@@ -15663,23 +16717,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase607:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st352
+				goto st354
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr826:
+		goto st78
+	tr829:
 
 		output.content = string(m.text())
 
@@ -15690,23 +16746,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase608:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st351
+				goto st353
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr824:
+		goto st78
+	tr827:
 
 		output.content = string(m.text())
 
@@ -15717,23 +16775,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase609:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st350
+				goto st352
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr822:
+		goto st78
+	tr825:
 
 		output.content = string(m.text())
 
@@ -15744,23 +16804,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase610:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st349
+				goto st351
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr820:
+		goto st78
+	tr823:
 
 		output.content = string(m.text())
 
@@ -15771,23 +16833,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase611:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st348
+				goto st350
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr818:
+		goto st78
+	tr821:
 
 		output.content = string(m.text())
 
@@ -15798,23 +16862,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase612:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st347
+				goto st349
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr816:
+		goto st78
+	tr819:
 
 		output.content = string(m.text())
 
@@ -15825,23 +16891,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase613:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st346
+				goto st348
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr814:
+		goto st78
+	tr817:
 
 		output.content = string(m.text())
 
@@ -15852,23 +16920,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase614:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st345
+				goto st347
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr812:
+		goto st78
+	tr815:
 
 		output.content = string(m.text())
 
@@ -15879,23 +16949,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase615:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st344
+				goto st346
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr810:
+		goto st78
+	tr813:
 
 		output.content = string(m.text())
 
@@ -15906,23 +16978,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase616:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st343
+				goto st345
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr808:
+		goto st78
+	tr811:
 
 		output.content = string(m.text())
 
@@ -15933,23 +17007,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase617:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st342
+				goto st344
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr806:
+		goto st78
+	tr809:
 
 		output.content = string(m.text())
 
@@ -15960,23 +17036,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase618:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st341
+				goto st343
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr804:
+		goto st78
+	tr807:
 
 		output.content = string(m.text())
 
@@ -15987,23 +17065,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase619:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st340
+				goto st342
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr802:
+		goto st78
+	tr805:
 
 		output.content = string(m.text())
 
@@ -16014,23 +17094,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase620:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st339
+				goto st341
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr800:
+		goto st78
+	tr803:
 
 		output.content = string(m.text())
 
@@ -16041,23 +17123,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase621:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st338
+				goto st340
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr798:
+		goto st78
+	tr801:
 
 		output.content = string(m.text())
 
@@ -16068,23 +17152,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase622:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st337
+				goto st339
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr796:
+		goto st78
+	tr799:
 
 		output.content = string(m.text())
 
@@ -16095,23 +17181,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase623:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st336
+				goto st338
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr794:
+		goto st78
+	tr797:
 
 		output.content = string(m.text())
 
@@ -16122,23 +17210,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase624:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st335
+				goto st337
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr792:
+		goto st78
+	tr795:
 
 		output.content = string(m.text())
 
@@ -16149,23 +17239,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase625:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st334
+				goto st336
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr790:
+		goto st78
+	tr793:
 
 		output.content = string(m.text())
 
@@ -16176,23 +17268,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase626:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st333
+				goto st335
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr788:
+		goto st78
+	tr791:
 
 		output.content = string(m.text())
 
@@ -16203,23 +17297,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase627:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st332
+				goto st334
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr786:
+		goto st78
+	tr789:
 
 		output.content = string(m.text())
 
@@ -16230,23 +17326,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase628:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st331
+				goto st333
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr784:
+		goto st78
+	tr787:
 
 		output.content = string(m.text())
 
@@ -16257,23 +17355,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase629:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st330
+				goto st332
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr782:
+		goto st78
+	tr785:
 
 		output.content = string(m.text())
 
@@ -16284,23 +17384,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase630:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st329
+				goto st331
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr780:
+		goto st78
+	tr783:
 
 		output.content = string(m.text())
 
@@ -16311,23 +17413,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase631:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st328
+				goto st330
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr778:
+		goto st78
+	tr781:
 
 		output.content = string(m.text())
 
@@ -16338,23 +17442,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase632:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st327
+				goto st329
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr776:
+		goto st78
+	tr779:
 
 		output.content = string(m.text())
 
@@ -16365,23 +17471,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase633:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st326
+				goto st328
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr774:
+		goto st78
+	tr777:
 
 		output.content = string(m.text())
 
@@ -16392,23 +17500,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase634:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st325
+				goto st327
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr772:
+		goto st78
+	tr775:
 
 		output.content = string(m.text())
 
@@ -16419,23 +17529,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase635:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st324
+				goto st326
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr770:
+		goto st78
+	tr773:
 
 		output.content = string(m.text())
 
@@ -16446,23 +17558,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase636:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st323
+				goto st325
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr768:
+		goto st78
+	tr771:
 
 		output.content = string(m.text())
 
@@ -16473,23 +17587,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase637:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st322
+				goto st324
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr766:
+		goto st78
+	tr769:
 
 		output.content = string(m.text())
 
@@ -16500,23 +17616,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase638:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st321
+				goto st323
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr764:
+		goto st78
+	tr767:
 
 		output.content = string(m.text())
 
@@ -16527,23 +17645,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase639:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st320
+				goto st322
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr762:
+		goto st78
+	tr765:
 
 		output.content = string(m.text())
 
@@ -16554,23 +17674,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase640:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st319
+				goto st321
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr760:
+		goto st78
+	tr763:
 
 		output.content = string(m.text())
 
@@ -16581,23 +17703,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase641:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st318
+				goto st320
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr758:
+		goto st78
+	tr761:
 
 		output.content = string(m.text())
 
@@ -16608,23 +17732,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase642:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st317
+				goto st319
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr756:
+		goto st78
+	tr759:
 
 		output.content = string(m.text())
 
@@ -16635,23 +17761,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase643:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st316
+				goto st318
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr754:
+		goto st78
+	tr757:
 
 		output.content = string(m.text())
 
@@ -16662,23 +17790,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase644:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st315
+				goto st317
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr752:
+		goto st78
+	tr755:
 
 		output.content = string(m.text())
 
@@ -16689,23 +17819,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase645:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st314
+				goto st316
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr750:
+		goto st78
+	tr753:
 
 		output.content = string(m.text())
 
@@ -16716,23 +17848,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase646:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st313
+				goto st315
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr748:
+		goto st78
+	tr751:
 
 		output.content = string(m.text())
 
@@ -16743,23 +17877,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase647:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st312
+				goto st314
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr746:
+		goto st78
+	tr749:
 
 		output.content = string(m.text())
 
@@ -16770,23 +17906,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase648:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st311
+				goto st313
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr744:
+		goto st78
+	tr747:
 
 		output.content = string(m.text())
 
@@ -16797,23 +17935,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase649:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st310
+				goto st312
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr742:
+		goto st78
+	tr745:
 
 		output.content = string(m.text())
 
@@ -16824,23 +17964,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase650:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st309
+				goto st311
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr740:
+		goto st78
+	tr743:
 
 		output.content = string(m.text())
 
@@ -16851,23 +17993,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase651:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st308
+				goto st310
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr738:
+		goto st78
+	tr741:
 
 		output.content = string(m.text())
 
@@ -16878,23 +18022,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase652:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st307
+				goto st309
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr736:
+		goto st78
+	tr739:
 
 		output.content = string(m.text())
 
@@ -16905,23 +18051,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase653:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st306
+				goto st308
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr734:
+		goto st78
+	tr737:
 
 		output.content = string(m.text())
 
@@ -16932,23 +18080,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase654:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st305
+				goto st307
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr732:
+		goto st78
+	tr735:
 
 		output.content = string(m.text())
 
@@ -16959,23 +18109,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase655:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st304
+				goto st306
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr730:
+		goto st78
+	tr733:
 
 		output.content = string(m.text())
 
@@ -16986,23 +18138,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase656:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st303
+				goto st305
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr728:
+		goto st78
+	tr731:
 
 		output.content = string(m.text())
 
@@ -17013,23 +18167,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase657:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st302
+				goto st304
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr726:
+		goto st78
+	tr729:
 
 		output.content = string(m.text())
 
@@ -17040,23 +18196,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase658:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st301
+				goto st303
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr724:
+		goto st78
+	tr727:
 
 		output.content = string(m.text())
 
@@ -17067,23 +18225,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase659:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st300
+				goto st302
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr722:
+		goto st78
+	tr725:
 
 		output.content = string(m.text())
 
@@ -17094,23 +18254,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase660:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st299
+				goto st301
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr720:
+		goto st78
+	tr723:
 
 		output.content = string(m.text())
 
@@ -17121,23 +18283,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase661:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st298
+				goto st300
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr718:
+		goto st78
+	tr721:
 
 		output.content = string(m.text())
 
@@ -17148,23 +18312,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase662:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st297
+				goto st299
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr716:
+		goto st78
+	tr719:
 
 		output.content = string(m.text())
 
@@ -17175,23 +18341,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase663:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st296
+				goto st298
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr714:
+		goto st78
+	tr717:
 
 		output.content = string(m.text())
 
@@ -17202,23 +18370,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase664:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st295
+				goto st297
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr712:
+		goto st78
+	tr715:
 
 		output.content = string(m.text())
 
@@ -17229,23 +18399,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase665:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st294
+				goto st296
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr710:
+		goto st78
+	tr713:
 
 		output.content = string(m.text())
 
@@ -17256,23 +18428,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase666:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st293
+				goto st295
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr708:
+		goto st78
+	tr711:
 
 		output.content = string(m.text())
 
@@ -17283,23 +18457,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase667:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st292
+				goto st294
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr706:
+		goto st78
+	tr709:
 
 		output.content = string(m.text())
 
@@ -17310,23 +18486,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase668:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st291
+				goto st293
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr704:
+		goto st78
+	tr707:
 
 		output.content = string(m.text())
 
@@ -17337,23 +18515,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase669:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st290
+				goto st292
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr702:
+		goto st78
+	tr705:
 
 		output.content = string(m.text())
 
@@ -17364,23 +18544,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase670:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st289
+				goto st291
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr700:
+		goto st78
+	tr703:
 
 		output.content = string(m.text())
 
@@ -17391,23 +18573,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase671:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st288
+				goto st290
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr698:
+		goto st78
+	tr701:
 
 		output.content = string(m.text())
 
@@ -17418,23 +18602,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase672:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st287
+				goto st289
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr696:
+		goto st78
+	tr699:
 
 		output.content = string(m.text())
 
@@ -17445,23 +18631,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase673:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st286
+				goto st288
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr694:
+		goto st78
+	tr697:
 
 		output.content = string(m.text())
 
@@ -17472,23 +18660,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase674:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st285
+				goto st287
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr692:
+		goto st78
+	tr695:
 
 		output.content = string(m.text())
 
@@ -17499,23 +18689,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase675:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st284
+				goto st286
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr690:
+		goto st78
+	tr693:
 
 		output.content = string(m.text())
 
@@ -17526,23 +18718,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase676:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st283
+				goto st285
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr688:
+		goto st78
+	tr691:
 
 		output.content = string(m.text())
 
@@ -17553,23 +18747,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase677:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st282
+				goto st284
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr686:
+		goto st78
+	tr689:
 
 		output.content = string(m.text())
 
@@ -17580,23 +18776,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase678:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st281
+				goto st283
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr684:
+		goto st78
+	tr687:
 
 		output.content = string(m.text())
 
@@ -17607,23 +18805,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase679:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st280
+				goto st282
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr682:
+		goto st78
+	tr685:
 
 		output.content = string(m.text())
 
@@ -17634,23 +18834,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase680:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st279
+				goto st281
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr680:
+		goto st78
+	tr683:
 
 		output.content = string(m.text())
 
@@ -17661,23 +18863,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase681:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st278
+				goto st280
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr678:
+		goto st78
+	tr681:
 
 		output.content = string(m.text())
 
@@ -17688,23 +18892,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase682:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st277
+				goto st279
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr676:
+		goto st78
+	tr679:
 
 		output.content = string(m.text())
 
@@ -17715,23 +18921,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase683:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st276
+				goto st278
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr674:
+		goto st78
+	tr677:
 
 		output.content = string(m.text())
 
@@ -17742,23 +18950,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase684:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st275
+				goto st277
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr672:
+		goto st78
+	tr675:
 
 		output.content = string(m.text())
 
@@ -17769,23 +18979,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase685:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st274
+				goto st276
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr670:
+		goto st78
+	tr673:
 
 		output.content = string(m.text())
 
@@ -17796,23 +19008,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase686:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st273
+				goto st275
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr668:
+		goto st78
+	tr671:
 
 		output.content = string(m.text())
 
@@ -17823,23 +19037,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase687:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st272
+				goto st274
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr666:
+		goto st78
+	tr669:
 
 		output.content = string(m.text())
 
@@ -17850,23 +19066,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase688:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st271
+				goto st273
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr664:
+		goto st78
+	tr667:
 
 		output.content = string(m.text())
 
@@ -17877,23 +19095,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase689:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st270
+				goto st272
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr662:
+		goto st78
+	tr665:
 
 		output.content = string(m.text())
 
@@ -17904,23 +19124,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase690:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st269
+				goto st271
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr660:
+		goto st78
+	tr663:
 
 		output.content = string(m.text())
 
@@ -17931,23 +19153,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase691:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st268
+				goto st270
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr658:
+		goto st78
+	tr661:
 
 		output.content = string(m.text())
 
@@ -17958,23 +19182,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase692:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st267
+				goto st269
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr656:
+		goto st78
+	tr659:
 
 		output.content = string(m.text())
 
@@ -17985,23 +19211,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase693:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st266
+				goto st268
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr654:
+		goto st78
+	tr657:
 
 		output.content = string(m.text())
 
@@ -18012,23 +19240,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase694:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st265
+				goto st267
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr652:
+		goto st78
+	tr655:
 
 		output.content = string(m.text())
 
@@ -18039,23 +19269,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase695:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st264
+				goto st266
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr650:
+		goto st78
+	tr653:
 
 		output.content = string(m.text())
 
@@ -18066,23 +19298,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase696:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st263
+				goto st265
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr648:
+		goto st78
+	tr651:
 
 		output.content = string(m.text())
 
@@ -18093,23 +19327,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase697:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st262
+				goto st264
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr646:
+		goto st78
+	tr649:
 
 		output.content = string(m.text())
 
@@ -18120,23 +19356,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase698:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st261
+				goto st263
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr644:
+		goto st78
+	tr647:
 
 		output.content = string(m.text())
 
@@ -18147,23 +19385,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase699:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st260
+				goto st262
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr642:
+		goto st78
+	tr645:
 
 		output.content = string(m.text())
 
@@ -18174,23 +19414,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase700:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st259
+				goto st261
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr640:
+		goto st78
+	tr643:
 
 		output.content = string(m.text())
 
@@ -18201,23 +19443,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase701:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st258
+				goto st260
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr638:
+		goto st78
+	tr641:
 
 		output.content = string(m.text())
 
@@ -18228,23 +19472,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase702:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st257
+				goto st259
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr636:
+		goto st78
+	tr639:
 
 		output.content = string(m.text())
 
@@ -18255,23 +19501,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase703:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st256
+				goto st258
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr634:
+		goto st78
+	tr637:
 
 		output.content = string(m.text())
 
@@ -18282,23 +19530,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase704:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st255
+				goto st257
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr632:
+		goto st78
+	tr635:
 
 		output.content = string(m.text())
 
@@ -18309,23 +19559,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase705:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st254
+				goto st256
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr630:
+		goto st78
+	tr633:
 
 		output.content = string(m.text())
 
@@ -18336,23 +19588,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase706:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st253
+				goto st255
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr628:
+		goto st78
+	tr631:
 
 		output.content = string(m.text())
 
@@ -18363,23 +19617,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase707:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st252
+				goto st254
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr626:
+		goto st78
+	tr629:
 
 		output.content = string(m.text())
 
@@ -18390,23 +19646,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase708:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st251
+				goto st253
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr624:
+		goto st78
+	tr627:
 
 		output.content = string(m.text())
 
@@ -18417,23 +19675,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase709:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st250
+				goto st252
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr622:
+		goto st78
+	tr625:
 
 		output.content = string(m.text())
 
@@ -18444,23 +19704,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase710:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st249
+				goto st251
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr620:
+		goto st78
+	tr623:
 
 		output.content = string(m.text())
 
@@ -18471,23 +19733,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase711:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st248
+				goto st250
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr618:
+		goto st78
+	tr621:
 
 		output.content = string(m.text())
 
@@ -18498,23 +19762,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase712:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st247
+				goto st249
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr616:
+		goto st78
+	tr619:
 
 		output.content = string(m.text())
 
@@ -18525,23 +19791,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase713:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st246
+				goto st248
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr614:
+		goto st78
+	tr617:
 
 		output.content = string(m.text())
 
@@ -18552,23 +19820,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase714:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st245
+				goto st247
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr612:
+		goto st78
+	tr615:
 
 		output.content = string(m.text())
 
@@ -18579,23 +19849,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase715:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st244
+				goto st246
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr610:
+		goto st78
+	tr613:
 
 		output.content = string(m.text())
 
@@ -18606,23 +19878,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase716:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st243
+				goto st245
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr608:
+		goto st78
+	tr611:
 
 		output.content = string(m.text())
 
@@ -18633,23 +19907,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase717:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st242
+				goto st244
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr606:
+		goto st78
+	tr609:
 
 		output.content = string(m.text())
 
@@ -18660,23 +19936,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase718:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st241
+				goto st243
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr604:
+		goto st78
+	tr607:
 
 		output.content = string(m.text())
 
@@ -18687,23 +19965,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase719:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st240
+				goto st242
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr602:
+		goto st78
+	tr605:
 
 		output.content = string(m.text())
 
@@ -18714,23 +19994,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase720:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st239
+				goto st241
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr600:
+		goto st78
+	tr603:
 
 		output.content = string(m.text())
 
@@ -18741,23 +20023,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase721:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st238
+				goto st240
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr598:
+		goto st78
+	tr601:
 
 		output.content = string(m.text())
 
@@ -18768,23 +20052,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase722:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st237
+				goto st239
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr596:
+		goto st78
+	tr599:
 
 		output.content = string(m.text())
 
@@ -18795,23 +20081,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase723:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st236
+				goto st238
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr594:
+		goto st78
+	tr597:
 
 		output.content = string(m.text())
 
@@ -18822,23 +20110,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase724:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st235
+				goto st237
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr592:
+		goto st78
+	tr595:
 
 		output.content = string(m.text())
 
@@ -18849,23 +20139,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase725:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st234
+				goto st236
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr590:
+		goto st78
+	tr593:
 
 		output.content = string(m.text())
 
@@ -18876,23 +20168,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase726:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st233
+				goto st235
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr588:
+		goto st78
+	tr591:
 
 		output.content = string(m.text())
 
@@ -18903,23 +20197,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase727:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st232
+				goto st234
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr586:
+		goto st78
+	tr589:
 
 		output.content = string(m.text())
 
@@ -18930,23 +20226,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase728:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st231
+				goto st233
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr584:
+		goto st78
+	tr587:
 
 		output.content = string(m.text())
 
@@ -18957,23 +20255,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase729:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st230
+				goto st232
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr582:
+		goto st78
+	tr585:
 
 		output.content = string(m.text())
 
@@ -18984,23 +20284,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase730:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st229
+				goto st231
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr580:
+		goto st78
+	tr583:
 
 		output.content = string(m.text())
 
@@ -19011,23 +20313,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase731:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st228
+				goto st230
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr578:
+		goto st78
+	tr581:
 
 		output.content = string(m.text())
 
@@ -19038,23 +20342,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase732:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st227
+				goto st229
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr576:
+		goto st78
+	tr579:
 
 		output.content = string(m.text())
 
@@ -19065,23 +20371,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase733:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st226
+				goto st228
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr574:
+		goto st78
+	tr577:
 
 		output.content = string(m.text())
 
@@ -19092,23 +20400,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase734:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st225
+				goto st227
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr572:
+		goto st78
+	tr575:
 
 		output.content = string(m.text())
 
@@ -19119,23 +20429,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase735:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st224
+				goto st226
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr570:
+		goto st78
+	tr573:
 
 		output.content = string(m.text())
 
@@ -19146,23 +20458,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase736:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st223
+				goto st225
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr568:
+		goto st78
+	tr571:
 
 		output.content = string(m.text())
 
@@ -19173,23 +20487,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase737:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st222
+				goto st224
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr566:
+		goto st78
+	tr569:
 
 		output.content = string(m.text())
 
@@ -19200,23 +20516,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase738:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st221
+				goto st223
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr564:
+		goto st78
+	tr567:
 
 		output.content = string(m.text())
 
@@ -19227,23 +20545,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase739:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st220
+				goto st222
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr562:
+		goto st78
+	tr565:
 
 		output.content = string(m.text())
 
@@ -19254,23 +20574,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase740:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st219
+				goto st221
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr560:
+		goto st78
+	tr563:
 
 		output.content = string(m.text())
 
@@ -19281,23 +20603,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase741:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st218
+				goto st220
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr558:
+		goto st78
+	tr561:
 
 		output.content = string(m.text())
 
@@ -19308,23 +20632,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase742:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st217
+				goto st219
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr556:
+		goto st78
+	tr559:
 
 		output.content = string(m.text())
 
@@ -19335,23 +20661,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase743:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st216
+				goto st218
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr554:
+		goto st78
+	tr557:
 
 		output.content = string(m.text())
 
@@ -19362,23 +20690,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase744:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st215
+				goto st217
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr552:
+		goto st78
+	tr555:
 
 		output.content = string(m.text())
 
@@ -19389,23 +20719,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase745:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st214
+				goto st216
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr550:
+		goto st78
+	tr553:
 
 		output.content = string(m.text())
 
@@ -19416,23 +20748,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase746:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st213
+				goto st215
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr548:
+		goto st78
+	tr551:
 
 		output.content = string(m.text())
 
@@ -19443,23 +20777,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase747:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st212
+				goto st214
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr546:
+		goto st78
+	tr549:
 
 		output.content = string(m.text())
 
@@ -19470,23 +20806,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase748:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st211
+				goto st213
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr544:
+		goto st78
+	tr547:
 
 		output.content = string(m.text())
 
@@ -19497,23 +20835,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase749:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st210
+				goto st212
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr542:
+		goto st78
+	tr545:
 
 		output.content = string(m.text())
 
@@ -19524,23 +20864,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase750:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st209
+				goto st211
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr540:
+		goto st78
+	tr543:
 
 		output.content = string(m.text())
 
@@ -19551,23 +20893,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase751:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st208
+				goto st210
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr538:
+		goto st78
+	tr541:
 
 		output.content = string(m.text())
 
@@ -19578,23 +20922,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase752:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st207
+				goto st209
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr536:
+		goto st78
+	tr539:
 
 		output.content = string(m.text())
 
@@ -19605,23 +20951,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase753:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st206
+				goto st208
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr534:
+		goto st78
+	tr537:
 
 		output.content = string(m.text())
 
@@ -19632,23 +20980,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase754:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st205
+				goto st207
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr532:
+		goto st78
+	tr535:
 
 		output.content = string(m.text())
 
@@ -19659,23 +21009,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase755:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st204
+				goto st206
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr530:
+		goto st78
+	tr533:
 
 		output.content = string(m.text())
 
@@ -19686,23 +21038,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase756:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st203
+				goto st205
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr528:
+		goto st78
+	tr531:
 
 		output.content = string(m.text())
 
@@ -19713,23 +21067,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase757:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st202
+				goto st204
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr526:
+		goto st78
+	tr529:
 
 		output.content = string(m.text())
 
@@ -19740,23 +21096,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase758:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st201
+				goto st203
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr524:
+		goto st78
+	tr527:
 
 		output.content = string(m.text())
 
@@ -19767,23 +21125,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase759:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st200
+				goto st202
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr522:
+		goto st78
+	tr525:
 
 		output.content = string(m.text())
 
@@ -19794,23 +21154,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase760:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st199
+				goto st201
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr520:
+		goto st78
+	tr523:
 
 		output.content = string(m.text())
 
@@ -19821,23 +21183,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase761:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st198
+				goto st200
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr518:
+		goto st78
+	tr521:
 
 		output.content = string(m.text())
 
@@ -19848,23 +21212,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase762:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st197
+				goto st199
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr516:
+		goto st78
+	tr519:
 
 		output.content = string(m.text())
 
@@ -19875,23 +21241,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase763:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st196
+				goto st198
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr514:
+		goto st78
+	tr517:
 
 		output.content = string(m.text())
 
@@ -19902,23 +21270,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase764:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st195
+				goto st197
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr512:
+		goto st78
+	tr515:
 
 		output.content = string(m.text())
 
@@ -19929,23 +21299,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase765:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st194
+				goto st196
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr510:
+		goto st78
+	tr513:
 
 		output.content = string(m.text())
 
@@ -19956,23 +21328,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase766:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st193
+				goto st195
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr508:
+		goto st78
+	tr511:
 
 		output.content = string(m.text())
 
@@ -19983,23 +21357,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase767:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st192
+				goto st194
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr506:
+		goto st78
+	tr509:
 
 		output.content = string(m.text())
 
@@ -20010,23 +21386,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase768:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st191
+				goto st193
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr504:
+		goto st78
+	tr507:
 
 		output.content = string(m.text())
 
@@ -20037,23 +21415,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase769:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st190
+				goto st192
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr502:
+		goto st78
+	tr505:
 
 		output.content = string(m.text())
 
@@ -20064,23 +21444,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase770:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st189
+				goto st191
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr500:
+		goto st78
+	tr503:
 
 		output.content = string(m.text())
 
@@ -20091,23 +21473,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase771:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st188
+				goto st190
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr498:
+		goto st78
+	tr501:
 
 		output.content = string(m.text())
 
@@ -20118,23 +21502,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase772:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st187
+				goto st189
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr496:
+		goto st78
+	tr499:
 
 		output.content = string(m.text())
 
@@ -20145,23 +21531,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase773:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st186
+				goto st188
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr494:
+		goto st78
+	tr497:
 
 		output.content = string(m.text())
 
@@ -20172,23 +21560,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase774:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st185
+				goto st187
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr492:
+		goto st78
+	tr495:
 
 		output.content = string(m.text())
 
@@ -20199,23 +21589,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase775:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st184
+				goto st186
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr490:
+		goto st78
+	tr493:
 
 		output.content = string(m.text())
 
@@ -20226,23 +21618,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase776:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st183
+				goto st185
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr488:
+		goto st78
+	tr491:
 
 		output.content = string(m.text())
 
@@ -20253,23 +21647,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase777:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st182
+				goto st184
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr486:
+		goto st78
+	tr489:
 
 		output.content = string(m.text())
 
@@ -20280,23 +21676,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase778:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st181
+				goto st183
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr484:
+		goto st78
+	tr487:
 
 		output.content = string(m.text())
 
@@ -20307,23 +21705,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase779:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st180
+				goto st182
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr482:
+		goto st78
+	tr485:
 
 		output.content = string(m.text())
 
@@ -20334,23 +21734,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase780:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st179
+				goto st181
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr480:
+		goto st78
+	tr483:
 
 		output.content = string(m.text())
 
@@ -20361,23 +21763,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase781:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st178
+				goto st180
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr478:
+		goto st78
+	tr481:
 
 		output.content = string(m.text())
 
@@ -20388,23 +21792,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase782:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st177
+				goto st179
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr476:
+		goto st78
+	tr479:
 
 		output.content = string(m.text())
 
@@ -20415,23 +21821,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase783:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st176
+				goto st178
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr474:
+		goto st78
+	tr477:
 
 		output.content = string(m.text())
 
@@ -20442,23 +21850,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase784:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st175
+				goto st177
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr472:
+		goto st78
+	tr475:
 
 		output.content = string(m.text())
 
@@ -20469,23 +21879,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase785:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st174
+				goto st176
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr470:
+		goto st78
+	tr473:
 
 		output.content = string(m.text())
 
@@ -20496,23 +21908,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase786:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st173
+				goto st175
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr468:
+		goto st78
+	tr471:
 
 		output.content = string(m.text())
 
@@ -20523,23 +21937,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase787:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st172
+				goto st174
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr466:
+		goto st78
+	tr469:
 
 		output.content = string(m.text())
 
@@ -20550,23 +21966,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase788:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st171
+				goto st173
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr464:
+		goto st78
+	tr467:
 
 		output.content = string(m.text())
 
@@ -20577,23 +21995,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase789:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st170
+				goto st172
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr462:
+		goto st78
+	tr465:
 
 		output.content = string(m.text())
 
@@ -20604,23 +22024,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase790:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st169
+				goto st171
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr460:
+		goto st78
+	tr463:
 
 		output.content = string(m.text())
 
@@ -20631,23 +22053,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase791:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st168
+				goto st170
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr458:
+		goto st78
+	tr461:
 
 		output.content = string(m.text())
 
@@ -20658,23 +22082,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase792:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st167
+				goto st169
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr456:
+		goto st78
+	tr459:
 
 		output.content = string(m.text())
 
@@ -20685,23 +22111,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase793:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st166
+				goto st168
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr454:
+		goto st78
+	tr457:
 
 		output.content = string(m.text())
 
@@ -20712,23 +22140,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase794:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st165
+				goto st167
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr452:
+		goto st78
+	tr455:
 
 		output.content = string(m.text())
 
@@ -20739,23 +22169,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase795:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st164
+				goto st166
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr450:
+		goto st78
+	tr453:
 
 		output.content = string(m.text())
 
@@ -20766,23 +22198,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase796:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st163
+				goto st165
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr448:
+		goto st78
+	tr451:
 
 		output.content = string(m.text())
 
@@ -20793,23 +22227,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase797:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st162
+				goto st164
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr446:
+		goto st78
+	tr449:
 
 		output.content = string(m.text())
 
@@ -20820,23 +22256,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase798:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st161
+				goto st163
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr444:
+		goto st78
+	tr447:
 
 		output.content = string(m.text())
 
@@ -20847,23 +22285,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase799:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st160
+				goto st162
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr442:
+		goto st78
+	tr445:
 
 		output.content = string(m.text())
 
@@ -20874,23 +22314,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase800:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st159
+				goto st161
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr440:
+		goto st78
+	tr443:
 
 		output.content = string(m.text())
 
@@ -20901,23 +22343,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase801:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st158
+				goto st160
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr438:
+		goto st78
+	tr441:
 
 		output.content = string(m.text())
 
@@ -20928,23 +22372,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase802:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st157
+				goto st159
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr436:
+		goto st78
+	tr439:
 
 		output.content = string(m.text())
 
@@ -20955,23 +22401,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase803:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st156
+				goto st158
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr434:
+		goto st78
+	tr437:
 
 		output.content = string(m.text())
 
@@ -20982,23 +22430,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase804:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st155
+				goto st157
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr432:
+		goto st78
+	tr435:
 
 		output.content = string(m.text())
 
@@ -21009,23 +22459,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase805:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st154
+				goto st156
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr430:
+		goto st78
+	tr433:
 
 		output.content = string(m.text())
 
@@ -21036,23 +22488,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase806:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st153
+				goto st155
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr428:
+		goto st78
+	tr431:
 
 		output.content = string(m.text())
 
@@ -21063,23 +22517,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase807:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st152
+				goto st154
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr426:
+		goto st78
+	tr429:
 
 		output.content = string(m.text())
 
@@ -21090,23 +22546,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase808:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st151
+				goto st153
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr424:
+		goto st78
+	tr427:
 
 		output.content = string(m.text())
 
@@ -21117,23 +22575,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase809:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st150
+				goto st152
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr422:
+		goto st78
+	tr425:
 
 		output.content = string(m.text())
 
@@ -21144,23 +22604,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase810:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st149
+				goto st151
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr420:
+		goto st78
+	tr423:
 
 		output.content = string(m.text())
 
@@ -21171,30 +22633,25 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase811:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st148
+				goto st150
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr418:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st812
-	tr864:
+		goto st78
+	tr421:
 
 		output.content = string(m.text())
 
@@ -21205,25 +22662,34 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase812:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st147
+				goto st149
 			}
 		default:
-			goto tr84
+			goto tr85
 		}
-		goto st77
-	tr191:
+		goto st78
+	tr419:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st813
+	tr865:
+
+		output.content = string(m.text())
 
 		goto st813
 	st813:
@@ -21232,29 +22698,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase813:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st145
-		case 93:
-			goto tr862
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr861
+				goto st148
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr861:
+		goto st78
+	tr192:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st814
 	st814:
@@ -21263,36 +22727,31 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase814:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
 			goto st146
 		case 93:
-			goto tr864
+			goto tr863
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st369
+				goto tr862
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
 	tr862:
 
 		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st815
-	tr869:
-
-		output.content = string(m.text())
 
 		goto st815
 	st815:
@@ -21301,25 +22760,38 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase815:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st113
+		case 91:
+			goto st147
+		case 93:
+			goto tr865
+		case 127:
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st146
+				goto st370
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr189:
+		goto st78
+	tr863:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st816
+	tr870:
+
+		output.content = string(m.text())
 
 		goto st816
 	st816:
@@ -21328,29 +22800,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase816:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st818
-		case 93:
-			goto tr867
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr865
+				goto st147
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr865:
+		goto st78
+	tr190:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st817
 	st817:
@@ -21359,87 +22829,97 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase817:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st145
+			goto st819
 		case 93:
-			goto tr869
+			goto tr868
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st814
+				goto tr866
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr866:
+
+		m.pb = m.p
+
+		goto st818
 	st818:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof818
 		}
 	stCase818:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st113
+		case 91:
+			goto st146
+		case 93:
+			goto tr870
+		case 127:
+			goto tr417
 		}
 		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st145
+		case (m.data)[(m.p)] > 31:
+			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st815
 			}
 		default:
-			goto st145
+			goto tr417
 		}
-		goto st77
-	tr867:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st819
-	tr874:
-
-		output.content = string(m.text())
-
-		goto st819
+		goto st78
 	st819:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof819
 		}
 	stCase819:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 58:
-			goto st109
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
-		case (m.data)[(m.p)] > 31:
-			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st145
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st146
 			}
 		default:
-			goto tr84
+			goto st146
 		}
-		goto st77
-	tr187:
+		goto st78
+	tr868:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st820
+	tr875:
+
+		output.content = string(m.text())
 
 		goto st820
 	st820:
@@ -21448,29 +22928,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase820:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st822
-		case 93:
-			goto tr872
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr870
+				goto st146
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr870:
+		goto st78
+	tr188:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st821
 	st821:
@@ -21479,74 +22957,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase821:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st818
+			goto st823
 		case 93:
-			goto tr874
+			goto tr873
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st817
+				goto tr871
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr871:
+
+		m.pb = m.p
+
+		goto st822
 	st822:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof822
 		}
 	stCase822:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st818
-			}
-		default:
-			goto st818
-		}
-		goto st77
-	tr872:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st823
-	tr879:
-
-		output.content = string(m.text())
-
-		goto st823
-	st823:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof823
-		}
-	stCase823:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st819
+		case 93:
+			goto tr875
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -21554,12 +23009,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st818
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr185:
+		goto st78
+	st823:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof823
+		}
+	stCase823:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st819
+			}
+		default:
+			goto st819
+		}
+		goto st78
+	tr873:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st824
+	tr880:
+
+		output.content = string(m.text())
 
 		goto st824
 	st824:
@@ -21568,29 +23056,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase824:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st826
-		case 93:
-			goto tr877
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr875
+				goto st819
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr875:
+		goto st78
+	tr186:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st825
 	st825:
@@ -21599,74 +23085,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase825:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st822
+			goto st827
 		case 93:
-			goto tr879
+			goto tr878
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st821
+				goto tr876
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr876:
+
+		m.pb = m.p
+
+		goto st826
 	st826:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof826
 		}
 	stCase826:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st822
-			}
-		default:
-			goto st822
-		}
-		goto st77
-	tr877:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st827
-	tr884:
-
-		output.content = string(m.text())
-
-		goto st827
-	st827:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof827
-		}
-	stCase827:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st823
+		case 93:
+			goto tr880
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -21674,12 +23137,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st822
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr183:
+		goto st78
+	st827:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof827
+		}
+	stCase827:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st823
+			}
+		default:
+			goto st823
+		}
+		goto st78
+	tr878:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st828
+	tr885:
+
+		output.content = string(m.text())
 
 		goto st828
 	st828:
@@ -21688,29 +23184,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase828:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st830
-		case 93:
-			goto tr882
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr880
+				goto st823
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr880:
+		goto st78
+	tr184:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st829
 	st829:
@@ -21719,74 +23213,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase829:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st826
+			goto st831
 		case 93:
-			goto tr884
+			goto tr883
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st825
+				goto tr881
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr881:
+
+		m.pb = m.p
+
+		goto st830
 	st830:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof830
 		}
 	stCase830:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st826
-			}
-		default:
-			goto st826
-		}
-		goto st77
-	tr882:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st831
-	tr889:
-
-		output.content = string(m.text())
-
-		goto st831
-	st831:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof831
-		}
-	stCase831:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st827
+		case 93:
+			goto tr885
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -21794,12 +23265,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st826
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr181:
+		goto st78
+	st831:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof831
+		}
+	stCase831:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st827
+			}
+		default:
+			goto st827
+		}
+		goto st78
+	tr883:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st832
+	tr890:
+
+		output.content = string(m.text())
 
 		goto st832
 	st832:
@@ -21808,29 +23312,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase832:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st834
-		case 93:
-			goto tr887
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr885
+				goto st827
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr885:
+		goto st78
+	tr182:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st833
 	st833:
@@ -21839,74 +23341,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase833:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st830
+			goto st835
 		case 93:
-			goto tr889
+			goto tr888
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st829
+				goto tr886
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr886:
+
+		m.pb = m.p
+
+		goto st834
 	st834:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof834
 		}
 	stCase834:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st830
-			}
-		default:
-			goto st830
-		}
-		goto st77
-	tr887:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st835
-	tr894:
-
-		output.content = string(m.text())
-
-		goto st835
-	st835:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof835
-		}
-	stCase835:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st831
+		case 93:
+			goto tr890
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -21914,12 +23393,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st830
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr179:
+		goto st78
+	st835:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof835
+		}
+	stCase835:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st831
+			}
+		default:
+			goto st831
+		}
+		goto st78
+	tr888:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st836
+	tr895:
+
+		output.content = string(m.text())
 
 		goto st836
 	st836:
@@ -21928,29 +23440,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase836:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st838
-		case 93:
-			goto tr892
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr890
+				goto st831
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr890:
+		goto st78
+	tr180:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st837
 	st837:
@@ -21959,74 +23469,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase837:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st834
+			goto st839
 		case 93:
-			goto tr894
+			goto tr893
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st833
+				goto tr891
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr891:
+
+		m.pb = m.p
+
+		goto st838
 	st838:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof838
 		}
 	stCase838:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st834
-			}
-		default:
-			goto st834
-		}
-		goto st77
-	tr892:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st839
-	tr899:
-
-		output.content = string(m.text())
-
-		goto st839
-	st839:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof839
-		}
-	stCase839:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st835
+		case 93:
+			goto tr895
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22034,12 +23521,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st834
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr177:
+		goto st78
+	st839:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof839
+		}
+	stCase839:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st835
+			}
+		default:
+			goto st835
+		}
+		goto st78
+	tr893:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st840
+	tr900:
+
+		output.content = string(m.text())
 
 		goto st840
 	st840:
@@ -22048,29 +23568,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase840:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st842
-		case 93:
-			goto tr897
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr895
+				goto st835
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr895:
+		goto st78
+	tr178:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st841
 	st841:
@@ -22079,74 +23597,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase841:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st838
+			goto st843
 		case 93:
-			goto tr899
+			goto tr898
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st837
+				goto tr896
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr896:
+
+		m.pb = m.p
+
+		goto st842
 	st842:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof842
 		}
 	stCase842:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st838
-			}
-		default:
-			goto st838
-		}
-		goto st77
-	tr897:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st843
-	tr904:
-
-		output.content = string(m.text())
-
-		goto st843
-	st843:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof843
-		}
-	stCase843:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st839
+		case 93:
+			goto tr900
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22154,12 +23649,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st838
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr175:
+		goto st78
+	st843:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof843
+		}
+	stCase843:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st839
+			}
+		default:
+			goto st839
+		}
+		goto st78
+	tr898:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st844
+	tr905:
+
+		output.content = string(m.text())
 
 		goto st844
 	st844:
@@ -22168,29 +23696,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase844:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st846
-		case 93:
-			goto tr902
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr900
+				goto st839
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr900:
+		goto st78
+	tr176:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st845
 	st845:
@@ -22199,74 +23725,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase845:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st842
+			goto st847
 		case 93:
-			goto tr904
+			goto tr903
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st841
+				goto tr901
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr901:
+
+		m.pb = m.p
+
+		goto st846
 	st846:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof846
 		}
 	stCase846:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st842
-			}
-		default:
-			goto st842
-		}
-		goto st77
-	tr902:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st847
-	tr909:
-
-		output.content = string(m.text())
-
-		goto st847
-	st847:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof847
-		}
-	stCase847:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st843
+		case 93:
+			goto tr905
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22274,12 +23777,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st842
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr173:
+		goto st78
+	st847:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof847
+		}
+	stCase847:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st843
+			}
+		default:
+			goto st843
+		}
+		goto st78
+	tr903:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st848
+	tr910:
+
+		output.content = string(m.text())
 
 		goto st848
 	st848:
@@ -22288,29 +23824,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase848:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st850
-		case 93:
-			goto tr907
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr905
+				goto st843
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr905:
+		goto st78
+	tr174:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st849
 	st849:
@@ -22319,74 +23853,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase849:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st846
+			goto st851
 		case 93:
-			goto tr909
+			goto tr908
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st845
+				goto tr906
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr906:
+
+		m.pb = m.p
+
+		goto st850
 	st850:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof850
 		}
 	stCase850:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st846
-			}
-		default:
-			goto st846
-		}
-		goto st77
-	tr907:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st851
-	tr914:
-
-		output.content = string(m.text())
-
-		goto st851
-	st851:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof851
-		}
-	stCase851:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st847
+		case 93:
+			goto tr910
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22394,12 +23905,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st846
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr171:
+		goto st78
+	st851:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof851
+		}
+	stCase851:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st847
+			}
+		default:
+			goto st847
+		}
+		goto st78
+	tr908:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st852
+	tr915:
+
+		output.content = string(m.text())
 
 		goto st852
 	st852:
@@ -22408,29 +23952,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase852:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st854
-		case 93:
-			goto tr912
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr910
+				goto st847
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr910:
+		goto st78
+	tr172:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st853
 	st853:
@@ -22439,74 +23981,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase853:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st850
+			goto st855
 		case 93:
-			goto tr914
+			goto tr913
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st849
+				goto tr911
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr911:
+
+		m.pb = m.p
+
+		goto st854
 	st854:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof854
 		}
 	stCase854:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st850
-			}
-		default:
-			goto st850
-		}
-		goto st77
-	tr912:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st855
-	tr919:
-
-		output.content = string(m.text())
-
-		goto st855
-	st855:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof855
-		}
-	stCase855:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st851
+		case 93:
+			goto tr915
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22514,12 +24033,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st850
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr169:
+		goto st78
+	st855:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof855
+		}
+	stCase855:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st851
+			}
+		default:
+			goto st851
+		}
+		goto st78
+	tr913:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st856
+	tr920:
+
+		output.content = string(m.text())
 
 		goto st856
 	st856:
@@ -22528,29 +24080,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase856:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st858
-		case 93:
-			goto tr917
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr915
+				goto st851
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr915:
+		goto st78
+	tr170:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st857
 	st857:
@@ -22559,74 +24109,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase857:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st854
+			goto st859
 		case 93:
-			goto tr919
+			goto tr918
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st853
+				goto tr916
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr916:
+
+		m.pb = m.p
+
+		goto st858
 	st858:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof858
 		}
 	stCase858:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st854
-			}
-		default:
-			goto st854
-		}
-		goto st77
-	tr917:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st859
-	tr924:
-
-		output.content = string(m.text())
-
-		goto st859
-	st859:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof859
-		}
-	stCase859:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st855
+		case 93:
+			goto tr920
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22634,12 +24161,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st854
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr167:
+		goto st78
+	st859:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof859
+		}
+	stCase859:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st855
+			}
+		default:
+			goto st855
+		}
+		goto st78
+	tr918:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st860
+	tr925:
+
+		output.content = string(m.text())
 
 		goto st860
 	st860:
@@ -22648,29 +24208,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase860:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st862
-		case 93:
-			goto tr922
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr920
+				goto st855
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr920:
+		goto st78
+	tr168:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st861
 	st861:
@@ -22679,74 +24237,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase861:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st858
+			goto st863
 		case 93:
-			goto tr924
+			goto tr923
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st857
+				goto tr921
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr921:
+
+		m.pb = m.p
+
+		goto st862
 	st862:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof862
 		}
 	stCase862:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st858
-			}
-		default:
-			goto st858
-		}
-		goto st77
-	tr922:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st863
-	tr929:
-
-		output.content = string(m.text())
-
-		goto st863
-	st863:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof863
-		}
-	stCase863:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st859
+		case 93:
+			goto tr925
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22754,12 +24289,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st858
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr165:
+		goto st78
+	st863:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof863
+		}
+	stCase863:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st859
+			}
+		default:
+			goto st859
+		}
+		goto st78
+	tr923:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st864
+	tr930:
+
+		output.content = string(m.text())
 
 		goto st864
 	st864:
@@ -22768,29 +24336,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase864:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st866
-		case 93:
-			goto tr927
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr925
+				goto st859
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr925:
+		goto st78
+	tr166:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st865
 	st865:
@@ -22799,74 +24365,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase865:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st862
+			goto st867
 		case 93:
-			goto tr929
+			goto tr928
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st861
+				goto tr926
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr926:
+
+		m.pb = m.p
+
+		goto st866
 	st866:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof866
 		}
 	stCase866:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st862
-			}
-		default:
-			goto st862
-		}
-		goto st77
-	tr927:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st867
-	tr934:
-
-		output.content = string(m.text())
-
-		goto st867
-	st867:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof867
-		}
-	stCase867:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st863
+		case 93:
+			goto tr930
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22874,12 +24417,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st862
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr163:
+		goto st78
+	st867:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof867
+		}
+	stCase867:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st863
+			}
+		default:
+			goto st863
+		}
+		goto st78
+	tr928:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st868
+	tr935:
+
+		output.content = string(m.text())
 
 		goto st868
 	st868:
@@ -22888,29 +24464,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase868:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st870
-		case 93:
-			goto tr932
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr930
+				goto st863
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr930:
+		goto st78
+	tr164:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st869
 	st869:
@@ -22919,74 +24493,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase869:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st866
+			goto st871
 		case 93:
-			goto tr934
+			goto tr933
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st865
+				goto tr931
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr931:
+
+		m.pb = m.p
+
+		goto st870
 	st870:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof870
 		}
 	stCase870:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st866
-			}
-		default:
-			goto st866
-		}
-		goto st77
-	tr932:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st871
-	tr939:
-
-		output.content = string(m.text())
-
-		goto st871
-	st871:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof871
-		}
-	stCase871:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st867
+		case 93:
+			goto tr935
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -22994,12 +24545,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st866
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr161:
+		goto st78
+	st871:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof871
+		}
+	stCase871:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st867
+			}
+		default:
+			goto st867
+		}
+		goto st78
+	tr933:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st872
+	tr940:
+
+		output.content = string(m.text())
 
 		goto st872
 	st872:
@@ -23008,29 +24592,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase872:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st874
-		case 93:
-			goto tr937
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr935
+				goto st867
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr935:
+		goto st78
+	tr162:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st873
 	st873:
@@ -23039,74 +24621,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase873:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st870
+			goto st875
 		case 93:
-			goto tr939
+			goto tr938
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st869
+				goto tr936
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr936:
+
+		m.pb = m.p
+
+		goto st874
 	st874:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof874
 		}
 	stCase874:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st870
-			}
-		default:
-			goto st870
-		}
-		goto st77
-	tr937:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st875
-	tr944:
-
-		output.content = string(m.text())
-
-		goto st875
-	st875:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof875
-		}
-	stCase875:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st871
+		case 93:
+			goto tr940
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23114,12 +24673,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st870
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr159:
+		goto st78
+	st875:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof875
+		}
+	stCase875:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st871
+			}
+		default:
+			goto st871
+		}
+		goto st78
+	tr938:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st876
+	tr945:
+
+		output.content = string(m.text())
 
 		goto st876
 	st876:
@@ -23128,29 +24720,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase876:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st878
-		case 93:
-			goto tr942
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr940
+				goto st871
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr940:
+		goto st78
+	tr160:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st877
 	st877:
@@ -23159,74 +24749,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase877:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st874
+			goto st879
 		case 93:
-			goto tr944
+			goto tr943
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st873
+				goto tr941
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr941:
+
+		m.pb = m.p
+
+		goto st878
 	st878:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof878
 		}
 	stCase878:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st874
-			}
-		default:
-			goto st874
-		}
-		goto st77
-	tr942:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st879
-	tr949:
-
-		output.content = string(m.text())
-
-		goto st879
-	st879:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof879
-		}
-	stCase879:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st875
+		case 93:
+			goto tr945
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23234,12 +24801,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st874
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr157:
+		goto st78
+	st879:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof879
+		}
+	stCase879:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st875
+			}
+		default:
+			goto st875
+		}
+		goto st78
+	tr943:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st880
+	tr950:
+
+		output.content = string(m.text())
 
 		goto st880
 	st880:
@@ -23248,29 +24848,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase880:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st882
-		case 93:
-			goto tr947
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr945
+				goto st875
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr945:
+		goto st78
+	tr158:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st881
 	st881:
@@ -23279,74 +24877,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase881:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st878
+			goto st883
 		case 93:
-			goto tr949
+			goto tr948
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st877
+				goto tr946
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr946:
+
+		m.pb = m.p
+
+		goto st882
 	st882:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof882
 		}
 	stCase882:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st878
-			}
-		default:
-			goto st878
-		}
-		goto st77
-	tr947:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st883
-	tr954:
-
-		output.content = string(m.text())
-
-		goto st883
-	st883:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof883
-		}
-	stCase883:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st879
+		case 93:
+			goto tr950
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23354,12 +24929,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st878
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr155:
+		goto st78
+	st883:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof883
+		}
+	stCase883:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st879
+			}
+		default:
+			goto st879
+		}
+		goto st78
+	tr948:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st884
+	tr955:
+
+		output.content = string(m.text())
 
 		goto st884
 	st884:
@@ -23368,29 +24976,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase884:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st886
-		case 93:
-			goto tr952
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr950
+				goto st879
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr950:
+		goto st78
+	tr156:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st885
 	st885:
@@ -23399,74 +25005,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase885:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st882
+			goto st887
 		case 93:
-			goto tr954
+			goto tr953
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st881
+				goto tr951
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr951:
+
+		m.pb = m.p
+
+		goto st886
 	st886:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof886
 		}
 	stCase886:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st882
-			}
-		default:
-			goto st882
-		}
-		goto st77
-	tr952:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st887
-	tr959:
-
-		output.content = string(m.text())
-
-		goto st887
-	st887:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof887
-		}
-	stCase887:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st883
+		case 93:
+			goto tr955
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23474,12 +25057,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st882
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr153:
+		goto st78
+	st887:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof887
+		}
+	stCase887:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st883
+			}
+		default:
+			goto st883
+		}
+		goto st78
+	tr953:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st888
+	tr960:
+
+		output.content = string(m.text())
 
 		goto st888
 	st888:
@@ -23488,29 +25104,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase888:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st890
-		case 93:
-			goto tr957
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr955
+				goto st883
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr955:
+		goto st78
+	tr154:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st889
 	st889:
@@ -23519,74 +25133,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase889:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st886
+			goto st891
 		case 93:
-			goto tr959
+			goto tr958
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st885
+				goto tr956
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr956:
+
+		m.pb = m.p
+
+		goto st890
 	st890:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof890
 		}
 	stCase890:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st886
-			}
-		default:
-			goto st886
-		}
-		goto st77
-	tr957:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st891
-	tr964:
-
-		output.content = string(m.text())
-
-		goto st891
-	st891:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof891
-		}
-	stCase891:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st887
+		case 93:
+			goto tr960
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23594,12 +25185,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st886
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr151:
+		goto st78
+	st891:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof891
+		}
+	stCase891:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st887
+			}
+		default:
+			goto st887
+		}
+		goto st78
+	tr958:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st892
+	tr965:
+
+		output.content = string(m.text())
 
 		goto st892
 	st892:
@@ -23608,29 +25232,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase892:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st894
-		case 93:
-			goto tr962
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr960
+				goto st887
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr960:
+		goto st78
+	tr152:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st893
 	st893:
@@ -23639,74 +25261,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase893:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st890
+			goto st895
 		case 93:
-			goto tr964
+			goto tr963
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st889
+				goto tr961
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr961:
+
+		m.pb = m.p
+
+		goto st894
 	st894:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof894
 		}
 	stCase894:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st890
-			}
-		default:
-			goto st890
-		}
-		goto st77
-	tr962:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st895
-	tr969:
-
-		output.content = string(m.text())
-
-		goto st895
-	st895:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof895
-		}
-	stCase895:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st891
+		case 93:
+			goto tr965
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23714,12 +25313,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st890
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr149:
+		goto st78
+	st895:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof895
+		}
+	stCase895:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st891
+			}
+		default:
+			goto st891
+		}
+		goto st78
+	tr963:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st896
+	tr970:
+
+		output.content = string(m.text())
 
 		goto st896
 	st896:
@@ -23728,29 +25360,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase896:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st898
-		case 93:
-			goto tr967
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr965
+				goto st891
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr965:
+		goto st78
+	tr150:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st897
 	st897:
@@ -23759,74 +25389,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase897:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st894
+			goto st899
 		case 93:
-			goto tr969
+			goto tr968
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st893
+				goto tr966
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr966:
+
+		m.pb = m.p
+
+		goto st898
 	st898:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof898
 		}
 	stCase898:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st894
-			}
-		default:
-			goto st894
-		}
-		goto st77
-	tr967:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st899
-	tr974:
-
-		output.content = string(m.text())
-
-		goto st899
-	st899:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof899
-		}
-	stCase899:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st895
+		case 93:
+			goto tr970
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23834,12 +25441,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st894
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr147:
+		goto st78
+	st899:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof899
+		}
+	stCase899:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st895
+			}
+		default:
+			goto st895
+		}
+		goto st78
+	tr968:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st900
+	tr975:
+
+		output.content = string(m.text())
 
 		goto st900
 	st900:
@@ -23848,29 +25488,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase900:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st902
-		case 93:
-			goto tr972
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr970
+				goto st895
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr970:
+		goto st78
+	tr148:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st901
 	st901:
@@ -23879,74 +25517,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase901:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st898
+			goto st903
 		case 93:
-			goto tr974
+			goto tr973
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st897
+				goto tr971
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr971:
+
+		m.pb = m.p
+
+		goto st902
 	st902:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof902
 		}
 	stCase902:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st898
-			}
-		default:
-			goto st898
-		}
-		goto st77
-	tr972:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st903
-	tr979:
-
-		output.content = string(m.text())
-
-		goto st903
-	st903:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof903
-		}
-	stCase903:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st899
+		case 93:
+			goto tr975
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -23954,12 +25569,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st898
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr145:
+		goto st78
+	st903:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof903
+		}
+	stCase903:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st899
+			}
+		default:
+			goto st899
+		}
+		goto st78
+	tr973:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st904
+	tr980:
+
+		output.content = string(m.text())
 
 		goto st904
 	st904:
@@ -23968,29 +25616,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase904:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st906
-		case 93:
-			goto tr977
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr975
+				goto st899
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr975:
+		goto st78
+	tr146:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st905
 	st905:
@@ -23999,74 +25645,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase905:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st902
+			goto st907
 		case 93:
-			goto tr979
+			goto tr978
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st901
+				goto tr976
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr976:
+
+		m.pb = m.p
+
+		goto st906
 	st906:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof906
 		}
 	stCase906:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st902
-			}
-		default:
-			goto st902
-		}
-		goto st77
-	tr977:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st907
-	tr984:
-
-		output.content = string(m.text())
-
-		goto st907
-	st907:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof907
-		}
-	stCase907:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st903
+		case 93:
+			goto tr980
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24074,12 +25697,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st902
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr143:
+		goto st78
+	st907:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof907
+		}
+	stCase907:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st903
+			}
+		default:
+			goto st903
+		}
+		goto st78
+	tr978:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st908
+	tr985:
+
+		output.content = string(m.text())
 
 		goto st908
 	st908:
@@ -24088,29 +25744,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase908:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st910
-		case 93:
-			goto tr982
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr980
+				goto st903
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr980:
+		goto st78
+	tr144:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st909
 	st909:
@@ -24119,74 +25773,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase909:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st906
+			goto st911
 		case 93:
-			goto tr984
+			goto tr983
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st905
+				goto tr981
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr981:
+
+		m.pb = m.p
+
+		goto st910
 	st910:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof910
 		}
 	stCase910:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st906
-			}
-		default:
-			goto st906
-		}
-		goto st77
-	tr982:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st911
-	tr989:
-
-		output.content = string(m.text())
-
-		goto st911
-	st911:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof911
-		}
-	stCase911:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st907
+		case 93:
+			goto tr985
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24194,12 +25825,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st906
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr141:
+		goto st78
+	st911:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof911
+		}
+	stCase911:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st907
+			}
+		default:
+			goto st907
+		}
+		goto st78
+	tr983:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st912
+	tr990:
+
+		output.content = string(m.text())
 
 		goto st912
 	st912:
@@ -24208,29 +25872,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase912:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st914
-		case 93:
-			goto tr987
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr985
+				goto st907
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr985:
+		goto st78
+	tr142:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st913
 	st913:
@@ -24239,74 +25901,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase913:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st910
+			goto st915
 		case 93:
-			goto tr989
+			goto tr988
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st909
+				goto tr986
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr986:
+
+		m.pb = m.p
+
+		goto st914
 	st914:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof914
 		}
 	stCase914:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st910
-			}
-		default:
-			goto st910
-		}
-		goto st77
-	tr987:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st915
-	tr994:
-
-		output.content = string(m.text())
-
-		goto st915
-	st915:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof915
-		}
-	stCase915:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st911
+		case 93:
+			goto tr990
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24314,12 +25953,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st910
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr139:
+		goto st78
+	st915:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof915
+		}
+	stCase915:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st911
+			}
+		default:
+			goto st911
+		}
+		goto st78
+	tr988:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st916
+	tr995:
+
+		output.content = string(m.text())
 
 		goto st916
 	st916:
@@ -24328,29 +26000,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase916:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st918
-		case 93:
-			goto tr992
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr990
+				goto st911
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr990:
+		goto st78
+	tr140:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st917
 	st917:
@@ -24359,74 +26029,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase917:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st914
+			goto st919
 		case 93:
-			goto tr994
+			goto tr993
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st913
+				goto tr991
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr991:
+
+		m.pb = m.p
+
+		goto st918
 	st918:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof918
 		}
 	stCase918:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st914
-			}
-		default:
-			goto st914
-		}
-		goto st77
-	tr992:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st919
-	tr999:
-
-		output.content = string(m.text())
-
-		goto st919
-	st919:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof919
-		}
-	stCase919:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st915
+		case 93:
+			goto tr995
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24434,12 +26081,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st914
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr137:
+		goto st78
+	st919:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof919
+		}
+	stCase919:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st915
+			}
+		default:
+			goto st915
+		}
+		goto st78
+	tr993:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st920
+	tr1000:
+
+		output.content = string(m.text())
 
 		goto st920
 	st920:
@@ -24448,29 +26128,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase920:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st922
-		case 93:
-			goto tr997
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr995
+				goto st915
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr995:
+		goto st78
+	tr138:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st921
 	st921:
@@ -24479,74 +26157,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase921:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st918
+			goto st923
 		case 93:
-			goto tr999
+			goto tr998
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st917
+				goto tr996
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr996:
+
+		m.pb = m.p
+
+		goto st922
 	st922:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof922
 		}
 	stCase922:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st918
-			}
-		default:
-			goto st918
-		}
-		goto st77
-	tr997:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st923
-	tr1004:
-
-		output.content = string(m.text())
-
-		goto st923
-	st923:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof923
-		}
-	stCase923:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st919
+		case 93:
+			goto tr1000
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24554,12 +26209,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st918
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr135:
+		goto st78
+	st923:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof923
+		}
+	stCase923:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st919
+			}
+		default:
+			goto st919
+		}
+		goto st78
+	tr998:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st924
+	tr1005:
+
+		output.content = string(m.text())
 
 		goto st924
 	st924:
@@ -24568,29 +26256,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase924:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st926
-		case 93:
-			goto tr1002
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr1000
+				goto st919
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr1000:
+		goto st78
+	tr136:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st925
 	st925:
@@ -24599,74 +26285,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase925:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st922
+			goto st927
 		case 93:
-			goto tr1004
+			goto tr1003
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st921
+				goto tr1001
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr1001:
+
+		m.pb = m.p
+
+		goto st926
 	st926:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof926
 		}
 	stCase926:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st922
-			}
-		default:
-			goto st922
-		}
-		goto st77
-	tr1002:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st927
-	tr1009:
-
-		output.content = string(m.text())
-
-		goto st927
-	st927:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof927
-		}
-	stCase927:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st923
+		case 93:
+			goto tr1005
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24674,12 +26337,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st922
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr133:
+		goto st78
+	st927:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof927
+		}
+	stCase927:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st923
+			}
+		default:
+			goto st923
+		}
+		goto st78
+	tr1003:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st928
+	tr1010:
+
+		output.content = string(m.text())
 
 		goto st928
 	st928:
@@ -24688,29 +26384,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase928:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st930
-		case 93:
-			goto tr1007
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr1005
+				goto st923
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr1005:
+		goto st78
+	tr134:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st929
 	st929:
@@ -24719,74 +26413,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase929:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st926
+			goto st931
 		case 93:
-			goto tr1009
+			goto tr1008
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st925
+				goto tr1006
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr1006:
+
+		m.pb = m.p
+
+		goto st930
 	st930:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof930
 		}
 	stCase930:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st926
-			}
-		default:
-			goto st926
-		}
-		goto st77
-	tr1007:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st931
-	tr1014:
-
-		output.content = string(m.text())
-
-		goto st931
-	st931:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof931
-		}
-	stCase931:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st927
+		case 93:
+			goto tr1010
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24794,12 +26465,45 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st926
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr88:
+		goto st78
+	st931:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof931
+		}
+	stCase931:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st927
+			}
+		default:
+			goto st927
+		}
+		goto st78
+	tr1008:
 
-		output.tag = string(m.text())
+		m.pb = m.p
+
+		output.content = string(m.text())
+
+		goto st932
+	tr1015:
+
+		output.content = string(m.text())
 
 		goto st932
 	st932:
@@ -24808,29 +26512,27 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase932:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto tr127
-		case 91:
-			goto st934
-		case 93:
-			goto tr1012
+			goto st110
 		case 127:
-			goto tr416
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto tr1010
+				goto st927
 			}
 		default:
-			goto tr416
+			goto tr85
 		}
-		goto st77
-	tr1010:
+		goto st78
+	tr89:
 
-		m.pb = m.p
+		output.tag = string(m.text())
 
 		goto st933
 	st933:
@@ -24839,69 +26541,51 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase933:
 		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st112
+			goto tr128
 		case 91:
-			goto st930
+			goto st935
 		case 93:
-			goto tr1014
+			goto tr1013
 		case 127:
-			goto tr416
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
 			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st929
+				goto tr1011
 			}
 		default:
-			goto tr416
+			goto tr417
 		}
-		goto st77
+		goto st78
+	tr1011:
+
+		m.pb = m.p
+
+		goto st934
 	st934:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof934
 		}
 	stCase934:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
-		}
-		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st930
-			}
-		default:
-			goto st930
-		}
-		goto st77
-	tr1012:
-
-		m.pb = m.p
-
-		output.content = string(m.text())
-
-		goto st935
-	st935:
-		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof935
-		}
-	stCase935:
-		switch (m.data)[(m.p)] {
 		case 32:
-			goto tr85
+			goto tr86
 		case 58:
-			goto st109
+			goto st113
+		case 91:
+			goto st931
+		case 93:
+			goto tr1015
 		case 127:
-			goto tr84
+			goto tr417
 		}
 		switch {
 		case (m.data)[(m.p)] > 31:
@@ -24909,12 +26593,40 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				goto st930
 			}
 		default:
-			goto tr84
+			goto tr417
 		}
-		goto st77
-	tr41:
+		goto st78
+	st935:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof935
+		}
+	stCase935:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st931
+			}
+		default:
+			goto st931
+		}
+		goto st78
+	tr1013:
 
 		m.pb = m.p
+
+		output.content = string(m.text())
 
 		goto st936
 	st936:
@@ -24923,48 +26635,81 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 	stCase936:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 58:
+			goto st110
+		case 127:
+			goto tr85
 		}
 		switch {
-		case (m.data)[(m.p)] < 33:
-			if (m.data)[(m.p)] <= 31 {
-				goto tr84
-			}
-		case (m.data)[(m.p)] > 57:
-			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st937
+		case (m.data)[(m.p)] > 31:
+			if 33 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st931
 			}
 		default:
-			goto st937
+			goto tr85
 		}
-		goto st77
+		goto st78
+	tr41:
+
+		m.pb = m.p
+
+		goto st937
 	st937:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof937
 		}
 	stCase937:
 		switch (m.data)[(m.p)] {
-		case 32:
-			goto tr85
-		case 127:
+		case 10:
 			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
 		}
 		switch {
 		case (m.data)[(m.p)] < 33:
 			if (m.data)[(m.p)] <= 31 {
-				goto tr84
+				goto tr85
 			}
 		case (m.data)[(m.p)] > 57:
 			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
-				goto st934
+				goto st938
 			}
 		default:
-			goto st934
+			goto st938
 		}
-		goto st77
+		goto st78
+	st938:
+		if (m.p)++; (m.p) == (m.pe) {
+			goto _testEof938
+		}
+	stCase938:
+		switch (m.data)[(m.p)] {
+		case 10:
+			goto tr84
+		case 32:
+			goto tr86
+		case 127:
+			goto tr85
+		}
+		switch {
+		case (m.data)[(m.p)] < 33:
+			if (m.data)[(m.p)] <= 31 {
+				goto tr85
+			}
+		case (m.data)[(m.p)] > 57:
+			if 59 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 126 {
+				goto st935
+			}
+		default:
+			goto st935
+		}
+		goto st78
 	st21:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof21
@@ -25790,18 +27535,18 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 			goto st3
 		}
 		goto tr2
-	st938:
+	st939:
 		if (m.p)++; (m.p) == (m.pe) {
-			goto _testEof938
+			goto _testEof939
 		}
-	stCase938:
+	stCase939:
 		switch (m.data)[(m.p)] {
 		case 10:
 			goto st0
 		case 13:
 			goto st0
 		}
-		goto st938
+		goto st939
 	stOut:
 	_testEof2:
 		m.cs = 2
@@ -28455,6 +30200,9 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 	_testEof937:
 		m.cs = 937
 		goto _testEof
+	_testEof938:
+		m.cs = 938
+		goto _testEof
 	_testEof21:
 		m.cs = 21
 		goto _testEof
@@ -28611,8 +30359,8 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 	_testEof72:
 		m.cs = 72
 		goto _testEof
-	_testEof938:
-		m.cs = 938
+	_testEof939:
+		m.cs = 939
 		goto _testEof
 
 	_testEof:
@@ -28620,7 +30368,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		}
 		if (m.p) == (m.eof) {
 			switch m.cs {
-			case 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 573, 574, 575, 576, 577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 587, 588, 589, 590, 591, 592, 593, 594, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669, 670, 671, 672, 673, 674, 675, 676, 677, 678, 679, 680, 681, 682, 683, 684, 685, 686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702, 703, 704, 705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 715, 716, 717, 718, 719, 720, 721, 722, 723, 724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768, 769, 770, 771, 772, 773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787, 788, 789, 790, 791, 792, 793, 794, 795, 796, 797, 798, 799, 800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937:
+			case 73, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426, 427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444, 445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486, 487, 488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561, 562, 563, 564, 565, 566, 567, 568, 569, 570, 571, 572, 573, 574, 575, 576, 577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 587, 588, 589, 590, 591, 592, 593, 594, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624, 625, 626, 627, 628, 629, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654, 655, 656, 657, 658, 659, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669, 670, 671, 672, 673, 674, 675, 676, 677, 678, 679, 680, 681, 682, 683, 684, 685, 686, 687, 688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701, 702, 703, 704, 705, 706, 707, 708, 709, 710, 711, 712, 713, 714, 715, 716, 717, 718, 719, 720, 721, 722, 723, 724, 725, 726, 727, 728, 729, 730, 731, 732, 733, 734, 735, 736, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 747, 748, 749, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768, 769, 770, 771, 772, 773, 774, 775, 776, 777, 778, 779, 780, 781, 782, 783, 784, 785, 786, 787, 788, 789, 790, 791, 792, 793, 794, 795, 796, 797, 798, 799, 800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 882, 883, 884, 885, 886, 887, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 899, 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938:
 
 				output.message = string(m.text())
 
@@ -28630,7 +30378,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 
 			case 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39:
@@ -28639,7 +30387,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 
 			case 58, 59, 60, 61, 62, 63, 65:
@@ -28648,7 +30396,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 
 			case 2, 3, 70, 71, 72:
@@ -28657,14 +30405,14 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 
 				m.err = fmt.Errorf(errPri, m.p)
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 
 			case 20:
@@ -28673,14 +30421,14 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 
 				m.err = fmt.Errorf(errTag, m.p)
 				(m.p)--
 
 				{
-					goto st938
+					goto st939
 				}
 			}
 		}

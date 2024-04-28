@@ -134,7 +134,8 @@ func (p *parser) run() {
 		// Next we MUST see an EOF otherwise the parsing we'll start again
 		if tok = p.scan(); tok.typ == EOF {
 			break
-		} else {
+		} else if tok.typ != LF {
+			// but some syslog may separate lines with octet by \n, ignore it
 			p.unscan()
 		}
 	}

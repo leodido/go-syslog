@@ -179,8 +179,8 @@ func getTestCases() []testCase {
 			},
 		},
 		{
-			descr: "1st ok/2nd ok/3rd ok",
-			input: "48 <1>1 2003-10-11T22:14:15.003Z host.local - - - -25 <3>1 - host.local - - - -38 <2>1 - host.local su - - - κόσμε",
+			descr: "1st ok/2nd ok/LF/3rd ok", // LF means new line aka \n
+			input: "48 <1>1 2003-10-11T22:14:15.003Z host.local - - - -25 <3>1 - host.local - - - -\n38 <2>1 - host.local su - - - κόσμε",
 			// results w/o best effort
 			results: []syslog.Result{
 				{

@@ -223,6 +223,21 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		input: []byte(`<30>Apr 29 11:44:07 cabinet b4fbe48b48ad,UAP-nanoHD-6.6.55+15189: stahtd: stahtd[17512]: [STA-TRACKER].stahtd_dump_event(): {"message_type":"STA_ASSOC_TRACKER","mac":"98:8d:46:21:2b:6d","vap":"rai1","event_type":"fixup","assoc_status":"0","event_id":"1","arp_reply_gw_seen":"yes","dns_resp_seen":"yes","avg_rssi":"-51"}`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(30),
+				Facility:  syslogtesting.Uint8Address(3),
+				Severity:  syslogtesting.Uint8Address(6),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 29 11:44:07"),
+				Hostname:  syslogtesting.StringAddress("cabinet"),
+				Appname:   syslogtesting.StringAddress("b4fbe48b48ad,UAP-nanoHD-6.6.55+15189"),
+				Message:   syslogtesting.StringAddress(`stahtd: stahtd[17512]: [STA-TRACKER].stahtd_dump_event(): {"message_type":"STA_ASSOC_TRACKER","mac":"98:8d:46:21:2b:6d","vap":"rai1","event_type":"fixup","assoc_status":"0","event_id":"1","arp_reply_gw_seen":"yes","dns_resp_seen":"yes","avg_rssi":"-51"}`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

@@ -57,7 +57,7 @@ func getTestCases() []testCase {
 			false,
 			[]syslog.Result{
 				{
-					Error:   ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
+					Error: ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
 				},
 			},
 			[]syslog.Result{
@@ -96,7 +96,7 @@ func getTestCases() []testCase {
 					Message: (&rfc5424.SyslogMessage{}).SetPriority(1).SetVersion(1),
 				},
 				{
-					Error:   ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
+					Error: ragel.NewReadingError(io.ErrUnexpectedEOF.Error()),
 				},
 			},
 			[]syslog.Result{

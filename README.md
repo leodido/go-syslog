@@ -6,6 +6,8 @@
 
 _By [@leodido](https://github.com/leodido)_.
 
+> This is the official continuation of influxdata/go-syslog.
+
 To wrap up, this package provides:
 
 - an [RFC5424-compliant parser and builder](/rfc5424)

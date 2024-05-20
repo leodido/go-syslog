@@ -1,0 +1,55 @@
+name: building
+
+on:
+  push:
+    branches: ['develop']
+  pull_request:
+    branches: ['develop']
+
+permissions:
+  contents: read
+
+jobs:
+  make:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        go: [
+          '1.21',
+          '1.22',
+        ]
+        include:
+          # Set the minimum Go patch version for the given Go minor
+          - go: '1.21'
+            GO_VERSION: '~1.21.0'
+          - go: '1.22'
+            GO_VERSION: '~1.22.0'
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@v4
+
+      - name: Set up Go ${{ matrix.go }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.GO_VERSION }}
+          check-latest: true
+
+      - name: Print environment
+        id: vars
+        run: |
+          printf "Using Go at $(which go) (version $(go version))\n"
+          printf "\n\nGo environment:\n\n"
+          go env
+          printf "\n\nSystem environment:\n\n"
+          env
+
+      - name: Build
+        run: |
+            sudo apt-get install -y ragel
+            make
+
+      - name: Ensure the parser code is updated
+        run: git diff --exit-code

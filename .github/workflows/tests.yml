@@ -31,6 +31,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Check out the source code
+        uses: actions/checkout@v4
+
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v5
         with:
@@ -45,19 +48,6 @@ jobs:
           go env
           printf "\n\nSystem environment:\n\n"
           env
-
-      - name: Cache the build cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: build-go-${{ matrix.go }}-${{ matrix.os }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            build-go-${{ matrix.go }}-${{ matrix.os }}
-
-      - name: Check out the source code
-        uses: actions/checkout@v4
 
       - name: Run tests
         run: GO_ARGS="-v -race -covermode=atomic -coverprofile=coverage.out" make tests

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/influxdata/go-syslog/v3"
-	syslogtesting "github.com/influxdata/go-syslog/v3/testing"
+	"github.com/leodido/go-syslog/v4"
+	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 )
 
 // This is here to avoid compiler optimizations that

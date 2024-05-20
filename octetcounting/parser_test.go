@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/influxdata/go-syslog/v3"
-	"github.com/influxdata/go-syslog/v3/rfc5424"
-	syslogtesting "github.com/influxdata/go-syslog/v3/testing"
+	"github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/rfc5424"
+	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 	"github.com/stretchr/testify/assert"
 )
 

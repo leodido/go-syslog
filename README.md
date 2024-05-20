@@ -24,12 +24,12 @@ For example:
 ## Installation
 
 ```
-go get github.com/influxdata/go-syslog/v3
+go get github.com/leodido/go-syslog/v4
 ```
 
 ## Docs
 
-[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?style=for-the-badge)](http://godoc.org/github.com/influxdata/go-syslog)
+[![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?style=for-the-badge)](http://godoc.org/github.com/leodido/go-syslog)
 
 The [docs](docs/) directory contains `.dot` files representing the finite-state machines (FSMs) implementing the syslog parsers and transports.
 

@@ -1,0 +1,18 @@
+changelog:
+  exclude:
+    labels:
+      - no-releasenotes
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - breaking-change
+    - title: Features & Enhancements 🎉
+      labels:
+        - enhancement
+    - title: Bug Fixes 🪤
+      labels:
+        - bug
+    - title: Other Changes 🫶
+      labels:
+        # Catch-all for pull requests that didn't match any of the previous categories
+        - "*"

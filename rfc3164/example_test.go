@@ -1,16 +1,17 @@
 package rfc3164
 
 import (
-	// "time"
-
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
 )
 
-func output(out interface{}) {
+func init() {
 	spew.Config.DisableCapacities = true
 	spew.Config.DisablePointerAddresses = true
+}
+
+func output(out interface{}) {
 	spew.Dump(out)
 }
 
@@ -39,6 +40,15 @@ func Example_currentyear() {
 	i := []byte(`<13>Dec  2 16:31:03 host app: Test`)
 	p := NewParser(WithYear(CurrentYear{}))
 	m, _ := p.Parse(i)
+	// Force year to match the one in the comment below
+	x, _ := m.(*SyslogMessage)
+	x.Timestamp = func(t1 *time.Time) *time.Time {
+		currentY := time.Now().Year()
+		t2 := t1.AddDate(2021-currentY, 0, 0)
+
+		return &t2
+	}(x.Timestamp)
+
 	output(m)
 	// Output:
 	// (*rfc3164.SyslogMessage)({

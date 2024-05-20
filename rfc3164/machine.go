@@ -102,11 +102,9 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 	m.eof = len(input)
 	m.err = nil
 	output := &syslogMessage{}
-
 	{
 		m.cs = start
 	}
-
 	{
 		var _widec int16
 		if (m.p) == (m.pe) {
@@ -967,7 +965,6 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 
 		output.priority = uint8(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 		output.prioritySet = true
-
 		if (m.data)[(m.p)] == 62 {
 			goto st4
 		}
@@ -5995,7 +5992,6 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 
 		output.priority = uint8(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 		output.prioritySet = true
-
 		switch (m.data)[(m.p)] {
 		case 57:
 			goto st332
@@ -6019,7 +6015,6 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 
 		output.priority = uint8(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 		output.prioritySet = true
-
 		if (m.data)[(m.p)] == 62 {
 			goto st4
 		}
@@ -6035,7 +6030,6 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 
 		output.priority = uint8(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 		output.prioritySet = true
-
 		if (m.data)[(m.p)] == 62 {
 			goto st4
 		}
@@ -7242,7 +7236,6 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 				{
 					goto st373
 				}
-
 			}
 		}
 

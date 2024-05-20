@@ -28,7 +28,6 @@ type machine struct {
 func (m *machine) Exec(s *parser.State) (int, int) {
 	// Retrieve previously stored parsing variables
 	cs, p, pe, eof, data := s.Get()
-
 	{
 		var _widec int16
 		if p == pe {
@@ -162,7 +161,6 @@ func (m *machine) Exec(s *parser.State) (int, int) {
 		{
 		}
 	}
-
 	// Update parsing variables
 	s.Set(cs, p, pe, eof)
 	return p, pe
@@ -218,7 +216,7 @@ func NewParser(options ...syslog.ParserOption) syslog.Parser {
 	return m
 }
 
-// WithMaxMessageLength does nothing for this parser
+// WithMaxMessageLength does nothing for this parser.
 func (m *machine) WithMaxMessageLength(length int) {}
 
 // HasBestEffort tells whether the receiving parser has best effort mode on or off.

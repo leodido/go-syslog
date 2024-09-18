@@ -1,5 +1,7 @@
 package common
 
+import "strings"
+
 // UnsafeUTF8DecimalCodePointsToInt converts a slice containing
 // a series of UTF-8 decimal code points into their integer rapresentation.
 //
@@ -29,16 +31,15 @@ func RemoveBytes(data []byte, positions []int, offset int) []byte {
 
 // EscapeBytes adds a backslash to \, ], " characters.
 func EscapeBytes(value string) string {
-	res := ""
-	for i, c := range value {
+	var sb strings.Builder
+	for _, c := range value {
 		// todo(leodido): generalize byte codes (the function should ideally accept a byte slice containing byte codes to escape)
-		if c == 92 || c == 93 || c == 34 {
-			res += `\`
+		if c == '\\' || c == ']' || c == '"' {
+			sb.WriteByte('\\')
 		}
-		res += string(value[i])
+		sb.WriteRune(c)
 	}
-
-	return res
+	return sb.String()
 }
 
 // InBetween tells whether value is into [min, max] range.

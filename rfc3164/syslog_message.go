@@ -10,7 +10,9 @@ import (
 type syslogMessage struct {
 	prioritySet  bool // We explictly flag the setting of priority since its zero value is a valid priority by RFC 3164
 	timestampSet bool // We explictly flag the setting of timestamp since its zero value is a valid timestamp by RFC 3164
+	sequenceSet  bool
 	priority     uint8
+	sequence     int
 	timestamp    time.Time
 	hostname     string
 	tag          string
@@ -28,6 +30,9 @@ func (sm *syslogMessage) export() *SyslogMessage {
 	out := &SyslogMessage{}
 	out.ComputeFromPriority(sm.priority)
 
+	if sm.sequenceSet {
+		out.Sequence = &sm.sequence
+	}
 	if sm.timestampSet {
 		out.Timestamp = &sm.timestamp
 	}

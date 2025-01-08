@@ -71,6 +71,7 @@ type Base struct {
 	Facility  *uint8
 	Severity  *uint8
 	Priority  *uint8
+	Sequence  *int
 	Timestamp *time.Time
 	Hostname  *string
 	Appname   *string

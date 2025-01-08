@@ -77,6 +77,11 @@ func Uint8Address(x uint8) *uint8 {
 	return &x
 }
 
+// IntAddress returns the address of the input int.
+func IntAddress(x int) *int {
+	return &x
+}
+
 // TimeParse parses a time string, for the given layout, into a pointer to a time.Time instance.
 func TimeParse(layout, value string) *time.Time {
 	t, _ := time.Parse(layout, value)

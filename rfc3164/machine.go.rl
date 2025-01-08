@@ -13,6 +13,7 @@ var (
 	errPri            = "expecting a priority value within angle brackets [col %d]"
 	errTimestamp      = "expecting a Stamp timestamp [col %d]"
 	errRFC3339        = "expecting a Stamp or a RFC3339 timestamp [col %d]"
+	errSequence       = "expecting a sequence number (from 1 to max 255 digits) [col %d]"
 	errHostname       = "expecting an hostname (from 1 to max 255 US-ASCII characters) [col %d]"
 	errTag            = "expecting an alphanumeric tag (max 32 characters) [col %d]"
 	errContentStart   = "expecting a content part starting with a non-alphanumeric character [col %d]"
@@ -65,6 +66,11 @@ action set_rfc3339 {
 	}
 }
 
+action set_sequence {
+	output.sequence = common.UnsafeUTF8DecimalCodePointsToInt(m.text())
+	output.sequenceSet = true
+}
+
 action set_hostname {
 	output.hostname = string(m.text())
 }
@@ -105,6 +111,12 @@ action err_rfc3339 {
 	fgoto fail;
 }
 
+action err_sequence {
+	m.err = fmt.Errorf(errSequence, m.p)
+	fhold;
+	fgoto fail;
+}
+
 action err_hostname {
 	m.err = fmt.Errorf(errHostname, m.p)
 	fhold;
@@ -141,6 +153,11 @@ rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
 # note > this could mean that the we may need to create and to use a labelrange = graph{1,63} here if we want the parser to be stricter.
 hostname = (hostnamerange -- ':') >mark %set_hostname $err(err_hostname);
 
+# Cisco devices include a "sequence number" before the timestamp
+# "<189>237: *Jan  8 19:46:03.295..."
+sequenceval = (digit+) >mark %set_sequence @err(err_sequence);
+sequence = sequenceval ':' sp* '*';
+
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
 # note > see https://tools.ietf.org/html/rfc2234#section-2.1 for an interpretation of "ABNF alphanumeric" as stated by RFC 3164 regarding the tag
@@ -163,7 +180,7 @@ fail := (any - [\n\r])* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* (timestamp | (rfc3339 when { m.rfc3339 })) sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* sequence? (timestamp | (rfc3339 when { m.rfc3339 })) ':'? sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 
@@ -271,4 +288,3 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 
 	return output.export(), nil
 }
-

@@ -238,6 +238,22 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		// Cisco iOS
+		input: []byte(`<189>643: *Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(189),
+				Facility:  syslogtesting.Uint8Address(23),
+				Severity:  syslogtesting.Uint8Address(5),
+				Sequence:  syslogtesting.IntAddress(643),
+				Timestamp: syslogtesting.TimeParse(time.StampMilli, "Jan  8 19:46:03.295"),
+				Appname:   syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
+				Message:   syslogtesting.StringAddress(`Line protocol on Interface Loopback100, changed state to up`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 
@@ -259,7 +275,7 @@ func TestMachineParse(t *testing.T) {
 				assert.EqualError(t, perr, tc.errorString)
 			}
 			if tc.valid {
-				assert.Nil(t, merr)
+				assert.NoError(t, merr)
 				assert.NotEmpty(t, message)
 				assert.Equal(t, message, partial)
 				assert.Equal(t, merr, perr)

@@ -7,6 +7,8 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	syslog "github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/rfc3164"
+	"github.com/leodido/go-syslog/v4/rfc5424"
 )
 
 func output(out interface{}) {
@@ -21,7 +23,7 @@ func Example() {
 		results = append(results, *res)
 	}
 	r := strings.NewReader("48 <1>1 2003-10-11T22:14:15.003Z host.local - - - -25 <3>1 - host.local - - - -38 <2>1 - host.local su - - - κόσμε")
-	NewParser(syslog.WithBestEffort(), syslog.WithListener(acc)).Parse(r)
+	NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()), syslog.WithListener(acc)).Parse(r)
 	output(results)
 	// Output:
 	// ([]syslog.Result) (len=3) {
@@ -105,7 +107,7 @@ func Example_channel() {
 		c <- *res
 	}
 
-	parser := NewParser(syslog.WithBestEffort(), syslog.WithListener(emit))
+	parser := NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()), syslog.WithListener(emit))
 	go func() {
 		defer close(c)
 		parser.Parse(r)
@@ -197,7 +199,7 @@ func Example_channelOpenBSD() {
 		c <- *res
 	}
 
-	parser := NewParserRFC3164(syslog.WithBestEffort(), syslog.WithListener(emit))
+	parser := NewParserRFC3164(syslog.WithMachineOptions(rfc3164.WithBestEffort()), syslog.WithListener(emit))
 	go func() {
 		defer close(c)
 		parser.Parse(r)

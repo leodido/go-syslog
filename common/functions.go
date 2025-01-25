@@ -3,7 +3,7 @@ package common
 import "strings"
 
 // UnsafeUTF8DecimalCodePointsToInt converts a slice containing
-// a series of UTF-8 decimal code points into their integer rapresentation.
+// a series of UTF-8 decimal code points into their integer representation.
 //
 // It assumes input code points are in the range 48-57.
 // Returns a pointer since an empty slice is equal to nil and not to the zero value of the codomain (ie., `int`).

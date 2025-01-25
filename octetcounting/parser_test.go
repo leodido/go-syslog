@@ -626,7 +626,7 @@ func TestParse(t *testing.T) {
 
 			res := []syslog.Result{}
 			effortParser := NewParser(
-				syslog.WithBestEffort(),
+				syslog.WithMachineOptions(rfc5424.WithBestEffort()),
 				syslog.WithListener(func(r *syslog.Result) {
 					res = append(res, *r)
 				}),
@@ -637,12 +637,4 @@ func TestParse(t *testing.T) {
 			assert.Equal(t, tc.bestEffortResults, res)
 		})
 	}
-}
-
-func TestParserBestEffortOption(t *testing.T) {
-	p1 := NewParser().(syslog.BestEfforter)
-	assert.False(t, p1.HasBestEffort())
-
-	p2 := NewParser(syslog.WithBestEffort()).(syslog.BestEfforter)
-	assert.True(t, p2.HasBestEffort())
 }

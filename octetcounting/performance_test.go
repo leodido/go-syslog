@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/rfc5424"
 	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 )
 
@@ -62,7 +63,7 @@ func BenchmarkParse(b *testing.B) {
 		if tc.maxLength == 0 {
 			tc.maxLength = 8192
 		}
-		m := NewParser(syslog.WithBestEffort())
+		m := NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()))
 		b.Run(syslogtesting.RightPad(tc.label, 50), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				reader := bytes.NewReader(tc.input)

@@ -13,11 +13,11 @@ import (
 )
 
 type testCase struct {
-	descr      string
-	input      string
-	substitute bool
-	results    []syslog.Result
-	pResults   []syslog.Result
+	descr         string
+	input         string
+	substitute    bool
+	results       []syslog.Result
+	effortResults []syslog.Result
 }
 
 var testCases []testCase
@@ -28,14 +28,15 @@ func getParsingError(col int) error {
 
 func getTestCases() []testCase {
 	return []testCase{
-		// fixme(leodido)
-		// {
-		// 	"empty",
-		// 	"",
-		// 	[]syslog.Result{},
-		// 	[]syslog.Result{},
-		// },
-
+		// note > no error nor message (nil) returned
+		// TODO: should this return an EOF error or ...?
+		{
+			"empty",
+			"",
+			false,
+			[]syslog.Result{},
+			[]syslog.Result{},
+		},
 		{
 			"1st ok",
 			"<1>1 - - - - - -%[1]s",
@@ -131,8 +132,7 @@ func getTestCases() []testCase {
 				},
 			},
 		},
-
-		// todo(leodido)
+		// TODO: complete the test cases
 		// {
 		// 	"1st ok//incomplete/2nd ok//incomplete",
 		// 	"",
@@ -177,12 +177,12 @@ func TestParse(t *testing.T) {
 			t.Parallel()
 
 			res := []syslog.Result{}
-			effortParser := NewParser(syslog.WithBestEffort(), syslog.WithListener(func(r *syslog.Result) {
+			effortParser := NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()), syslog.WithListener(func(r *syslog.Result) {
 				res = append(res, *r)
 			}))
 			effortParser.Parse(strings.NewReader(inputWithLF))
 
-			assert.Equal(t, tc.pResults, res)
+			assert.Equal(t, tc.effortResults, res)
 		})
 
 		// Test with trailer NUL
@@ -206,20 +206,12 @@ func TestParse(t *testing.T) {
 			t.Parallel()
 
 			res := []syslog.Result{}
-			effortParser := NewParser(syslog.WithBestEffort(), syslog.WithListener(func(r *syslog.Result) {
+			effortParser := NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()), syslog.WithListener(func(r *syslog.Result) {
 				res = append(res, *r)
 			}), WithTrailer(NUL))
 			effortParser.Parse(strings.NewReader(inputWithNUL))
 
-			assert.Equal(t, tc.pResults, res)
+			assert.Equal(t, tc.effortResults, res)
 		})
 	}
-}
-
-func TestParserBestEffortOption(t *testing.T) {
-	p1 := NewParser().(syslog.BestEfforter)
-	assert.False(t, p1.HasBestEffort())
-
-	p2 := NewParser(syslog.WithBestEffort()).(syslog.BestEfforter)
-	assert.True(t, p2.HasBestEffort())
 }

@@ -37,7 +37,6 @@ type Parser interface {
 	Parse(r io.Reader)
 	WithListener(ParserListener)
 	WithMachineOptions(opts ...MachineOption)
-	// BestEfforter
 	MaxMessager
 }
 

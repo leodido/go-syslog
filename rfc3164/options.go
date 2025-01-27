@@ -70,7 +70,13 @@ func WithRFC3339() syslog.MachineOption {
 func WithSecondFractions() syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
 		m.(*machine).WithSecondFractions()
+		return m
+	}
+}
 
+func WithSequence() syslog.MachineOption {
+	return func(m syslog.Machine) syslog.Machine {
+		m.(*machine).WithSequence()
 		return m
 	}
 }

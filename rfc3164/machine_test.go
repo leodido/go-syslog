@@ -12,6 +12,7 @@ import (
 // todo > add support for testing `best effort` mode
 
 type testCase struct {
+	opts         []syslog.MachineOption
 	input        []byte
 	valid        bool
 	value        syslog.Message
@@ -21,9 +22,9 @@ type testCase struct {
 
 var testCases = []testCase{
 	{
-		[]byte(`<34>Jan 12 06:30:00 xxx apache: 1.2.3.4 - - [12/Jan/2011:06:29:59 +0100] "GET /foo/bar.html HTTP/1.1" 301 96 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12 ( .NET CLR 3.5.30729)" PID 18904 Time Taken 0`),
-		true,
-		&SyslogMessage{
+		input: []byte(`<34>Jan 12 06:30:00 xxx apache: 1.2.3.4 - - [12/Jan/2011:06:29:59 +0100] "GET /foo/bar.html HTTP/1.1" 301 96 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12 ( .NET CLR 3.5.30729)" PID 18904 Time Taken 0`),
+		valid: true,
+		value: &SyslogMessage{
 			Base: syslog.Base{
 				Priority:  syslogtesting.Uint8Address(34),
 				Severity:  syslogtesting.Uint8Address(2),
@@ -34,13 +35,11 @@ var testCases = []testCase{
 				Message:   syslogtesting.StringAddress(`1.2.3.4 - - [12/Jan/2011:06:29:59 +0100] "GET /foo/bar.html HTTP/1.1" 301 96 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12 ( .NET CLR 3.5.30729)" PID 18904 Time Taken 0`),
 			},
 		},
-		"",
-		nil,
 	},
 	{
-		[]byte(`<34>Aug  7 06:30:00 xxx aaa: message from 1.2.3.4`),
-		true,
-		&SyslogMessage{
+		input: []byte(`<34>Aug  7 06:30:00 xxx aaa: message from 1.2.3.4`),
+		valid: true,
+		value: &SyslogMessage{
 			Base: syslog.Base{
 				Priority:  syslogtesting.Uint8Address(34),
 				Severity:  syslogtesting.Uint8Address(2),
@@ -51,8 +50,6 @@ var testCases = []testCase{
 				Message:   syslogtesting.StringAddress(`message from 1.2.3.4`),
 			},
 		},
-		"",
-		nil,
 	},
 	{
 		input: []byte(`<85>Jan 24 15:50:41 ip-172-31-30-110 sudo[6040]: ec2-user : TTY=pts/0 ; PWD=/var/log ; USER=root ; COMMAND=/bin/tail secure`),
@@ -240,6 +237,9 @@ var testCases = []testCase{
 	},
 	{
 		// Cisco iOS
+		opts: []syslog.MachineOption{
+			WithSequence(),
+		},
 		input: []byte(`<189>643: *Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
 		value: &SyslogMessage{
@@ -263,8 +263,10 @@ func TestMachineParse(t *testing.T) {
 		t.Run(syslogtesting.RightPad(string(tc.input), 50), func(t *testing.T) {
 			t.Parallel()
 
-			message, merr := NewMachine().Parse(tc.input)
-			partial, perr := NewMachine(WithBestEffort()).Parse(tc.input)
+			m := NewMachine(tc.opts...)
+			message, merr := m.Parse(tc.input)
+			m.WithBestEffort()
+			partial, perr := m.Parse(tc.input)
 
 			if !tc.valid {
 				assert.Nil(t, message)

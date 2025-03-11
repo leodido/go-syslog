@@ -157,6 +157,9 @@ hostname = (hostnamerange -- ':') >mark %set_hostname $err(err_hostname);
 # "<189>237: *Jan  8 19:46:03.295..."
 sequenceval = (digit+) >mark %set_sequence @err(err_sequence);
 sequence = (sequenceval ':' sp* '*') when { m.sequence };
+# and they append a colon after the timestamp:
+# ...19:46:03.295: ...
+seqcol = (':') when { m.sequence };
 
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
@@ -180,7 +183,7 @@ fail := (any - [\n\r])* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* sequence? (timestamp | (rfc3339 when { m.rfc3339 })) ':'? sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* sequence? (timestamp | (rfc3339 when { m.rfc3339 })) seqcol? sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 

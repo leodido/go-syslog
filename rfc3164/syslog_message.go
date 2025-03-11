@@ -12,7 +12,7 @@ type syslogMessage struct {
 	timestampSet bool // We explictly flag the setting of timestamp since its zero value is a valid timestamp by RFC 3164
 	sequenceSet  bool
 	priority     uint8
-	sequence     int
+	sequence     uint32
 	timestamp    time.Time
 	hostname     string
 	tag          string

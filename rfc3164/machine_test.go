@@ -247,7 +247,7 @@ var testCases = []testCase{
 				Priority:  syslogtesting.Uint8Address(189),
 				Facility:  syslogtesting.Uint8Address(23),
 				Severity:  syslogtesting.Uint8Address(5),
-				Sequence:  syslogtesting.IntAddress(643),
+				Sequence:  syslogtesting.Uint32Address(643),
 				Timestamp: syslogtesting.TimeParse(time.StampMilli, "Jan  8 19:46:03.295"),
 				Appname:   syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
 				Message:   syslogtesting.StringAddress(`Line protocol on Interface Loopback100, changed state to up`),

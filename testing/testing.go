@@ -77,8 +77,8 @@ func Uint8Address(x uint8) *uint8 {
 	return &x
 }
 
-// IntAddress returns the address of the input int.
-func IntAddress(x int) *int {
+// Uint32Address returns the address of the input int.
+func Uint32Address(x uint32) *uint32 {
 	return &x
 }
 

@@ -67,7 +67,7 @@ action set_rfc3339 {
 }
 
 action set_sequence {
-	output.sequence = common.UnsafeUTF8DecimalCodePointsToInt(m.text())
+	output.sequence = uint32(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 	output.sequenceSet = true
 }
 

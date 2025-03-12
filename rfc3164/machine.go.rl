@@ -258,7 +258,14 @@ func (m *machine) WithSecondFractions() {
 	m.secfrac = true
 }
 
-// WithSequence enables parsing of non-standard Cisco iOS logs that include a sequence number.
+// WithSequence enables parsing of non-standard Cisco iOS logs that include a message counter.
+//
+// To ensure your IOS device sending logs in a compatible format, be sure to disable logging sequence numbers by setting
+// `no service sequence-numbers` in configuration mode. The device will still send a message counter, which you can't
+// see in the log on device. This is enabled by default and can manually be enabled with the following command:
+// `logging message-counter syslog`. This option should for now not be disabled, as it merely removes the number, not
+// the colon behind it, resulting in invalid log messages. When debugging with packet captures, your log messages should
+// look like this: `<189>237: *Jan 8 19:46:03.295...`
 //
 // See https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html#wp1054751
 // and https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/esm/command/esm-cr-book/book_cjab_m_escalate-a-cisco-jabber-group_chapter_00.html#wp4026302234

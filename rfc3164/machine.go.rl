@@ -156,7 +156,7 @@ hostname = (hostnamerange -- ':') >mark %set_hostname $err(err_hostname);
 # Cisco devices include a "sequence number" before the timestamp
 # "<189>237: *Jan  8 19:46:03.295..."
 sequenceval = (digit+) >mark %set_sequence @err(err_sequence);
-sequence = (sequenceval ':' sp* '*') when { m.sequence };
+sequence = (sequenceval ':' sp* '*'?) when { m.sequence };
 # and they append a colon after the timestamp:
 # ...19:46:03.295: ...
 seqcol = (':') when { m.sequence };

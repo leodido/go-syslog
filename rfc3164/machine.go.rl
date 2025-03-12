@@ -261,6 +261,7 @@ func (m *machine) WithSecondFractions() {
 // WithSequence enables parsing of non-standard Cisco iOS logs that include a sequence number.
 //
 // See https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html#wp1054751
+// and https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/esm/command/esm-cr-book/book_cjab_m_escalate-a-cisco-jabber-group_chapter_00.html#wp4026302234
 func (m *machine) WithSequence() {
 	m.sequence = true
 }

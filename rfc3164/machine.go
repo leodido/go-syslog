@@ -90,9 +90,17 @@ func (m *machine) WithSecondFractions() {
 	m.secfrac = true
 }
 
-// WithSequence enables parsing of non-standard Cisco iOS logs that include a sequence number.
+// WithSequence enables parsing of non-standard Cisco iOS logs that include a message counter.
+//
+// To ensure your IOS device sending logs in a compatible format, be sure to disable logging sequence numbers by setting
+// `no service sequence-numbers` in configuration mode. The device will still send a message counter, which you can't
+// see in the log on device. This is enabled by default and can manually be enabled with the following command:
+// `logging message-counter syslog`. This option should for now not be disabled, as it merely removes the number, not
+// the colon behind it, resulting in invalid log messages. When debugging with packet captures, your log messages should
+// look like this: `<189>237: *Jan 8 19:46:03.295...`
 //
 // See https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html#wp1054751
+// and https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/esm/command/esm-cr-book/bookCjabMEscalate-a-cisco-jabber-groupChapter00.html#wp4026302234
 func (m *machine) WithSequence() {
 	m.sequence = true
 }
@@ -28910,26 +28918,52 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 	stCase49:
 		_widec = int16((m.data)[(m.p)])
 		switch {
-		case (m.data)[(m.p)] > 32:
-			if 42 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 42 {
+		case (m.data)[(m.p)] < 42:
+			if 32 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 32 {
 				_widec = 256 + (int16((m.data)[(m.p)]) - 0)
 				if m.sequence {
 					_widec += 256
 				}
 			}
-		case (m.data)[(m.p)] >= 32:
+		case (m.data)[(m.p)] > 42:
+			if 48 <= (m.data)[(m.p)] && (m.data)[(m.p)] <= 57 {
+				_widec = 1280 + (int16((m.data)[(m.p)]) - 0)
+				if m.rfc3339 {
+					_widec += 256
+				}
+			}
+		default:
 			_widec = 256 + (int16((m.data)[(m.p)]) - 0)
 			if m.sequence {
 				_widec += 256
 			}
 		}
 		switch _widec {
+		case 65:
+			goto tr8
+		case 68:
+			goto tr9
+		case 70:
+			goto tr10
+		case 74:
+			goto tr11
+		case 77:
+			goto tr12
+		case 78:
+			goto tr13
+		case 79:
+			goto tr14
+		case 83:
+			goto tr15
 		case 544:
 			goto st49
 		case 554:
 			goto st50
 		}
-		goto st0
+		if 1584 <= _widec && _widec <= 1593 {
+			goto tr17
+		}
+		goto tr19
 	st50:
 		if (m.p)++; (m.p) == (m.pe) {
 			goto _testEof50
@@ -32778,7 +32812,7 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 					goto st1002
 				}
 
-			case 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 50:
+			case 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 50:
 
 				m.err = fmt.Errorf(errTimestamp, m.p)
 				(m.p)--

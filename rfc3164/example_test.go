@@ -194,3 +194,45 @@ func Example_stamp_also_when_rfc3339() {
 	//  }
 	// })
 }
+
+func Example_stampmilli() {
+	i := []byte(`<28>Dec  2 16:49:23.123 host app[23410]: Test`)
+	p := NewParser(WithYear(Year{YYYY: 2025}), WithSecondFractions())
+	m, _ := p.Parse(i)
+	output(m)
+	// Output:
+	// (*rfc3164.SyslogMessage)({
+	//  Base: (syslog.Base) {
+	//   Facility: (*uint8)(3),
+	//   Severity: (*uint8)(4),
+	//   Priority: (*uint8)(28),
+	//   Timestamp: (*time.Time)(2025-12-02 16:49:23.123 +0000 UTC),
+	//   Hostname: (*string)((len=4) "host"),
+	//   Appname: (*string)((len=3) "app"),
+	//   ProcID: (*string)((len=5) "23410"),
+	//   MsgID: (*string)(<nil>),
+	//   Message: (*string)((len=4) "Test")
+	//  }
+	// })
+}
+
+func Example_stampmicro() {
+	i := []byte(`<28>Dec  2 16:49:23.654321 host app[23410]: Test`)
+	p := NewParser(WithYear(Year{YYYY: 2025}), WithSecondFractions())
+	m, _ := p.Parse(i)
+	output(m)
+	// Output:
+	// (*rfc3164.SyslogMessage)({
+	//  Base: (syslog.Base) {
+	//   Facility: (*uint8)(3),
+	//   Severity: (*uint8)(4),
+	//   Priority: (*uint8)(28),
+	//   Timestamp: (*time.Time)(2025-12-02 16:49:23.654321 +0000 UTC),
+	//   Hostname: (*string)((len=4) "host"),
+	//   Appname: (*string)((len=3) "app"),
+	//   ProcID: (*string)((len=5) "23410"),
+	//   MsgID: (*string)(<nil>),
+	//   Message: (*string)((len=4) "Test")
+	//  }
+	// })
+}

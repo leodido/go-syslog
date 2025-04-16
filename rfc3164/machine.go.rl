@@ -161,7 +161,7 @@ sequence = (sequenceval ':' sp* '*'?) when { m.sequence };
 # ...19:46:03.295: ...
 seqcol = (':') when { m.sequence };
 
-ciscoHostname = (hostname ':' sp+)? when { m.ciscoHostname };
+ciscoHostname = (hostname ':' sp*)? when { m.ciscoHostname };
 
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)

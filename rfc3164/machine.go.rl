@@ -131,7 +131,9 @@ action err_content {
 
 pri = ('<' prival >mark %from(set_prival) $err(err_prival) '>') @err(err_pri);
 
-timestamp = (datemmm sp datemday sp hhmmss) >mark %set_timestamp @err(err_timestamp);
+time = hhmmss (timesecfrac? when { m.secfrac });
+
+timestamp = (datemmm sp datemday sp time) >mark %set_timestamp @err(err_timestamp);
 
 rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
 
@@ -176,6 +178,7 @@ type machine struct {
 	bestEffort   bool
 	yyyy         int
 	rfc3339      bool
+	secfrac      bool
 	loc          *time.Location
 	timezone     *time.Location
 }
@@ -227,6 +230,11 @@ func (m *machine) WithLocaleTimezone(loc *time.Location) {
 // Notice this does not disable the default and correct timestamps - ie., Stamp timestamps.
 func (m *machine) WithRFC3339() {
 	m.rfc3339 = true
+}
+
+// WithSecondFractions enables second fractions for timestamps.
+func (m *machine) WithSecondFractions() {
+	m.secfrac = true
 }
 
 // Err returns the error that occurred on the last call to Parse.

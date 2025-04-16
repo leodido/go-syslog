@@ -161,6 +161,8 @@ sequence = (sequenceval ':' sp* '*'?) when { m.sequence };
 # ...19:46:03.295: ...
 seqcol = (':') when { m.sequence };
 
+ciscoHostname = (hostname ':' sp+)? when { m.ciscoHostname };
+
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
 # note > see https://tools.ietf.org/html/rfc2234#section-2.1 for an interpretation of "ABNF alphanumeric" as stated by RFC 3164 regarding the tag
@@ -183,25 +185,26 @@ fail := (any - [\n\r])* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* sequence? (timestamp | (rfc3339 when { m.rfc3339 })) seqcol? sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* sequence? ciscoHostname? (timestamp | (rfc3339 when { m.rfc3339 })) seqcol? sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 
 %% write data noerror noprefix;
 
 type machine struct {
-	data         []byte
-	cs           int
-	p, pe, eof   int
-	pb           int
-	err          error
-	bestEffort   bool
-	yyyy         int
-	rfc3339      bool
-	secfrac      bool
-	sequence     bool
-	loc          *time.Location
-	timezone     *time.Location
+	data          []byte
+	cs            int
+	p, pe, eof    int
+	pb            int
+	err           error
+	bestEffort    bool
+	yyyy          int
+	rfc3339       bool
+	secfrac       bool
+	sequence      bool
+	ciscoHostname bool
+	loc           *time.Location
+	timezone      *time.Location
 }
 
 // NewMachine creates a new FSM able to parse RFC3164 syslog messages.
@@ -271,6 +274,14 @@ func (m *machine) WithSecondFractions() {
 // and https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/esm/command/esm-cr-book/book_cjab_m_escalate-a-cisco-jabber-group_chapter_00.html#wp4026302234
 func (m *machine) WithSequence() {
 	m.sequence = true
+}
+
+// WithSequence enables parsing of non-standard Cisco iOS logs that include a non-standard hostname.
+//
+// For example:
+// `<189>269614: hostname1: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`
+func (m *machine) WithCiscoHostname() {
+    m.ciscoHostname = true
 }
 
 // Err returns the error that occurred on the last call to Parse.

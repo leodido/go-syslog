@@ -80,3 +80,10 @@ func WithSequence() syslog.MachineOption {
 		return m
 	}
 }
+
+func WithCiscoHostname() syslog.MachineOption {
+	return func(m syslog.Machine) syslog.Machine {
+		m.(*machine).WithCiscoHostname()
+		return m
+	}
+}

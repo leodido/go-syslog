@@ -273,6 +273,27 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		// Cisco iOS with hostname
+		opts: []syslog.MachineOption{
+			WithSequence(),
+			WithCiscoHostname(),
+		},
+		input: []byte(`<189>269614: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(189),
+				Facility:  syslogtesting.Uint8Address(23),
+				Severity:  syslogtesting.Uint8Address(5),
+				Sequence:  syslogtesting.Uint32Address(269614),
+				Hostname:  syslogtesting.StringAddress("myhostname"),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 11 10:02:08"),
+				Appname:   syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
+				Message:   syslogtesting.StringAddress(`Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

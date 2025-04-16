@@ -68,16 +68,17 @@ type Message interface {
 //
 // It contains the fields in common among different formats.
 type Base struct {
-	Facility  *uint8
-	Severity  *uint8
-	Priority  *uint8
-	Sequence  *uint32
-	Timestamp *time.Time
-	Hostname  *string
-	Appname   *string
-	ProcID    *string
-	MsgID     *string
-	Message   *string
+	Facility       *uint8
+	Severity       *uint8
+	Priority       *uint8
+	MessageCounter *uint32
+	Sequence       *uint32
+	Timestamp      *time.Time
+	Hostname       *string
+	Appname        *string
+	ProcID         *string
+	MsgID          *string
+	Message        *string
 }
 
 // Valid tells whether the receiving message is well-formed or not.

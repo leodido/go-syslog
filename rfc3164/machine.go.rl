@@ -13,6 +13,7 @@ var (
 	errPri            = "expecting a priority value within angle brackets [col %d]"
 	errTimestamp      = "expecting a Stamp timestamp [col %d]"
 	errRFC3339        = "expecting a Stamp or a RFC3339 timestamp [col %d]"
+	errMsgCount       = "expecting a message counter (from 1 to max 255 digits) [col %d]"
 	errSequence       = "expecting a sequence number (from 1 to max 255 digits) [col %d]"
 	errHostname       = "expecting an hostname (from 1 to max 255 US-ASCII characters) [col %d]"
 	errTag            = "expecting an alphanumeric tag (max 32 characters) [col %d]"
@@ -66,6 +67,11 @@ action set_rfc3339 {
 	}
 }
 
+action set_msgcount {
+	output.msgcount = uint32(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
+	output.msgcountSet = true
+}
+
 action set_sequence {
 	output.sequence = uint32(common.UnsafeUTF8DecimalCodePointsToInt(m.text()))
 	output.sequenceSet = true
@@ -107,6 +113,12 @@ action err_timestamp {
 
 action err_rfc3339 {
 	m.err = fmt.Errorf(errRFC3339, m.p)
+	fhold;
+	fgoto fail;
+}
+
+action err_msgcount {
+	m.err = fmt.Errorf(errMsgCount, m.p)
 	fhold;
 	fgoto fail;
 }
@@ -153,15 +165,22 @@ rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
 # note > this could mean that the we may need to create and to use a labelrange = graph{1,63} here if we want the parser to be stricter.
 hostname = (hostnamerange -- ':') >mark %set_hostname $err(err_hostname);
 
-# Cisco devices include a "sequence number" before the timestamp
+# Cisco IOS devices sometimes include a "message counter" before the timestamp
 # "<189>237: *Jan  8 19:46:03.295..."
+msgcountval = (digit*) >mark %set_msgcount @err(err_msgcount);
+msgcount = (msgcountval ':' sp*) when { m.msgcount };
+# they can also include a "sequence number" after the message counter
+# "<189>237: 000104: *Jan  8 19:46:03.295..."
 sequenceval = (digit+) >mark %set_sequence @err(err_sequence);
-sequence = (sequenceval ':' sp* '*'?) when { m.sequence };
+sequence = (sequenceval ':' sp*) when { m.sequence };
+# and optionally put a hostname before the timestamp
+ciscoHostname = (hostname ':' sp*)? when { m.ciscoHostname };
+# and then they prepend a '*' to the timestamp if there is no NTP sync
+ciscostar = ('*'?) when { m.msgcount || m.sequence || m.ciscoHostname };
+ciscoextras = msgcount? <: sequence? <: ciscoHostname? '*'?;
 # and they append a colon after the timestamp:
 # ...19:46:03.295: ...
-seqcol = (':') when { m.sequence };
-
-ciscoHostname = (hostname ':' sp*)? when { m.ciscoHostname };
+ciscocolon = (':'?) when { m.msgcount || m.sequence || m.ciscoHostname };
 
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
@@ -185,7 +204,7 @@ fail := (any - [\n\r])* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* sequence? ciscoHostname? (timestamp | (rfc3339 when { m.rfc3339 })) seqcol? sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* ciscoextras (timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 
@@ -201,6 +220,7 @@ type machine struct {
 	yyyy          int
 	rfc3339       bool
 	secfrac       bool
+	msgcount      bool
 	sequence      bool
 	ciscoHostname bool
 	loc           *time.Location
@@ -261,17 +281,12 @@ func (m *machine) WithSecondFractions() {
 	m.secfrac = true
 }
 
-// WithSequenceNumber enables parsing of non-standard Cisco IOS logs that include a message counter.
-//
-// To ensure your IOS device sending logs in a compatible format, be sure to disable logging sequence numbers by setting
-// `no service sequence-numbers` in configuration mode. The device will still send a message counter, which you can't
-// see in the log on device. This is enabled by default and can manually be enabled with the following command:
-// `logging message-counter syslog`. This option should for now not be disabled, as it merely removes the number, not
-// the colon behind it, resulting in invalid log messages. When debugging with packet captures, your log messages should
-// look like this: `<189>237: *Jan 8 19:46:03.295...`
-//
-// See https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html#wp1054751
-// and https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/esm/command/esm-cr-book/book_cjab_m_escalate-a-cisco-jabber-group_chapter_00.html#wp4026302234
+// WithMessageCounter enables parsing of non-standard Cisco IOS logs that include a message counter
+func (m *machine) WithMessageCounter() {
+	m.msgcount = true
+}
+
+// WithSequenceNumber enables parsing of non-standard Cisco IOS logs that include a sequence number.
 func (m *machine) WithSequenceNumber() {
 	m.sequence = true
 }

@@ -236,63 +236,100 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco IOS
+		// Cisco IOS (without NTP sync)
 		opts: []syslog.MachineOption{
-			WithSecondFractions(),
-			WithSequenceNumber(),
+			WithCiscoIOSComponents(CiscoIOSAll),
 		},
 		input: []byte(`<189>643: *Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
 		value: &SyslogMessage{
 			Base: syslog.Base{
-				Priority:  syslogtesting.Uint8Address(189),
-				Facility:  syslogtesting.Uint8Address(23),
-				Severity:  syslogtesting.Uint8Address(5),
-				Sequence:  syslogtesting.Uint32Address(643),
-				Timestamp: syslogtesting.TimeParse(time.StampMilli, "Jan  8 19:46:03.295"),
-				Appname:   syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
-				Message:   syslogtesting.StringAddress(`Line protocol on Interface Loopback100, changed state to up`),
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(643),
+				Timestamp:      syslogtesting.TimeParse(time.StampMilli, "Jan  8 19:46:03.295"),
+				Appname:        syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
+				Message:        syslogtesting.StringAddress(`Line protocol on Interface Loopback100, changed state to up`),
 			},
 		},
 	},
 	{
-		// Cisco IOS
+		// Cisco IOS (with NTP sync)
 		opts: []syslog.MachineOption{
-			WithSecondFractions(),
-			WithSequenceNumber(),
+			WithCiscoIOSComponents(CiscoIOSAll),
 		},
 		input: []byte(`<189>643: Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
 		value: &SyslogMessage{
 			Base: syslog.Base{
-				Priority:  syslogtesting.Uint8Address(189),
-				Facility:  syslogtesting.Uint8Address(23),
-				Severity:  syslogtesting.Uint8Address(5),
-				Sequence:  syslogtesting.Uint32Address(643),
-				Timestamp: syslogtesting.TimeParse(time.StampMilli, "Jan  8 19:46:03.295"),
-				Appname:   syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
-				Message:   syslogtesting.StringAddress(`Line protocol on Interface Loopback100, changed state to up`),
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(643),
+				Timestamp:      syslogtesting.TimeParse(time.StampMilli, "Jan  8 19:46:03.295"),
+				Appname:        syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
+				Message:        syslogtesting.StringAddress(`Line protocol on Interface Loopback100, changed state to up`),
+			},
+		},
+	},
+	{
+		// Cisco IOS (with message counter and sequence number)
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(CiscoIOSAll),
+		},
+		input: []byte(`<189>105: 000104: Mar 12 07:12:10: %SYS-5-CONFIG_I: Configured from console by console`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(105),
+				Sequence:       syslogtesting.Uint32Address(104),
+				Timestamp:      syslogtesting.TimeParse(time.Stamp, "Mar 12 07:12:10"),
+				Appname:        syslogtesting.StringAddress("%SYS-5-CONFIG_I"),
+				Message:        syslogtesting.StringAddress(`Configured from console by console`),
+			},
+		},
+	},
+	{
+		// Cisco IOS (with message counter and sequence number both disabled)
+		// Note that in this case the router still includes the `:` from the message counter
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(CiscoIOSAll),
+		},
+		input: []byte(`<189>: Mar 12 07:10:10: %SYS-5-CONFIG_I: Configured from console by console`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(0),
+				Timestamp:      syslogtesting.TimeParse(time.Stamp, "Mar 12 07:10:10"),
+				Appname:        syslogtesting.StringAddress("%SYS-5-CONFIG_I"),
+				Message:        syslogtesting.StringAddress(`Configured from console by console`),
 			},
 		},
 	},
 	{
 		// Cisco IOS with hostname
 		opts: []syslog.MachineOption{
-			WithSequenceNumber(),
-			WithCiscoHostname(),
+			WithCiscoIOSComponents(CiscoIOSAll),
 		},
 		input: []byte(`<189>269614: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
 		valid: true,
 		value: &SyslogMessage{
 			Base: syslog.Base{
-				Priority:  syslogtesting.Uint8Address(189),
-				Facility:  syslogtesting.Uint8Address(23),
-				Severity:  syslogtesting.Uint8Address(5),
-				Sequence:  syslogtesting.Uint32Address(269614),
-				Hostname:  syslogtesting.StringAddress("myhostname"),
-				Timestamp: syslogtesting.TimeParse(time.Stamp, "Apr 11 10:02:08"),
-				Appname:   syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
-				Message:   syslogtesting.StringAddress(`Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(269614),
+				Hostname:       syslogtesting.StringAddress("myhostname"),
+				Timestamp:      syslogtesting.TimeParse(time.Stamp, "Apr 11 10:02:08"),
+				Appname:        syslogtesting.StringAddress("%LINEPROTO-5-UPDOWN"),
+				Message:        syslogtesting.StringAddress(`Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
 			},
 		},
 	},

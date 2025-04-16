@@ -236,3 +236,26 @@ func Example_stampmicro() {
 	//  }
 	// })
 }
+
+func Example_ciscoIOS() {
+	i := []byte(`<189>269614: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`)
+	p := NewParser(WithYear(Year{YYYY: 2025}), WithCiscoIOSComponents(CiscoIOSAll))
+	m, _ := p.Parse(i)
+	output(m)
+	// Output:
+	// (*rfc3164.SyslogMessage)({
+	//  Base: (syslog.Base) {
+	//   Facility: (*uint8)(23),
+	//   Severity: (*uint8)(5),
+	//   Priority: (*uint8)(189),
+	//   MessageCounter: (*uint32)(269614),
+	//   Sequence: (*uint32)(<nil>),
+	//   Timestamp: (*time.Time)(2025-04-11 10:02:08 +0000 UTC),
+	//   Hostname: (*string)((len=10) "myhostname"),
+	//   Appname: (*string)((len=19) "%LINEPROTO-5-UPDOWN"),
+	//   ProcID: (*string)(<nil>),
+	//   MsgID: (*string)(<nil>),
+	//   Message: (*string)((len=69) "Line protocol on Interface GigabitEthernet7/0/34, changed state to up")
+	//  }
+	// })
+}

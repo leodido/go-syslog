@@ -236,10 +236,10 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco iOS
+		// Cisco IOS
 		opts: []syslog.MachineOption{
 			WithSecondFractions(),
-			WithSequence(),
+			WithSequenceNumber(),
 		},
 		input: []byte(`<189>643: *Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
@@ -256,10 +256,10 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco iOS
+		// Cisco IOS
 		opts: []syslog.MachineOption{
 			WithSecondFractions(),
-			WithSequence(),
+			WithSequenceNumber(),
 		},
 		input: []byte(`<189>643: Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
@@ -276,9 +276,9 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco iOS with hostname
+		// Cisco IOS with hostname
 		opts: []syslog.MachineOption{
-			WithSequence(),
+			WithSequenceNumber(),
 			WithCiscoHostname(),
 		},
 		input: []byte(`<189>269614: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),

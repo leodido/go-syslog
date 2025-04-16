@@ -91,7 +91,7 @@ func (m *machine) WithSecondFractions() {
 	m.secfrac = true
 }
 
-// WithSequence enables parsing of non-standard Cisco iOS logs that include a message counter.
+// WithSequenceNumber enables parsing of non-standard Cisco IOS logs that include a message counter.
 //
 // To ensure your IOS device sending logs in a compatible format, be sure to disable logging sequence numbers by setting
 // `no service sequence-numbers` in configuration mode. The device will still send a message counter, which you can't
@@ -102,11 +102,11 @@ func (m *machine) WithSecondFractions() {
 //
 // See https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html#wp1054751
 // and https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/esm/command/esm-cr-book/bookCjabMEscalate-a-cisco-jabber-groupChapter00.html#wp4026302234
-func (m *machine) WithSequence() {
+func (m *machine) WithSequenceNumber() {
 	m.sequence = true
 }
 
-// WithSequence enables parsing of non-standard Cisco iOS logs that include a non-standard hostname.
+// WithCiscoHostname enables parsing of non-standard Cisco IOS logs that include a non-standard hostname.
 //
 // For example:
 // `<189>269614: hostname1: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`

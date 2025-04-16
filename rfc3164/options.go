@@ -74,9 +74,9 @@ func WithSecondFractions() syslog.MachineOption {
 	}
 }
 
-func WithSequence() syslog.MachineOption {
+func WithSequenceNumber() syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
-		m.(*machine).WithSequence()
+		m.(*machine).WithSequenceNumber()
 		return m
 	}
 }

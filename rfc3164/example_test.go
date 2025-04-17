@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/leodido/go-syslog/v4/ciscoios"
 )
 
 func init() {
@@ -239,7 +240,7 @@ func Example_stampmicro() {
 
 func Example_ciscoIOS() {
 	i := []byte(`<189>269614: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`)
-	p := NewParser(WithYear(Year{YYYY: 2025}), WithCiscoIOSComponents(CiscoIOSAll))
+	p := NewParser(WithYear(Year{YYYY: 2025}), WithCiscoIOSComponents(ciscoios.All))
 	m, _ := p.Parse(i)
 	output(m)
 	// Output:

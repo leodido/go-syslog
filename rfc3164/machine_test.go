@@ -335,7 +335,10 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco IOS with message counter, but message counter parsing disabled
+		// Cisco IOS log with message counter and sequence number, but message counter
+		// parsing disabled. Note that if we were to also leave the sequence number and
+		// hostname parsers enabled then the message counter would be parsed as the
+		// sequence number, and the sequence number as the hostname.
 		opts: []syslog.MachineOption{
 			WithCiscoIOSComponents(ciscoios.DisableMessageCounter | ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
 		},
@@ -351,7 +354,9 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco IOS with sequence number, but with sequence number parsing disabled
+		// Cisco IOS log with message counter and sequence number, but with sequence
+		// number and hostname parsing disabled. Note that if we were to leave hostname
+		// parsing enabled, the sequence number would be parsed as the hostname.
 		opts: []syslog.MachineOption{
 			WithCiscoIOSComponents(ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
 		},

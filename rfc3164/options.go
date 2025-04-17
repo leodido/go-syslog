@@ -100,6 +100,11 @@ func WithCiscoIOSComponents(flags ciscoios.Component) syslog.MachineOption {
 	}
 }
 
+// WithMessageCounter enables parsing of non-standard Cisco IOS logs that include a message counter.
+//
+// For example, `643` here:
+//
+//	<189>643: Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up
 func WithMessageCounter() syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
 		m.(*machine).WithMessageCounter()
@@ -107,6 +112,11 @@ func WithMessageCounter() syslog.MachineOption {
 	}
 }
 
+// WithSequenceNumber enables parsing of non-standard Cisco IOS logs that include a sequence number.
+//
+// For example, `000104` here:
+//
+//	<189>105: 000104: Mar 12 07:12:10: %SYS-5-CONFIG_I: Configured from console by console
 func WithSequenceNumber() syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
 		m.(*machine).WithSequenceNumber()
@@ -114,6 +124,10 @@ func WithSequenceNumber() syslog.MachineOption {
 	}
 }
 
+// WithCiscoHostname enables parsing of non-standard Cisco IOS logs that include a non-standard hostname field before the timestamp.
+//
+// For example, `hostname1` here:
+// `<189>269614: hostname1: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`
 func WithCiscoHostname() syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
 		m.(*machine).WithCiscoHostname()

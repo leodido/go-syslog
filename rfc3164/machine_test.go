@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/ciscoios"
 	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 	"github.com/stretchr/testify/assert"
 )
@@ -238,7 +239,7 @@ var testCases = []testCase{
 	{
 		// Cisco IOS (without NTP sync)
 		opts: []syslog.MachineOption{
-			WithCiscoIOSComponents(CiscoIOSAll),
+			WithCiscoIOSComponents(ciscoios.All),
 		},
 		input: []byte(`<189>643: *Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
@@ -257,7 +258,7 @@ var testCases = []testCase{
 	{
 		// Cisco IOS (with NTP sync)
 		opts: []syslog.MachineOption{
-			WithCiscoIOSComponents(CiscoIOSAll),
+			WithCiscoIOSComponents(ciscoios.All),
 		},
 		input: []byte(`<189>643: Jan  8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`),
 		valid: true,
@@ -276,7 +277,7 @@ var testCases = []testCase{
 	{
 		// Cisco IOS (with message counter and sequence number)
 		opts: []syslog.MachineOption{
-			WithCiscoIOSComponents(CiscoIOSAll),
+			WithCiscoIOSComponents(ciscoios.All),
 		},
 		input: []byte(`<189>105: 000104: Mar 12 07:12:10: %SYS-5-CONFIG_I: Configured from console by console`),
 		valid: true,
@@ -297,7 +298,7 @@ var testCases = []testCase{
 		// Cisco IOS (with message counter and sequence number both disabled)
 		// Note that in this case the router still includes the `:` from the message counter
 		opts: []syslog.MachineOption{
-			WithCiscoIOSComponents(CiscoIOSAll),
+			WithCiscoIOSComponents(ciscoios.All),
 		},
 		input: []byte(`<189>: Mar 12 07:10:10: %SYS-5-CONFIG_I: Configured from console by console`),
 		valid: true,
@@ -316,7 +317,7 @@ var testCases = []testCase{
 	{
 		// Cisco IOS with hostname
 		opts: []syslog.MachineOption{
-			WithCiscoIOSComponents(CiscoIOSAll),
+			WithCiscoIOSComponents(ciscoios.All),
 		},
 		input: []byte(`<189>269614: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
 		valid: true,

@@ -177,7 +177,7 @@ sequence = (sequenceval ':' sp*) when { m.sequence };
 ciscoHostname = (hostname ':' sp*)? when { m.ciscoHostname };
 # and then they prepend a '*' to the timestamp if there is no NTP sync
 ciscostar = ('*'?) when { m.msgcount || m.sequence || m.ciscoHostname };
-ciscoextras = msgcount? <: sequence? <: ciscoHostname? '*'?;
+ciscoextras = msgcount? <: sequence? <: ciscoHostname? ciscostar;
 # and they append a colon after the timestamp:
 # ...19:46:03.295: ...
 ciscocolon = (':'?) when { m.msgcount || m.sequence || m.ciscoHostname };

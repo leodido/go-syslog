@@ -334,6 +334,57 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		// Cisco IOS with message counter, but message counter parsing disabled
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.DisableMessageCounter | ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
+		},
+		input:       []byte(`<189>269614: 000104: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
+		valid:       false,
+		errorString: "expecting a sequence number (from 1 to max 255 digits) [col 5]",
+		partialValue: &SyslogMessage{
+			Base: syslog.Base{
+				Priority: syslogtesting.Uint8Address(189),
+				Facility: syslogtesting.Uint8Address(23),
+				Severity: syslogtesting.Uint8Address(5),
+			},
+		},
+	},
+	{
+		// Cisco IOS with sequence number, but with sequence number parsing disabled
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
+		},
+		input:       []byte(`<189>269614: 000104: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
+		valid:       false,
+		errorString: "expecting a sequence number (from 1 to max 255 digits) [col 13]",
+		partialValue: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(269614),
+			},
+		},
+	},
+	{
+		// Cisco IOS with hostname, but with hostname parsing disabled.
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.DisableHostname),
+		},
+		input:       []byte(`<189>269614: 000104: myhostname: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`),
+		valid:       false,
+		errorString: "expecting an hostname (from 1 to max 255 US-ASCII characters) [col 21]",
+		partialValue: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(269614),
+				Sequence:       syslogtesting.Uint32Address(104),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

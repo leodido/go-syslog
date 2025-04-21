@@ -177,10 +177,11 @@ sequence = (sequenceval ':' sp*) when { m.sequence };
 ciscoHostname = (hostname ':' sp*)? when { m.ciscoHostname };
 # and then they prepend a '*' to the timestamp if there is no NTP sync
 ciscostar = ('*'?) when { m.msgcount || m.sequence || m.ciscoHostname };
-ciscoextras = msgcount? <: sequence? <: ciscoHostname? ciscostar;
 # and they append a colon after the timestamp:
 # ...19:46:03.295: ...
 ciscocolon = (':'?) when { m.msgcount || m.sequence || m.ciscoHostname };
+
+ciscoextras = msgcount? <: sequence? <: ciscoHostname?;
 
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
@@ -204,7 +205,7 @@ fail := (any - [\n\r])* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* ciscoextras (timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* ciscoextras ciscostar (timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 

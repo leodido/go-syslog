@@ -1,6 +1,7 @@
 package octetcounting
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -39,6 +40,87 @@ func getTestCases() []testCase {
 			},
 			bestEffortResults: []syslog.Result{
 				{Error: fmt.Errorf("found %s, expecting a %s", EOF, MSGLEN)},
+			},
+		},
+		{
+			descr: "parsing error - contains non-numeric characters",
+			input: "123abc <1>1 - - - - - -",
+			results: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("a")}, WS)},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("a")}, WS)},
+			},
+		},
+		{
+			descr: "parsing error - uint64 overflow",
+			input: "18446744073709551616 <1>1 - - - - - -", // 2^64, one more than max uint64
+			results: []syslog.Result{
+				{Error: errors.New(string(ErrMsgInvalidLength))},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: errors.New(string(ErrMsgInvalidLength))},
+			},
+		},
+
+		{
+			descr: "format error - starts with letter",
+			input: "abc <1>1 - - - - - -",
+			results: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("a")}, MSGLEN)},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("a")}, MSGLEN)},
+			},
+		},
+		{
+			descr: "format error - starts with hyphen",
+			input: "-10 <1>1 - - - - - -",
+			results: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("-")}, MSGLEN)},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("-")}, MSGLEN)},
+			},
+		},
+		{
+			descr: "format error - starts with zero",
+			input: "01 <1>1 - - - - - -",
+			results: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("0")}, MSGLEN)},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("0")}, MSGLEN)},
+			},
+		},
+		{
+			descr: "invalid message length - negative",
+			input: "-10 <1>1 - - - - - -",
+			results: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("-")}, MSGLEN)},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("-")}, MSGLEN)},
+			},
+		},
+		{
+			descr: "invalid message length - leading zero",
+			input: "01 <1>1 - - - - - -",
+			results: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("0")}, MSGLEN)},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: fmt.Errorf("found %s, expecting a %s", Token{ILLEGAL, []byte("0")}, MSGLEN)},
+			},
+		},
+		{
+			descr: "invalid message length - overflow uint64",
+			input: "18446744073709551616 <1>1 - - - - - -", // 2^64, one more than max uint64
+			results: []syslog.Result{
+				{Error: errors.New(string(ErrMsgInvalidLength))},
+			},
+			bestEffortResults: []syslog.Result{
+				{Error: errors.New(string(ErrMsgInvalidLength))},
 			},
 		},
 		{
@@ -257,9 +339,10 @@ func getTestCases() []testCase {
 			},
 		},
 		{
-			descr: "1st ok//max",
+			descr: "1st ok//defaultmax",
 			input: fmt.Sprintf(
-				"8192 <%d>%d %s %s %s %s %s - %s",
+				"%d <%d>%d %s %s %s %s %s - %s",
+				DefaultMaxSize,
 				syslogtesting.MaxPriority,
 				syslogtesting.MaxVersion,
 				syslogtesting.MaxRFC3339MicroTimestamp,
@@ -344,7 +427,8 @@ func getTestCases() []testCase {
 		{
 			descr: "1st ok/2nd ok//max/max",
 			input: fmt.Sprintf(
-				"8192 <%d>%d %s %s %s %s %s - %s8192 <%d>%d %s %s %s %s %s - %s",
+				"%d <%d>%d %s %s %s %s %s - %s%d <%d>%d %s %s %s %s %s - %s",
+				DefaultMaxSize,
 				syslogtesting.MaxPriority,
 				syslogtesting.MaxVersion,
 				syslogtesting.MaxRFC3339MicroTimestamp,
@@ -353,6 +437,7 @@ func getTestCases() []testCase {
 				string(syslogtesting.MaxProcID),
 				string(syslogtesting.MaxMsgID),
 				string(syslogtesting.MaxMessage),
+				DefaultMaxSize,
 				syslogtesting.MaxPriority,
 				syslogtesting.MaxVersion,
 				syslogtesting.MaxRFC3339MicroTimestamp,
@@ -489,7 +574,8 @@ func getTestCases() []testCase {
 		{
 			descr: "1st ok/2nd ok/3rd ok//max/no/max",
 			input: fmt.Sprintf(
-				"8192 <%d>%d %s %s %s %s %s - %s16 <1>1 - - - - - -8192 <%d>%d %s %s %s %s %s - %s",
+				"%d <%d>%d %s %s %s %s %s - %s16 <1>1 - - - - - -%d <%d>%d %s %s %s %s %s - %s",
+				DefaultMaxSize,
 				syslogtesting.MaxPriority,
 				syslogtesting.MaxVersion,
 				syslogtesting.MaxRFC3339MicroTimestamp,
@@ -498,6 +584,7 @@ func getTestCases() []testCase {
 				string(syslogtesting.MaxProcID),
 				string(syslogtesting.MaxMsgID),
 				string(syslogtesting.MaxMessage),
+				DefaultMaxSize,
 				syslogtesting.MaxPriority,
 				syslogtesting.MaxVersion,
 				syslogtesting.MaxRFC3339MicroTimestamp,
@@ -568,10 +655,10 @@ func getTestCases() []testCase {
 			descr: "MSGLEN gt max message length",
 			input: "16 <1>1 - - - - - -",
 			results: []syslog.Result{
-				{Error: fmt.Errorf("message too long to parse. was size %d, max length %d", 16, 10)},
+				{Error: fmt.Errorf(string(ErrMsgTooLarge), 16, 10)},
 			},
 			bestEffortResults: []syslog.Result{
-				{Error: fmt.Errorf("message too long to parse. was size %d, max length %d", 16, 10)},
+				{Error: fmt.Errorf(string(ErrMsgTooLarge), 16, 10)},
 			},
 			maxMessageLength: 10,
 		},
@@ -598,15 +685,51 @@ func getTestCases() []testCase {
 	}
 }
 
+func getSystemLimitTestCases() []testCase {
+	nearMaxInt := uint64(MaxInt) - 1000
+	exactMaxInt := uint64(MaxInt)
+
+	return []testCase{
+		{
+			descr: "system limit - near MaxInt but valid",
+			input: fmt.Sprintf("%d <1>1 - - - - - -", nearMaxInt),
+			results: []syslog.Result{
+				{Error: fmt.Errorf(`found %s after "%s", expecting a %s containing %d octets`, EOF, "<1>1 - - - - - -", SYSLOGMSG, nearMaxInt)},
+			},
+			bestEffortResults: []syslog.Result{
+				{
+					Message: (&rfc5424.SyslogMessage{}).SetPriority(1).SetVersion(1),
+					Error:   fmt.Errorf(`found %s after "%s", expecting a %s containing %d octets`, EOF, "<1>1 - - - - - -", SYSLOGMSG, nearMaxInt),
+				},
+			},
+			maxMessageLength: MaxInt,
+		},
+		{
+			descr: "system limit - exactly at MaxInt",
+			input: fmt.Sprintf("%d <1>1 - - - - - -", exactMaxInt),
+			results: []syslog.Result{
+				{Error: fmt.Errorf(`found %s after "%s", expecting a %s containing %d octets`, EOF, "<1>1 - - - - - -", SYSLOGMSG, exactMaxInt)},
+			},
+			bestEffortResults: []syslog.Result{
+				{
+					Message: (&rfc5424.SyslogMessage{}).SetPriority(1).SetVersion(1),
+					Error:   fmt.Errorf(`found %s after "%s", expecting a %s containing %d octets`, EOF, "<1>1 - - - - - -", SYSLOGMSG, exactMaxInt),
+				},
+			},
+			maxMessageLength: MaxInt,
+		},
+	}
+}
+
 func init() {
-	testCases = getTestCases()
+	testCases = append(getTestCases(), getSystemLimitTestCases()...)
 }
 
 func TestParse(t *testing.T) {
 	for i := range testCases {
 		tc := testCases[i] // tests could be running in parallel, needs to be scoped.
 		if tc.maxMessageLength == 0 {
-			tc.maxMessageLength = 8192
+			tc.maxMessageLength = DefaultMaxSize
 		}
 		t.Run(fmt.Sprintf("strict/%s", tc.descr), func(t *testing.T) {
 			t.Parallel()

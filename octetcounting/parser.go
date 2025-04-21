@@ -1,6 +1,8 @@
 package octetcounting
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"io"
 
@@ -8,6 +10,9 @@ import (
 	"github.com/leodido/go-syslog/v4/rfc3164"
 	"github.com/leodido/go-syslog/v4/rfc5424"
 )
+
+// DefaultMaxSize as per RFC5425#section-4.3.1
+const DefaultMaxSize = 8192
 
 // parser is capable to parse the input stream containing syslog messages with octetcounting framing.
 //
@@ -26,7 +31,7 @@ type parser struct {
 func NewParser(opts ...syslog.ParserOption) syslog.Parser {
 	p := &parser{
 		emit:             func(*syslog.Result) { /* noop */ },
-		maxMessageLength: 8192, // size as per RFC5425#section-4.3.1
+		maxMessageLength: DefaultMaxSize,
 	}
 
 	for _, opt := range opts {
@@ -42,7 +47,7 @@ func NewParser(opts ...syslog.ParserOption) syslog.Parser {
 func NewParserRFC3164(opts ...syslog.ParserOption) syslog.Parser {
 	p := &parser{
 		emit:             func(*syslog.Result) { /* noop */ },
-		maxMessageLength: 1024,
+		maxMessageLength: DefaultMaxSize,
 	}
 
 	for _, opt := range opts {
@@ -86,15 +91,28 @@ func (p *parser) run() {
 
 		// First token MUST be a MSGLEN
 		if tok = p.scan(); tok.typ != MSGLEN {
+			if tok.typ == ILLEGAL {
+				if bytes.Equal(tok.lit, ErrMsgInvalidLength) {
+					p.emit(&syslog.Result{
+						Error: errors.New(string(ErrMsgInvalidLength)),
+					})
+					break
+				} else if bytes.Equal(tok.lit, ErrMsgTooLarge) {
+					p.emit(&syslog.Result{
+						Error: fmt.Errorf(string(ErrMsgTooLarge), p.s.msglen, p.maxMessageLength),
+					})
+					break
+				} else if bytes.Equal(tok.lit, ErrMsgExceedsIntLimit) {
+					p.emit(&syslog.Result{
+						Error: errors.New(string(ErrMsgExceedsIntLimit)),
+					})
+					break
+				}
+			}
+
+			// Default error case
 			p.emit(&syslog.Result{
 				Error: fmt.Errorf("found %s, expecting a %s", tok, MSGLEN),
-			})
-			break
-		}
-
-		if int(p.s.msglen) > p.maxMessageLength {
-			p.emit(&syslog.Result{
-				Error: fmt.Errorf("message too long to parse. was size %d, max length %d", p.s.msglen, p.maxMessageLength),
 			})
 			break
 		}

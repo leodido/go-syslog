@@ -68,7 +68,7 @@ func isDigit(ch byte) bool {
 
 // isNonZeroDigit returns true if the byte represents a number in ]0,9]
 func isNonZeroDigit(ch byte) bool {
-	return (ch >= 48 && ch <= 57)
+	return (ch >= 49 && ch <= 57)
 }
 
 // Scanner represents the lexical scanner for octet counting transport.

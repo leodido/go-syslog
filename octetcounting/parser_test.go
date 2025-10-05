@@ -761,3 +761,16 @@ func TestParse(t *testing.T) {
 		})
 	}
 }
+
+func TestParserBestEffortCompatibility(t *testing.T) {
+	// Test original API works
+	p1 := NewParser()
+	assert.False(t, p1.HasBestEffort())
+
+	p2 := NewParser(syslog.WithBestEffort())
+	assert.True(t, p2.HasBestEffort())
+
+	// Test new API works too
+	p3 := NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()))
+	assert.True(t, p3.HasBestEffort())
+}

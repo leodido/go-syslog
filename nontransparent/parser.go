@@ -18,6 +18,7 @@ type machine struct {
 	trailertyp   TrailerType // default is 0 thus TrailerType(LF)
 	trailer      byte
 	candidate    []byte
+	bestEffort   bool
 	internal     syslog.Machine
 	internalOpts []syslog.MachineOption
 	emit         syslog.ParserListener
@@ -208,6 +209,11 @@ func NewParser(options ...syslog.ParserOption) syslog.Parser {
 	trailer, _ := m.trailertyp.Value()
 	m.trailer = byte(trailer)
 
+	// If bestEffort flag was set via old API, add it to internalOpts
+	if m.bestEffort {
+		m.internalOpts = append(m.internalOpts, rfc5424.WithBestEffort())
+	}
+
 	// Create internal parser depending on options
 	m.internal = rfc5424.NewMachine(m.internalOpts...)
 
@@ -227,10 +233,23 @@ func NewParserRFC3164(options ...syslog.ParserOption) syslog.Parser {
 	trailer, _ := m.trailertyp.Value()
 	m.trailer = byte(trailer)
 
+	// If bestEffort flag was set via old API, add it to internalOpts
+	if m.bestEffort {
+		m.internalOpts = append(m.internalOpts, rfc3164.WithBestEffort())
+	}
+
 	// Create internal parser depending on options
 	m.internal = rfc3164.NewMachine(m.internalOpts...)
 
 	return m
+}
+
+func (m *machine) WithBestEffort() {
+	m.bestEffort = true
+}
+
+func (m *machine) HasBestEffort() bool {
+	return m.internal.HasBestEffort()
 }
 
 // WithMaxMessageLength does nothing for this parser.

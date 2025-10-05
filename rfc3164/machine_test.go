@@ -335,15 +335,10 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco IOS log with message counter and sequence number, but message counter
-		// parsing disabled. Note that if we were to also leave the sequence number and
-		// hostname parsers enabled then the message counter would be parsed as the
-		// sequence number, and the sequence number as the hostname.
-		//
-		// This demonstrates a known limitation: the parser cannot auto-detect which
-		// Cisco components are present because they all follow the pattern "digits/alphanum:".
-		// Users must configure the parser flags to match their Cisco device configuration.
-		// Mismatched configuration will result in parsing errors or incorrect field values.
+		// Cisco IOS log with message counter and sequence number, but all parsing disabled.
+		// This demonstrates configuration mismatch: the device sends msgcount+sequence,
+		// but parser expects plain RFC3164 format (no Cisco components).
+		// Parser fails immediately at col 5 when it sees digits instead of timestamp.
 		opts: []syslog.MachineOption{
 			WithCiscoIOSComponents(ciscoios.DisableMessageCounter | ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
 		},
@@ -359,9 +354,16 @@ var testCases = []testCase{
 		},
 	},
 	{
-		// Cisco IOS log with message counter and sequence number, but with sequence
-		// number and hostname parsing disabled. Note that if we were to leave hostname
-		// parsing enabled, the sequence number would be parsed as the hostname.
+		// Cisco IOS log with message counter and sequence number, but with sequence and hostname parsing disabled (only message counter enabled).
+		// This demonstrates configuration mismatch:
+		// device sends msgcount+sequence, parser expects only msgcount.
+		// Parser successfully parses msgcount (269614),
+		// then fails at col 13 when it sees another number (000104) instead of timestamp.
+		//
+		// This demonstrates a known limitation: the parser cannot auto-detect which
+		// Cisco components are present because they all follow the pattern "digits/alphanum:".
+		// Users must configure the parser flags to match their Cisco device configuration.
+		// Mismatched configuration will result in parsing errors or incorrect field values.
 		opts: []syslog.MachineOption{
 			WithCiscoIOSComponents(ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
 		},

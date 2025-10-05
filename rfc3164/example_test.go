@@ -301,7 +301,7 @@ func Example_ciscoIOS() {
 	// })
 }
 
-func Example_ciscoIOS_leading_colon() {
+func ExampleParser_ciscoIOSLeadingColon() {
 	i := []byte(`<189>: *Jan  8 19:46:03.295: %SYS-5-CONFIG_I: Configured from console`)
 	p := NewParser(WithYear(Year{YYYY: 2025}), WithCiscoIOSComponents(ciscoios.All))
 	m, _ := p.Parse(i)
@@ -322,4 +322,25 @@ func Example_ciscoIOS_leading_colon() {
 	//   Message: (*string)((len=23) "Configured from console")
 	//  }
 	// })
+}
+
+// ExampleParser_ciscoIOSConfigMismatch demonstrates a parsing error
+// due to a mismatch between the device configuration and the parser configuration.
+//
+// The error message "expecting a sequence number" actually means:
+// "I see digits that look like a sequence number, but you haven't enabled sequence number parsin. You need to configure the parser to handle this".
+func ExampleParser_ciscoIOSConfigMismatch() {
+	// Device configured with both message counter and sequence number
+	i := []byte(`<189>237: 000485: *Jan  8 19:46:03.295: %SYS-5-CONFIG_I: Configured from console`)
+
+	// Parser configured for message counter only (WRONG: it doesn't match device)
+	p := NewParser(
+		WithYear(Year{YYYY: 2025}),
+		WithCiscoIOSComponents(ciscoios.DisableSequenceNumber|ciscoios.DisableHostname),
+	)
+
+	_, err := p.Parse(i)
+	fmt.Printf("Error: %v\n", err)
+	// Output:
+	// Error: expecting a sequence number (from 1 to max 255 digits) [col 10]
 }

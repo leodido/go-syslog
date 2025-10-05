@@ -75,13 +75,80 @@ func WithSecondFractions() syslog.MachineOption {
 	}
 }
 
-// WithCiscoIOSComponents configures the parser with specific Cisco IOS format components.
+// WithCiscoIOSComponents enables parsing of non-standard Cisco IOS syslog extensions.
 //
-// By default, all Cisco IOS components are enabled. Use the flags to disable specific components:
+// Cisco IOS devices can prepend additional fields before the timestamp when logging
+// to remote syslog servers. This option enables parsing of up to three components:
 //
-//	rfc3164.WithCiscoIOSComponents(
-//	  ciscoios.DisableMessageCounter | ciscoios.DisableSequenceNumber | ciscoios.DisableHostname | ciscoios.DisableSecondFractions
-//	)
+// 1. SYSLOG MESSAGE COUNTER (enabled by default, disable with ciscoios.DisableMessageCounter):
+//   - Automatically added when logging to remote syslog servers
+//   - Can be disabled on device: "no logging message-counter syslog"
+//   - Format: <PRI>NNN: timestamp
+//   - When disabled on device, sends: <PRI>: timestamp (empty field with colon)
+//   - Example: <189>237: *Jan 8 19:46:03.295: %SYS-5-CONFIG_I: ...
+//   - Cisco docs: https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html
+//
+// 2. SERVICE SEQUENCE NUMBER (enabled by default, disable with ciscoios.DisableSequenceNumber):
+//   - Enabled on device with: "service sequence-numbers"
+//   - Global sequence counter for all messages on the device
+//   - Format: <PRI>[msgcount:] NNNNNN: timestamp
+//   - Example: <189>237: 000485: *Jan 8 19:46:03.295: %SYS-5-CONFIG_I: ...
+//   - Cisco docs: https://www.cisco.com/c/en/us/td/docs/routers/access/wireless/software/guide/SysMsgLogging.html#wp1054751
+//
+// 3. ORIGIN HOSTNAME (enabled by default, disable with ciscoios.DisableHostname):
+//   - Enabled on device with: "logging origin-id hostname"
+//   - Adds hostname before timestamp
+//   - Format: <PRI>[msgcount:] [seqnum:] hostname: timestamp
+//   - Example: <189>237: 000485: router1: *Jan 8 19:46:03.295: ...
+//
+// IMPORTANT CONFIGURATION REQUIREMENT:
+// The parser options must match your Cisco device configuration.
+// Since all three components use the format "digits:" or "alphanumeric:",
+// the parser cannot (at the moment) automatically detect which fields are present if they're selectively disabled.
+//
+// Common Cisco Configurations:
+//
+//	ciscoios.All												// Message counter + sequence + hostname + milliseconds (default)
+//	ciscoios.DisableSequenceNumber								// Message counter + hostname only
+//	ciscoios.DisableHostname									// Message counter + sequence only
+//	ciscoios.DisableSequenceNumber | ciscoios.DisableHostname	// Message counter only
+//
+// Cisco Device Configuration Examples:
+//
+// For message counter only (most common):
+//
+//	conf t
+//	logging host 10.0.0.10
+//	! Message counter is enabled by default for remote logging
+//	! No additional configuration needed
+//
+// To add service sequence numbers:
+//
+//	conf t
+//	service sequence-numbers
+//	logging host 10.0.0.10
+//
+// To add hostname:
+//
+//	conf t
+//	logging origin-id hostname
+//	logging host 10.0.0.10
+//
+// To disable message counter on Cisco device:
+//
+//	conf t
+//	no logging message-counter syslog
+//	! Device will send: <PRI>: timestamp (colon with no digits)
+//	! Parser will interpret this as MessageCounter = 0
+//
+// KNOWN LIMITATION:
+// If your Cisco device configuration does not match the parser flags, parsing
+// will fail or produce incorrect results. For example, if the device sends
+// message counter + sequence but the parser is configured for sequence only,
+// the message counter will be incorrectly parsed as the sequence number.
+//
+// The ciscoios.All flag enables all components plus WithSecondFractions() for
+// parsing millisecond timestamps that Cisco IOS can send.
 func WithCiscoIOSComponents(flags ciscoios.Component) syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
 		if flags&ciscoios.DisableMessageCounter == 0 {

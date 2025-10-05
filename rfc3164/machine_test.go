@@ -390,6 +390,104 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		// Cisco IOS - Message counter only, no service sequence (common remote logging case)
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.All),
+		},
+		input: []byte(`<189>80: *Jan  1 23:12:12.493: %SYS-5-CONFIG_I: Configured from console by console`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(80),
+				Timestamp:      syslogtesting.TimeParse(time.StampMilli, "Jan  1 23:12:12.493"),
+				Appname:        syslogtesting.StringAddress("%SYS-5-CONFIG_I"),
+				Message:        syslogtesting.StringAddress(`Configured from console by console`),
+			},
+		},
+	},
+	{
+		// Cisco IOS - Service sequence with message counter disabled (leading colon + sequence)
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.All),
+		},
+		input: []byte(`<189>: 000088: *Jan  1 23:14:48.135: %SYS-5-CONFIG_I: Configured from console by console`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(189),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(5),
+				MessageCounter: syslogtesting.Uint32Address(0),
+				Sequence:       syslogtesting.Uint32Address(88),
+				Timestamp:      syslogtesting.TimeParse(time.StampMilli, "Jan  1 23:14:48.135"),
+				Appname:        syslogtesting.StringAddress("%SYS-5-CONFIG_I"),
+				Message:        syslogtesting.StringAddress(`Configured from console by console`),
+			},
+		},
+	},
+	{
+		// Cisco IOS - LINK-3-UPDOWN message (severity 3, different facility use case)
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.All),
+		},
+		input: []byte(`<187>116: 000073: *Jan  2 00:18:03: %LINK-3-UPDOWN: Interface GigabitEthernet0/10, changed state to down`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(187),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(3),
+				MessageCounter: syslogtesting.Uint32Address(116),
+				Sequence:       syslogtesting.Uint32Address(73),
+				Timestamp:      syslogtesting.TimeParse(time.Stamp, "Jan  2 00:18:03"),
+				Appname:        syslogtesting.StringAddress("%LINK-3-UPDOWN"),
+				Message:        syslogtesting.StringAddress(`Interface GigabitEthernet0/10, changed state to down`),
+			},
+		},
+	},
+	{
+		// Cisco IOS - LOGGINGHOST_STARTSTOP message (severity 6, informational)
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.All),
+		},
+		input: []byte(`<190>56: *Jan  2 00:16:02: %SYS-6-LOGGINGHOST_STARTSTOP: Logging to host 10.0.0.10 port 514 started - reconnection`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(190),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(6),
+				MessageCounter: syslogtesting.Uint32Address(56),
+				Timestamp:      syslogtesting.TimeParse(time.Stamp, "Jan  2 00:16:02"),
+				Appname:        syslogtesting.StringAddress("%SYS-6-LOGGINGHOST_STARTSTOP"),
+				Message:        syslogtesting.StringAddress(`Logging to host 10.0.0.10 port 514 started - reconnection`),
+			},
+		},
+	},
+	{
+		// Cisco IOS - Large message counter value (269614 from real capture)
+		opts: []syslog.MachineOption{
+			WithCiscoIOSComponents(ciscoios.All),
+		},
+		input: []byte(`<187>269614: 000191: *Jan  1 23:25:10.888: %LINK-3-UPDOWN: Interface GigabitEthernet0/1, changed state to down`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:       syslogtesting.Uint8Address(187),
+				Facility:       syslogtesting.Uint8Address(23),
+				Severity:       syslogtesting.Uint8Address(3),
+				MessageCounter: syslogtesting.Uint32Address(269614),
+				Sequence:       syslogtesting.Uint32Address(191),
+				Timestamp:      syslogtesting.TimeParse(time.StampMilli, "Jan  1 23:25:10.888"),
+				Appname:        syslogtesting.StringAddress("%LINK-3-UPDOWN"),
+				Message:        syslogtesting.StringAddress(`Interface GigabitEthernet0/1, changed state to down`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

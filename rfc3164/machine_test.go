@@ -339,6 +339,11 @@ var testCases = []testCase{
 		// parsing disabled. Note that if we were to also leave the sequence number and
 		// hostname parsers enabled then the message counter would be parsed as the
 		// sequence number, and the sequence number as the hostname.
+		//
+		// This demonstrates a known limitation: the parser cannot auto-detect which
+		// Cisco components are present because they all follow the pattern "digits/alphanum:".
+		// Users must configure the parser flags to match their Cisco device configuration.
+		// Mismatched configuration will result in parsing errors or incorrect field values.
 		opts: []syslog.MachineOption{
 			WithCiscoIOSComponents(ciscoios.DisableMessageCounter | ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
 		},

@@ -122,6 +122,18 @@ For Cisco IOS configuration details, see the `WithCiscoIOSComponents()` function
 
 **Important**: Your parser configuration must match your Cisco device configuration. The parser cannot auto-detect which components are present because they share similar formats (mostly digits followed by colon).
 
+What happens when there's a mismatch?
+
+```go
+// Device sends both message counter and sequence number: <189>237: 000485: *Jan 8 19:46:03.295: ...
+// Parser configured for message counter only (mismatch):
+p := rfc3164.NewParser(
+    rfc3164.WithCiscoIOSComponents(ciscoios.DisableSequenceNumber),
+)
+// Result: Parse error "expecting a sequence number (from 1 to max 255 digits) [col 10]"
+// Parser found digits where it expects timestamp, indicating sequence parsing should be enabled.
+```
+
 ##### Cisco Device Configuration
 
 ```cisco
@@ -157,4 +169,4 @@ RFC3164 has an underspecified format, leading to parsing challenges:
 
 **Component Ordering**: When Cisco components are selectively disabled on the device but the parser expects them, parsing will fail or produce incorrect results. Always match your parser configuration to your device configuration.
 
-**Structured Data**: Cisco IOS messages with RFC5424-style structured data blocks (from `logging host X session-id` or `sequence-num-session`) are not currently supported. See issue #[TBD] for details.
+**Structured Data**: Cisco IOS messages with RFC5424-style structured data blocks (from `logging host X session-id` or `sequence-num-session`) are not currently supported. See issue #35 for details.

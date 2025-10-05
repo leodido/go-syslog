@@ -8,7 +8,6 @@ func WithListener(f ParserListener) ParserOption {
 	}
 }
 
-
 // WithMaxMessageLength sets the length of the buffer for octect parsing.
 func WithMaxMessageLength(length int) ParserOption {
 	return func(p Parser) Parser {
@@ -21,6 +20,13 @@ func WithMaxMessageLength(length int) ParserOption {
 func WithMachineOptions(opts ...MachineOption) ParserOption {
 	return func(p Parser) Parser {
 		p.WithMachineOptions(opts...)
+		return p
+	}
+}
+
+func WithBestEffort() ParserOption {
+	return func(p Parser) Parser {
+		p.WithBestEffort()
 		return p
 	}
 }

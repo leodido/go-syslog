@@ -4,7 +4,7 @@ This package implements a parser for RFC3164 (BSD syslog) messages with extensio
 
 ## Overview
 
-RFC3164 is the original syslog protocol specification, commonly known as BSD syslog. Unlike [RFC5424](/rfc5424), RFC3164 has a loosely defined format, making it challenging to parse reliably. This parser handles the standard format plus common variations.
+RFC3164 is the original syslog protocol specification, commonly known as BSD syslog. Unlike [RFC5424](../rfc5424), RFC3164 has a loosely defined format, making it challenging to parse reliably. This parser handles the standard format plus common variations.
 
 ## Standard RFC3164 Format
 
@@ -33,9 +33,10 @@ if err != nil {
 }
 
 // Access parsed fields
-fmt.Printf("Priority: %d\n", *msg.(*SyslogMessage).Priority)
-fmt.Printf("Hostname: %s\n", *msg.(*SyslogMessage).Hostname)
-fmt.Printf("Message: %s\n", *msg.(*SyslogMessage).Message)
+m := msg.(*rfc3164.SyslogMessage)
+fmt.Printf("Priority: %d\n", *m.Priority)
+fmt.Printf("Hostname: %s\n", *m.Hostname)
+fmt.Printf("Message: %s\n", *m.Message)
 ```
 
 ## Parser Options

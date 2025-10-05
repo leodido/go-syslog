@@ -359,11 +359,7 @@ var testCases = []testCase{
 		// device sends msgcount+sequence, parser expects only msgcount.
 		// Parser successfully parses msgcount (269614),
 		// then fails at col 13 when it sees another number (000104) instead of timestamp.
-		//
-		// This demonstrates a known limitation: the parser cannot auto-detect which
-		// Cisco components are present because they all follow the pattern "digits/alphanum:".
-		// Users must configure the parser flags to match their Cisco device configuration.
-		// Mismatched configuration will result in parsing errors or incorrect field values.
+		// Demonstrates the known limitation that parser cannot auto-detect components.
 		opts: []syslog.MachineOption{
 			WithCiscoIOSComponents(ciscoios.DisableSequenceNumber | ciscoios.DisableHostname),
 		},

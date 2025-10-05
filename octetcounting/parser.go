@@ -20,6 +20,7 @@ const DefaultMaxSize = 8192
 type parser struct {
 	maxMessageLength int
 	s                Scanner
+	bestEffort       bool
 	internal         syslog.Machine
 	internalOpts     []syslog.MachineOption
 	last             Token
@@ -38,6 +39,11 @@ func NewParser(opts ...syslog.ParserOption) syslog.Parser {
 		p = opt(p).(*parser)
 	}
 
+	// If bestEffort flag was set, add it to options
+	if p.bestEffort {
+		p.internalOpts = append(p.internalOpts, rfc5424.WithBestEffort())
+	}
+
 	// Create internal parser with options
 	p.internal = rfc5424.NewMachine(p.internalOpts...)
 
@@ -54,10 +60,23 @@ func NewParserRFC3164(opts ...syslog.ParserOption) syslog.Parser {
 		p = opt(p).(*parser)
 	}
 
+	// If bestEffort flag was set, add it to options
+	if p.bestEffort {
+		p.internalOpts = append(p.internalOpts, rfc3164.WithBestEffort())
+	}
+
 	// Create internal parser with machine options
 	p.internal = rfc3164.NewMachine(p.internalOpts...)
 
 	return p
+}
+
+func (p *parser) WithBestEffort() {
+	p.bestEffort = true
+}
+
+func (p *parser) HasBestEffort() bool {
+	return p.internal.HasBestEffort()
 }
 
 // WithMachineOptions configures options for the underlying parsing machine.

@@ -131,7 +131,7 @@ func NewParserRFC3164(options ...syslog.ParserOption) syslog.Parser {
 
     // If bestEffort flag was set via old API, add it to internalOpts
     if m.bestEffort {
-         m.internalOpts = append(m.internalOpts, rfc3164.WithBestEffort())
+        m.internalOpts = append(m.internalOpts, rfc3164.WithBestEffort())
     }
 
     // Create internal parser depending on options
@@ -140,10 +140,12 @@ func NewParserRFC3164(options ...syslog.ParserOption) syslog.Parser {
     return m
 }
 
+// WithBestEffort implements the syslog.BestEfforter interface.
 func (m *machine) WithBestEffort() {
     m.bestEffort = true
 }
 
+// HasBestEffort tells whether the receiving parser has best effort mode on or off.
 func (m *machine) HasBestEffort() bool {
     return m.internal.HasBestEffort()
 }

@@ -71,10 +71,12 @@ func NewParserRFC3164(opts ...syslog.ParserOption) syslog.Parser {
 	return p
 }
 
+// WithBestEffort implements the syslog.BestEfforter interface.
 func (p *parser) WithBestEffort() {
 	p.bestEffort = true
 }
 
+// HasBestEffort tells whether the receiving parser has best effort mode on or off.
 func (p *parser) HasBestEffort() bool {
 	return p.internal.HasBestEffort()
 }

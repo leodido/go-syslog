@@ -328,7 +328,7 @@ func ExampleParser_ciscoIOSLeadingColon() {
 // due to a mismatch between the device configuration and the parser configuration.
 //
 // The error message "expecting a sequence number" actually means:
-// "I see digits that look like a sequence number, but you haven't enabled sequence number parsin. You need to configure the parser to handle this".
+// "I see digits that look like a sequence number, but you haven't enabled sequence number parsing. You need to configure the parser to handle this".
 func ExampleParser_ciscoIOSConfigMismatch() {
 	// Device configured with both message counter and sequence number
 	i := []byte(`<189>237: 000485: *Jan  8 19:46:03.295: %SYS-5-CONFIG_I: Configured from console`)

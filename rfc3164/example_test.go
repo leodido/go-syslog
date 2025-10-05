@@ -1,6 +1,8 @@
 package rfc3164
 
 import (
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -37,6 +39,24 @@ func Example() {
 	//   Message: (*string)((len=4) "Test")
 	//  }
 	// })
+}
+
+func Example_readme() {
+	p := NewParser()
+	msg, err := p.Parse([]byte("<34>Oct 11 22:14:15 mymachine su: 'su root' failed"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Access parsed fields
+	fmt.Printf("Priority: %d\n", *msg.(*SyslogMessage).Priority)
+	fmt.Printf("Hostname: %s\n", *msg.(*SyslogMessage).Hostname)
+	fmt.Printf("Message: %s\n", *msg.(*SyslogMessage).Message)
+
+	// Output:
+	// Priority: 34
+	// Hostname: mymachine
+	// Message: 'su root' failed
 }
 
 func Example_currentyear() {
@@ -277,6 +297,29 @@ func Example_ciscoIOS() {
 	//   ProcID: (*string)(<nil>),
 	//   MsgID: (*string)(<nil>),
 	//   Message: (*string)((len=69) "Line protocol on Interface GigabitEthernet7/0/34, changed state to up")
+	//  }
+	// })
+}
+
+func Example_ciscoIOS_leading_colon() {
+	i := []byte(`<189>: *Jan  8 19:46:03.295: %SYS-5-CONFIG_I: Configured from console`)
+	p := NewParser(WithYear(Year{YYYY: 2025}), WithCiscoIOSComponents(ciscoios.All))
+	m, _ := p.Parse(i)
+	output(m)
+	// Output:
+	// (*rfc3164.SyslogMessage)({
+	//  Base: (syslog.Base) {
+	//   Facility: (*uint8)(23),
+	//   Severity: (*uint8)(5),
+	//   Priority: (*uint8)(189),
+	//   MessageCounter: (*uint32)(0),
+	//   Sequence: (*uint32)(<nil>),
+	//   Timestamp: (*time.Time)(2025-01-08 19:46:03.295 +0000 UTC),
+	//   Hostname: (*string)(<nil>),
+	//   Appname: (*string)((len=15) "%SYS-5-CONFIG_I"),
+	//   ProcID: (*string)(<nil>),
+	//   MsgID: (*string)(<nil>),
+	//   Message: (*string)((len=23) "Configured from console")
 	//  }
 	// })
 }

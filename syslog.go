@@ -36,6 +36,7 @@ type MachineOption func(m Machine) Machine
 type Parser interface {
 	Parse(r io.Reader)
 	WithListener(ParserListener)
+	BestEfforter
 	WithMachineOptions(opts ...MachineOption)
 	MaxMessager
 }

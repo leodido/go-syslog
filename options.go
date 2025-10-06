@@ -24,6 +24,9 @@ func WithMachineOptions(opts ...MachineOption) ParserOption {
 	}
 }
 
+// WithBestEffort returns a generic option that enables best effort mode for syslog parsers.
+//
+// When passed to a parser it tries to recover as much of the syslog messages as possible.
 func WithBestEffort() ParserOption {
 	return func(p Parser) Parser {
 		p.WithBestEffort()

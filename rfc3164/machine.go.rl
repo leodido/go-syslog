@@ -190,10 +190,10 @@ ciscoextras = msgcount? <: sequence? <: ciscoHostname?;
 # note > should be {1,32} but Unifi thinks it can be up to 48 characters
 tag = (print -- [ :\[]){1,48} >mark %set_tag @err(err_tag);
 
-visible = print | 0x80..0xFF;
+visible = print | '\t' | 0x80..0xFF;
 
 # The first not alphanumeric character starts the content (usually containing a PID) part of the message part
-contentval = (print -- [ \[\]])* >mark %set_content @err(err_content);
+contentval = (visible -- [\[\]])* >mark %set_content @err(err_content);
 
 content = '[' contentval ']' @err(err_contentstart); # todo(leodido) > support ':' and ' ' too. Also they have to match?
 

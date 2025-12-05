@@ -491,6 +491,21 @@ var testCases = []testCase{
 			},
 		},
 	},
+	{
+		input: []byte(`<34>Jan 12 06:30:00 xxx apache: \t1.2.3.4 - - [12/Jan/2011:06:29:59 +0100] "GET /foo/bar.html HTTP/1.1" 301 96 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12 ( .NET CLR 3.5.30729)" PID 18904 Time Taken 0`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(34),
+				Severity:  syslogtesting.Uint8Address(2),
+				Facility:  syslogtesting.Uint8Address(4),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Jan 12 06:30:00"),
+				Hostname:  syslogtesting.StringAddress("xxx"),
+				Appname:   syslogtesting.StringAddress("apache"),
+				Message:   syslogtesting.StringAddress(`\t1.2.3.4 - - [12/Jan/2011:06:29:59 +0100] "GET /foo/bar.html HTTP/1.1" 301 96 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12 ( .NET CLR 3.5.30729)" PID 18904 Time Taken 0`),
+			},
+		},
+	},
 	// todo > other test cases pleaaaase
 }
 

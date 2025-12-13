@@ -190,6 +190,8 @@ ciscoextras = msgcount? <: sequence? <: ciscoHostname?;
 # note > should be {1,32} but Unifi thinks it can be up to 48 characters
 tag = (print -- [ :\[]){1,48} >mark %set_tag @err(err_tag);
 
+# note > we accept HTAB (0x09) in message content even though RFC 3164 technically restricts MSG to VCHAR (%d33-126) and SP (%d32).
+# note > this deviation is necessary for interoperability with common syslog implementations that use tabs as field delimiters (e.g., Snare).
 visible = print | 0x09 | 0x80..0xFF;
 
 # The first not alphanumeric character starts the content (usually containing a PID) part of the message part

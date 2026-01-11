@@ -3512,6 +3512,8 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 		switch (m.data)[(m.p)] {
 		case 32:
 			goto st10
+		case 48:
+			goto st10
 		case 51:
 			goto st32
 		}

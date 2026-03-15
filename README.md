@@ -37,6 +37,8 @@ The [docs](docs/) directory contains `.dot` files representing the finite-state 
 
 ## Usage
 
+[![Build with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/leodido/go-syslog)
+
 Suppose you want to parse a given sequence of bytes as a RFC5424 message.
 
 _Notice that the same interface applies for RFC3164. But you can always take a look at the [examples file](./rfc3164/example_test.go)._

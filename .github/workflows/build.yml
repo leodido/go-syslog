@@ -19,6 +19,7 @@ jobs:
           '1.21',
           '1.22',
           '1.23',
+          '1.24',
         ]
         include:
           # Set the minimum Go patch version for the given Go minor
@@ -28,6 +29,8 @@ jobs:
             GO_VERSION: '~1.22.0'
           - go: '1.23'
             GO_VERSION: '~1.23.0'
+          - go: '1.24'
+            GO_VERSION: '~1.24.0'
     runs-on: ${{ matrix.os }}
 
     steps:

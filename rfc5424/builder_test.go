@@ -464,13 +464,19 @@ func TestSetParameterConcurrent(t *testing.T) {
 	}
 }
 
-// TestSetParameterConcurrentSharedMessage reproduces the data race from
-// https://github.com/leodido/go-syslog/issues/33.
-// Multiple goroutines call SetParameter on the SAME SyslogMessage, which
-// causes concurrent map writes (and sometimes a nil-map panic).
-// Run with: go test -race -run TestSetParameterConcurrentSharedMessage
+// TestSetParameterConcurrentSharedMessage documents that SyslogMessage is NOT
+// safe for concurrent use (https://github.com/leodido/go-syslog/issues/33).
+//
+// Multiple goroutines calling SetParameter on the same SyslogMessage will race
+// on the StructuredData map. This is by design: like most Go mutable structs,
+// callers must use a separate instance per goroutine or provide their own
+// synchronization.
+//
+// Remove the Skip to verify the race still exists:
+//
+//	go test -race -run TestSetParameterConcurrentSharedMessage ./rfc5424/
 func TestSetParameterConcurrentSharedMessage(t *testing.T) {
-	t.Skip("skipped: known data race (https://github.com/leodido/go-syslog/issues/33)")
+	t.Skip("documents unsupported usage: SyslogMessage is not goroutine-safe (see #33)")
 
 	const goroutines = 100
 	const iterations = 50

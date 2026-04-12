@@ -30,3 +30,57 @@ func TestAllDigits(t *testing.T) {
 	res := UnsafeUTF8DecimalCodePointsToInt(slice)
 	assert.Equal(t, 1234567890, res)
 }
+
+func TestRemoveBytes(t *testing.T) {
+	data := []byte(`hello\world`)
+	res := RemoveBytes(data, []int{5}, 0)
+	assert.Equal(t, []byte(`helloworld`), res)
+
+	// Multiple positions
+	data2 := []byte(`a\b\c`)
+	res2 := RemoveBytes(data2, []int{1, 3}, 0)
+	assert.Equal(t, []byte(`abc`), res2)
+
+	// With offset
+	data3 := []byte(`xx\yy`)
+	res3 := RemoveBytes(data3, []int{4}, 2)
+	assert.Equal(t, []byte(`xxyy`), res3)
+
+	// Original data is not modified
+	orig := []byte(`a\b`)
+	RemoveBytes(orig, []int{1}, 0)
+	assert.Equal(t, []byte(`a\b`), orig)
+}
+
+func TestEscapeBytes(t *testing.T) {
+	assert.Equal(t, `\\`, EscapeBytes(`\`))
+	assert.Equal(t, `\]`, EscapeBytes(`]`))
+	assert.Equal(t, `\"`, EscapeBytes(`"`))
+	assert.Equal(t, `hello`, EscapeBytes(`hello`))
+	assert.Equal(t, `a\\b\]c\"d`, EscapeBytes(`a\b]c"d`))
+	assert.Equal(t, ``, EscapeBytes(``))
+}
+
+func TestInBetween(t *testing.T) {
+	assert.True(t, InBetween(5, 1, 10))
+	assert.True(t, InBetween(1, 1, 10))
+	assert.True(t, InBetween(10, 1, 10))
+	assert.False(t, InBetween(0, 1, 10))
+	assert.False(t, InBetween(11, 1, 10))
+}
+
+func TestValidPriority(t *testing.T) {
+	assert.True(t, ValidPriority(0))
+	assert.True(t, ValidPriority(191))
+	assert.True(t, ValidPriority(100))
+	assert.False(t, ValidPriority(192))
+	assert.False(t, ValidPriority(255))
+}
+
+func TestValidVersion(t *testing.T) {
+	assert.True(t, ValidVersion(1))
+	assert.True(t, ValidVersion(999))
+	assert.True(t, ValidVersion(500))
+	assert.False(t, ValidVersion(0))
+	assert.False(t, ValidVersion(1000))
+}

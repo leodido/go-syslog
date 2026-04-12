@@ -464,4 +464,31 @@ func TestSetParameterConcurrent(t *testing.T) {
 	}
 }
 
+// TestSetParameterConcurrentSharedMessage reproduces the data race from
+// https://github.com/leodido/go-syslog/issues/33.
+// Multiple goroutines call SetParameter on the SAME SyslogMessage, which
+// causes concurrent map writes (and sometimes a nil-map panic).
+// Run with: go test -race -run TestSetParameterConcurrentSharedMessage
+func TestSetParameterConcurrentSharedMessage(t *testing.T) {
+	const goroutines = 100
+	const iterations = 50
+
+	m := &SyslogMessage{}
+	m.SetPriority(1)
+	m.SetVersion(1)
+
+	done := make(chan bool, goroutines)
+	for i := 0; i < goroutines; i++ {
+		go func(id int) {
+			defer func() { done <- true }()
+			elemID := fmt.Sprintf("sd%d@123", id)
+			for j := 0; j < iterations; j++ {
+				m.SetParameter(elemID, fmt.Sprintf("key%d", j), "value")
+			}
+		}(i)
+	}
+	for i := 0; i < goroutines; i++ {
+		<-done
+	}
+}
 

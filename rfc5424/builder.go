@@ -61,6 +61,10 @@ func (e entrypoint) translate() int {
 }
 
 func (sm *SyslogMessage) set(from entrypoint, value string) *SyslogMessage {
+	return sm.setWithCtx(from, value, "", "")
+}
+
+func (sm *SyslogMessage) setWithCtx(from entrypoint, value string, currentid string, currentparamname string) *SyslogMessage {
 	data := []byte(value)
 	p := 0
 	pb := 0
@@ -9206,7 +9210,7 @@ func (sm *SyslogMessage) set(from entrypoint, value string) *SyslogMessage {
 
 				// Assuming SD map already exists, contains currentid key (set from outside)
 				elements := *sm.StructuredData
-				elements[sm.currentID][string(data[pb:p])] = ""
+				elements[currentid][string(data[pb:p])] = ""
 
 			case 583:
 
@@ -9218,7 +9222,7 @@ func (sm *SyslogMessage) set(from entrypoint, value string) *SyslogMessage {
 				}
 				// Assuming SD map already exists, contains currentid key and currentparamname key (set from outside)
 				elements := *sm.StructuredData
-				elements[sm.currentID][sm.currentParamName] = string(text)
+				elements[currentid][currentparamname] = string(text)
 
 			case 53:
 
@@ -9238,7 +9242,7 @@ func (sm *SyslogMessage) set(from entrypoint, value string) *SyslogMessage {
 				}
 				// Assuming SD map already exists, contains currentid key and currentparamname key (set from outside)
 				elements := *sm.StructuredData
-				elements[sm.currentID][sm.currentParamName] = string(text)
+				elements[currentid][currentparamname] = string(text)
 
 			case 52:
 
@@ -9324,12 +9328,10 @@ func (sm *SyslogMessage) SetParameter(id string, name string, value string) Buil
 	if sm.StructuredData != nil {
 		elements := *sm.StructuredData
 		if _, ok := elements[id]; ok {
-			sm.currentID = id
-			sm.set(sdpn, name)
+			sm.setWithCtx(sdpn, name, id, "")
 			// We can assign parameter value iff the given parameter key exists
 			if _, ok := elements[id][name]; ok {
-				sm.currentParamName = name
-				sm.set(sdpv, value)
+				sm.setWithCtx(sdpv, value, id, name)
 			}
 		}
 	}

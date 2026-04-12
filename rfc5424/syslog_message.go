@@ -80,9 +80,6 @@ type SyslogMessage struct {
 
 	Version        uint16 // Grammar mandates that version cannot be 0, so we can use the 0 value of uint16 to signal nil
 	StructuredData *map[string]map[string]string
-
-	currentID        string
-	currentParamName string
 }
 
 // Valid tells whether the receiving RFC5424 SyslogMessage is well-formed or not.

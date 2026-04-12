@@ -1664,6 +1664,20 @@ func TestMachineBestEffortOption(t *testing.T) {
 	assert.True(t, p2.HasBestEffort())
 }
 
+func TestMachineErr(t *testing.T) {
+	m := NewMachine().(*machine)
+	// No error before parsing
+	assert.Nil(t, m.Err())
+	// Error after invalid input
+	_, err := m.Parse([]byte("not a syslog message"))
+	assert.Error(t, err)
+	assert.Error(t, m.Err())
+	// No error after valid input
+	_, err = m.Parse([]byte(`<1>1 - - - - - -`))
+	assert.NoError(t, err)
+	assert.NoError(t, m.Err())
+}
+
 func TestMachineParse(t *testing.T) {
 	runTestCases(t, append(testCases))
 }

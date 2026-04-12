@@ -569,3 +569,63 @@ func TestMachineParse(t *testing.T) {
 		})
 	}
 }
+
+func TestMachineHasBestEffort(t *testing.T) {
+	m := NewMachine()
+	assert.False(t, m.HasBestEffort())
+	m.WithBestEffort()
+	assert.True(t, m.HasBestEffort())
+}
+
+func TestMachineErr(t *testing.T) {
+	m := NewMachine().(*machine)
+	// No error before parsing
+	assert.Nil(t, m.Err())
+	// Error after invalid input
+	_, err := m.Parse([]byte("not a syslog message"))
+	assert.Error(t, err)
+	assert.Error(t, m.Err())
+}
+
+func TestParserHasBestEffort(t *testing.T) {
+	p := NewParser()
+	assert.False(t, p.HasBestEffort())
+
+	p2 := NewParser(WithBestEffort())
+	assert.True(t, p2.HasBestEffort())
+}
+
+func TestParserParseInvalid(t *testing.T) {
+	p := NewParser()
+	msg, err := p.Parse([]byte("invalid"))
+	assert.Nil(t, msg)
+	assert.Error(t, err)
+}
+
+func TestParserParseInvalidBestEffort(t *testing.T) {
+	p := NewParser(WithBestEffort())
+	msg, err := p.Parse([]byte(`<13>not valid`))
+	assert.NotNil(t, msg)
+	assert.Error(t, err)
+}
+
+func TestWithMessageCounter(t *testing.T) {
+	m := NewMachine(WithMessageCounter())
+	msg, err := m.Parse([]byte(`<189>643: Jan  8 19:46:03 myhost %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up`))
+	assert.NotNil(t, msg)
+	assert.NoError(t, err)
+}
+
+func TestWithSequenceNumber(t *testing.T) {
+	m := NewMachine(WithMessageCounter(), WithSequenceNumber())
+	msg, err := m.Parse([]byte(`<189>105: 000104: Mar 12 07:12:10 myhost %SYS-5-CONFIG_I: Configured from console by console`))
+	assert.NotNil(t, msg)
+	assert.NoError(t, err)
+}
+
+func TestWithCiscoHostname(t *testing.T) {
+	m := NewMachine(WithMessageCounter(), WithCiscoHostname())
+	msg, err := m.Parse([]byte(`<189>269614: hostname1: Apr 11 10:02:08 %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`))
+	assert.NotNil(t, msg)
+	assert.NoError(t, err)
+}

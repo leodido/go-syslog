@@ -68,6 +68,18 @@ func WithLenientDay() syslog.MachineOption {
 	}
 }
 
+// WithEmbeddedNewlines tells the parser to accept newline characters (LF, CR) inside the MSG field.
+//
+// By default the RFC 3164 parser treats newlines as message terminators.
+// Enable this when using octet-counting framing (RFC 5425) where message boundaries
+// are determined by the length prefix, making embedded newlines unambiguous.
+func WithEmbeddedNewlines() syslog.MachineOption {
+	return func(m syslog.Machine) syslog.Machine {
+		m.(*machine).WithEmbeddedNewlines()
+		return m
+	}
+}
+
 // WithRFC3339 tells the parser to look for RFC3339 timestamps, too.
 //
 // It tells the parser to accept also RFC3339 timestamps even if they are not in the RFC3164 timestamp part.

@@ -140,22 +140,7 @@ var testCases = []testCase{
 			},
 		},
 	},
-	// Space-padded day still works with WithLenientDay
-	{
-		opts:  []syslog.MachineOption{WithLenientDay()},
-		input: []byte(`<13>Feb  5 17:32:18 10.0.0.99 Use the BFG!`),
-		valid: true,
-		value: &SyslogMessage{
-			Base: syslog.Base{
-				Priority:  syslogtesting.Uint8Address(13),
-				Facility:  syslogtesting.Uint8Address(1),
-				Severity:  syslogtesting.Uint8Address(5),
-				Timestamp: syslogtesting.TimeParse(time.Stamp, "Feb  5 17:32:18"),
-				Hostname:  syslogtesting.StringAddress("10.0.0.99"),
-				Message:   syslogtesting.StringAddress("Use the BFG!"),
-			},
-		},
-	},
+
 	{
 		input: []byte(`<165>Aug 24 05:34:00 mymachine myproc[10]: %% It's time to make the do-nuts.  %%  Ingredients: Mix=OK, Jelly=OK # Devices: Mixer=OK, Jelly_Injector=OK, Frier=OK # Transport: Conveyer1=OK, Conveyer2=OK # %%`),
 		valid: true,

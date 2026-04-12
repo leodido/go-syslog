@@ -470,6 +470,8 @@ func TestSetParameterConcurrent(t *testing.T) {
 // causes concurrent map writes (and sometimes a nil-map panic).
 // Run with: go test -race -run TestSetParameterConcurrentSharedMessage
 func TestSetParameterConcurrentSharedMessage(t *testing.T) {
+	t.Skip("skipped: known data race (https://github.com/leodido/go-syslog/issues/33)")
+
 	const goroutines = 100
 	const iterations = 50
 

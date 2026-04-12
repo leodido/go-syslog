@@ -629,3 +629,67 @@ func TestWithCiscoHostname(t *testing.T) {
 	assert.NotNil(t, msg)
 	assert.NoError(t, err)
 }
+
+func TestWithEmbeddedNewlines_LF(t *testing.T) {
+	m := NewMachine(WithEmbeddedNewlines())
+	msg, err := m.Parse([]byte("<134>Apr 28 11:53:44 myhost myapp: line1\nline2\nline3"))
+	assert.NoError(t, err)
+	assert.NotNil(t, msg)
+	sm := msg.(*SyslogMessage)
+	assert.Equal(t, "line1\nline2\nline3", *sm.Message)
+}
+
+func TestWithEmbeddedNewlines_CR(t *testing.T) {
+	m := NewMachine(WithEmbeddedNewlines())
+	msg, err := m.Parse([]byte("<134>Apr 28 11:53:44 myhost myapp: line1\rline2\rline3"))
+	assert.NoError(t, err)
+	assert.NotNil(t, msg)
+	sm := msg.(*SyslogMessage)
+	assert.Equal(t, "line1\rline2\rline3", *sm.Message)
+}
+
+func TestWithEmbeddedNewlines_CRLF(t *testing.T) {
+	m := NewMachine(WithEmbeddedNewlines())
+	msg, err := m.Parse([]byte("<134>Apr 28 11:53:44 myhost myapp: line1\r\nline2\r\nline3"))
+	assert.NoError(t, err)
+	assert.NotNil(t, msg)
+	sm := msg.(*SyslogMessage)
+	assert.Equal(t, "line1\r\nline2\r\nline3", *sm.Message)
+}
+
+func TestWithEmbeddedNewlines_TrailingLFStripped(t *testing.T) {
+	// The grammar's '\n'? at the end of main still strips a single trailing LF
+	// when the LF is at the very end of input (EOF boundary).
+	// With WithEmbeddedNewlines, mex greedily consumes the trailing \n,
+	// so it becomes part of the message. This is expected — the transport
+	// layer (octet-counting) handles stripping when needed.
+	m := NewMachine(WithEmbeddedNewlines())
+	msg, err := m.Parse([]byte("<134>Apr 28 11:53:44 myhost myapp: hello\n"))
+	assert.NoError(t, err)
+	assert.NotNil(t, msg)
+	sm := msg.(*SyslogMessage)
+	// With WithEmbeddedNewlines, the trailing \n is consumed by mex as content
+	assert.Equal(t, "hello\n", *sm.Message)
+}
+
+func TestWithoutEmbeddedNewlines_Truncates(t *testing.T) {
+	// Without the option, newlines truncate the message (original behavior).
+	m := NewMachine(WithBestEffort())
+	msg, err := m.Parse([]byte("<134>Apr 28 11:53:44 myhost myapp: line1\nline2"))
+	assert.NoError(t, err)
+	assert.NotNil(t, msg)
+	sm := msg.(*SyslogMessage)
+	assert.Equal(t, "line1", *sm.Message)
+}
+
+func TestWithEmbeddedNewlines_ContentBlock(t *testing.T) {
+	// Newlines inside [...] content blocks should also be accepted.
+	m := NewMachine(WithEmbeddedNewlines())
+	msg, err := m.Parse([]byte("<134>Apr 28 11:53:44 myhost myapp[foo\nbar]: hello"))
+	assert.NoError(t, err)
+	assert.NotNil(t, msg)
+	sm := msg.(*SyslogMessage)
+	assert.Equal(t, "hello", *sm.Message)
+	assert.Equal(t, "myapp", *sm.Appname)
+	assert.Equal(t, "foo\nbar", *sm.ProcID)
+}

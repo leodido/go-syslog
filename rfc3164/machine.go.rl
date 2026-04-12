@@ -195,16 +195,21 @@ tag = (print -- [ :\[]){1,48} >mark %set_tag @err(err_tag);
 # note > this deviation is necessary for interoperability with common syslog implementations that use tabs as field delimiters (e.g., Snare).
 visible = print | 0x09 | 0x80..0xFF;
 
+# note > when newline mode is enabled (WithEmbeddedNewlines), we also accept LF (0x0A) and CR (0x0D) inside the message body.
+# note > this is needed for octet-counting framing (RFC 5425) where the message length is known upfront,
+# note > so embedded newlines are unambiguous and must be preserved.
+visible_or_nl = visible | ( 0x0A | 0x0D ) when { m.newline };
+
 # The first not alphanumeric character starts the content (usually containing a PID) part of the message part
-contentval = (visible -- [\[\]])* >mark %set_content @err(err_content);
+contentval = ((visible_or_nl -- [\[\]])*) >mark %set_content @err(err_content);
 
 content = '[' contentval ']' @err(err_contentstart); # todo(leodido) > support ':' and ' ' too. Also they have to match?
 
-mex = visible+ >mark %set_message;
+mex = visible_or_nl+ >mark %set_message;
 
 msg = (tag content? ':' sp)? mex;
 
-fail := (any - [\n\r])* @err{ fgoto main; };
+fail := ((any when { m.newline }) | (any - [\n\r]) when { !m.newline })* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
@@ -228,6 +233,7 @@ type machine struct {
 	sequence      bool
 	ciscoHostname bool
 	lenientDay    bool
+	newline       bool
 	loc           *time.Location
 	timezone      *time.Location
 }
@@ -309,6 +315,14 @@ func (m *machine) WithCiscoHostname() {
 // are space-padded (e.g., "Feb  5").
 func (m *machine) WithLenientDay() {
     m.lenientDay = true
+}
+
+// WithEmbeddedNewlines enables acceptance of newline characters (LF, CR) inside the MSG field.
+// By default the parser treats newlines as message terminators per RFC 3164.
+// Enable this when using octet-counting framing (RFC 5425) where message boundaries
+// are determined by the length prefix, making embedded newlines unambiguous.
+func (m *machine) WithEmbeddedNewlines() {
+    m.newline = true
 }
 
 // Err returns the error that occurred on the last call to Parse.

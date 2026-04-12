@@ -1,6 +1,7 @@
 package rfc5424
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -439,3 +440,28 @@ func TestSerialization(t *testing.T) {
 	assert.Empty(t, res)
 	assert.Error(t, err)
 }
+
+func TestSetParameterConcurrent(t *testing.T) {
+	const goroutines = 100
+	const iterations = 50
+
+	done := make(chan bool, goroutines)
+	for i := 0; i < goroutines; i++ {
+		go func(id int) {
+			defer func() { done <- true }()
+			elemID := fmt.Sprintf("sd%d@123", id)
+			for j := 0; j < iterations; j++ {
+				m := &SyslogMessage{}
+				m.SetPriority(1)
+				m.SetVersion(1)
+				m.SetElementID(elemID)
+				m.SetParameter(elemID, "key", "value")
+			}
+		}(i)
+	}
+	for i := 0; i < goroutines; i++ {
+		<-done
+	}
+}
+
+

@@ -158,6 +158,7 @@ pri = ('<' prival >mark %from(set_prival) $err(err_prival) '>') @err(err_pri);
 time = hhmmss (timesecfrac? when { m.secfrac });
 
 timestamp = (datemmm sp datemday sp time) >mark %set_timestamp @err(err_timestamp);
+timestamp_lenient = (datemmm sp datemday_lenient sp time) >mark %set_timestamp @err(err_timestamp);
 
 rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
 
@@ -207,7 +208,7 @@ fail := (any - [\n\r])* @err{ fgoto main; };
 
 # note > some BSD syslog implementations insert extra spaces between "PRI", "Timestamp", and "Hostname": although these strictly violate RFC3164, it is useful to be able to parse them
 # note > OpenBSD like many other hardware sends syslog messages without hostname
-main := pri sp* ciscoextras ciscostar (timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
+main := pri sp* ciscoextras ciscostar ((timestamp_lenient when { m.lenientDay }) | timestamp | (rfc3339 when { m.rfc3339 })) ciscocolon sp+ (hostname sp+)? msg '\n'?;
 
 }%%
 
@@ -226,6 +227,7 @@ type machine struct {
 	msgcount      bool
 	sequence      bool
 	ciscoHostname bool
+	lenientDay    bool
 	loc           *time.Location
 	timezone      *time.Location
 }
@@ -300,6 +302,13 @@ func (m *machine) WithSequenceNumber() {
 // `<189>269614: hostname1: Apr 11 10:02:08: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet7/0/34, changed state to up`
 func (m *machine) WithCiscoHostname() {
     m.ciscoHostname = true
+}
+
+// WithLenientDay enables acceptance of 0-prefixed single-digit days in timestamps (e.g., "Feb 05").
+// By default the parser only accepts RFC 3164 compliant timestamps where single-digit days
+// are space-padded (e.g., "Feb  5").
+func (m *machine) WithLenientDay() {
+    m.lenientDay = true
 }
 
 // Err returns the error that occurred on the last call to Parse.

@@ -111,8 +111,39 @@ var testCases = []testCase{
 			},
 		},
 	},
+	// Zero-prefixed day rejected without WithLenientDay
 	{
+		input:       []byte(`<13>Feb 05 17:32:18 10.0.0.99 Use the BFG!`),
+		valid:       false,
+		errorString: "expecting a Stamp timestamp [col 8]",
+		partialValue: &SyslogMessage{
+			Base: syslog.Base{
+				Priority: syslogtesting.Uint8Address(13),
+				Facility: syslogtesting.Uint8Address(1),
+				Severity: syslogtesting.Uint8Address(5),
+			},
+		},
+	},
+	// Zero-prefixed day accepted with WithLenientDay
+	{
+		opts:  []syslog.MachineOption{WithLenientDay()},
 		input: []byte(`<13>Feb 05 17:32:18 10.0.0.99 Use the BFG!`),
+		valid: true,
+		value: &SyslogMessage{
+			Base: syslog.Base{
+				Priority:  syslogtesting.Uint8Address(13),
+				Facility:  syslogtesting.Uint8Address(1),
+				Severity:  syslogtesting.Uint8Address(5),
+				Timestamp: syslogtesting.TimeParse(time.Stamp, "Feb  5 17:32:18"),
+				Hostname:  syslogtesting.StringAddress("10.0.0.99"),
+				Message:   syslogtesting.StringAddress("Use the BFG!"),
+			},
+		},
+	},
+	// Space-padded day still works with WithLenientDay
+	{
+		opts:  []syslog.MachineOption{WithLenientDay()},
+		input: []byte(`<13>Feb  5 17:32:18 10.0.0.99 Use the BFG!`),
 		valid: true,
 		value: &SyslogMessage{
 			Base: syslog.Base{

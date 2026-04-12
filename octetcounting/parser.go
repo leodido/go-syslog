@@ -26,6 +26,7 @@ type parser struct {
 	last             Token
 	stepback         bool // Wheter to retrieve the last token or not
 	emit             syslog.ParserListener
+	stripTrailingNL  bool // Strip trailing \r\n or \n before passing to inner machine
 }
 
 // NewParser returns a syslog.Parser suitable to parse syslog messages sent with transparent - ie. octet counting (RFC 5425) - framing.
@@ -64,6 +65,13 @@ func NewParserRFC3164(opts ...syslog.ParserOption) syslog.Parser {
 	if p.bestEffort {
 		p.internalOpts = append(p.internalOpts, rfc3164.WithBestEffort())
 	}
+
+	// Octet-counting framing knows the exact message length, so embedded
+	// newlines are unambiguous and must be preserved in the MSG field.
+	// The trailing \n is stripped before passing to the inner machine since
+	// many senders include it as a framing convention, not as message content.
+	p.internalOpts = append(p.internalOpts, rfc3164.WithEmbeddedNewlines())
+	p.stripTrailingNL = true
 
 	// Create internal parser with machine options
 	p.internal = rfc3164.NewMachine(p.internalOpts...)
@@ -187,6 +195,16 @@ func (p *parser) run() {
 }
 
 func (p *parser) parse(input []byte) *syslog.Result {
+	if p.stripTrailingNL && len(input) > 0 {
+		// Strip a single trailing \r\n or \n. Many senders include a trailing
+		// newline as a framing convention; it is not part of the message content.
+		if input[len(input)-1] == '\n' {
+			input = input[:len(input)-1]
+			if len(input) > 0 && input[len(input)-1] == '\r' {
+				input = input[:len(input)-1]
+			}
+		}
+	}
 	sys, err := p.internal.Parse(input)
 
 	return &syslog.Result{

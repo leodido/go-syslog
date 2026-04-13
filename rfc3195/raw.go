@@ -89,7 +89,11 @@ func (p *parser) WithListener(f syslog.ParserListener) {
 // A NUL frame signals the end of the exchange. SEQ frames are silently skipped
 // (flow control is not relevant for parsing-only use).
 func (p *parser) Parse(r io.Reader) {
-	scanner := NewScanner(r)
+	var scanOpts []ScannerOption
+	if p.maxMessageLength > 0 {
+		scanOpts = append(scanOpts, WithMaxPayloadSize(p.maxMessageLength))
+	}
+	scanner := NewScanner(r, scanOpts...)
 
 	for {
 		frame, err := scanner.Scan()
@@ -128,15 +132,8 @@ func (p *parser) Parse(r io.Reader) {
 func (p *parser) processANS(frame Frame) {
 	payload := frame.Payload
 
-	if p.maxMessageLength > 0 && len(payload) > p.maxMessageLength {
-		p.emit(&syslog.Result{
-			Error: fmt.Errorf("rfc3195 raw: message length %d exceeds max %d", len(payload), p.maxMessageLength),
-		})
-		return
-	}
-
-	// Strip trailing CRLF (framing artifact, not part of the syslog message)
-	payload = bytes.TrimRight(payload, "\r\n")
+	// Strip exactly one trailing CRLF (framing artifact, not part of the syslog message)
+	payload = bytes.TrimSuffix(payload, []byte("\r\n"))
 
 	if len(payload) == 0 {
 		return

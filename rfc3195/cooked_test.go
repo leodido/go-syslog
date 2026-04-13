@@ -649,6 +649,45 @@ func TestCookedParser_RPYFrameSkipped(t *testing.T) {
 	assert.NoError(t, results[0].Error)
 }
 
+func TestCookedParser_XmlLangIgnored(t *testing.T) {
+	// xml:lang is defined in the DTD but intentionally not captured.
+	// Verify it doesn't interfere with parsing.
+	entry := `<entry facility='4' severity='2' xml:lang='en'>with lang</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, "with lang", *msg.Message)
+}
+
+func TestCookedParser_XMLEscapedContent(t *testing.T) {
+	// Verify XML character references are decoded in message content
+	entry := `<entry facility='4' severity='2'>1 &lt; 2 &amp; 3 &gt; 0</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, "1 < 2 & 3 > 0", *msg.Message)
+}
+
 func TestCookedParser_WithCookedYear(t *testing.T) {
 	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>with year</entry>`
 	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +

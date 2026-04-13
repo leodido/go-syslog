@@ -152,6 +152,9 @@ type xmlElement struct {
 }
 
 // xmlEntry maps to the <entry> element attributes per RFC 3195 §7 DTD.
+// The xml:lang attribute defined in the DTD is intentionally not captured:
+// encoding/xml silently ignores unmapped attributes, and language tagging
+// is not part of the syslog.Message contract.
 type xmlEntry struct {
 	XMLName    xml.Name `xml:""`
 	Facility   string   `xml:"facility,attr"`

@@ -248,7 +248,7 @@ func (p *cookedParser) processEntry(entry xmlEntry) {
 			return
 		}
 		if p.year > 0 {
-			t = t.AddDate(p.year, 0, 0)
+			t = time.Date(p.year, t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 		}
 		msg.Timestamp = &t
 	}

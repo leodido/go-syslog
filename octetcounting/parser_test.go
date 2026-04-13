@@ -7,9 +7,12 @@ import (
 	"testing"
 
 	"github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/auto"
+	"github.com/leodido/go-syslog/v4/rfc3164"
 	"github.com/leodido/go-syslog/v4/rfc5424"
 	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type testCase struct {
@@ -773,4 +776,172 @@ func TestParserBestEffortCompatibility(t *testing.T) {
 	// Test new API works too
 	p3 := NewParser(syslog.WithMachineOptions(rfc5424.WithBestEffort()))
 	assert.True(t, p3.HasBestEffort())
+}
+
+// --- Auto-detect parser tests ---
+
+func TestParseAuto_MixedStream(t *testing.T) {
+	rfc5424Msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`
+	rfc3164Msg := `<13>Dec  2 16:31:03 host app: Test`
+	stream := fmt.Sprintf("%d %s%d %s", len(rfc5424Msg), rfc5424Msg, len(rfc3164Msg), rfc3164Msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 2)
+	require.NoError(t, results[0].Error)
+	assert.Equal(t, auto.FormatRFC5424, auto.DetectFormat(results[0].Message))
+	require.NoError(t, results[1].Error)
+	assert.Equal(t, auto.FormatRFC3164, auto.DetectFormat(results[1].Message))
+}
+
+func TestParseAuto_RFC5424Only(t *testing.T) {
+	msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] msg`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	assert.Equal(t, auto.FormatRFC5424, auto.DetectFormat(results[0].Message))
+}
+
+func TestParseAuto_RFC3164Only(t *testing.T) {
+	msg := `<13>Dec  2 16:31:03 host app: Test`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	assert.Equal(t, auto.FormatRFC3164, auto.DetectFormat(results[0].Message))
+}
+
+func TestParseAuto_WithRFC3164MachineOptions(t *testing.T) {
+	msg := `<13>Dec  2 16:31:03 host app: Test`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+		auto.WithRFC3164MachineOptions(rfc3164.WithYear(rfc3164.Year{YYYY: 2025})),
+	)
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	sm := results[0].Message.(*rfc3164.SyslogMessage)
+	require.NotNil(t, sm.Timestamp)
+	assert.Equal(t, 2025, sm.Timestamp.Year())
+}
+
+func TestParseAuto_WithRFC5424MachineOptions(t *testing.T) {
+	msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] msg`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+		auto.WithRFC5424MachineOptions(rfc5424.WithCompliantMsg()),
+	)
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	assert.Equal(t, auto.FormatRFC5424, auto.DetectFormat(results[0].Message))
+}
+
+func TestParseAuto_WithoutFallback(t *testing.T) {
+	msg := `<13>Dec  2 16:31:03 host app: Test`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+		auto.WithoutParserFallback(),
+	)
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	assert.Equal(t, auto.FormatRFC3164, auto.DetectFormat(results[0].Message))
+}
+
+func TestParseAuto_BestEffort(t *testing.T) {
+	msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+		syslog.WithBestEffort(),
+	)
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NotNil(t, results[0].Message)
+	assert.Error(t, results[0].Error)
+}
+
+func TestParseAuto_WithMachineOptions(t *testing.T) {
+	// syslog.WithMachineOptions should forward to both inner parsers.
+	// Use rfc5424.WithBestEffort() as a generic machine option.
+	msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+		syslog.WithMachineOptions(rfc5424.WithBestEffort()),
+	)
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	// Best-effort should return partial message for truncated 5424.
+	assert.NotNil(t, results[0].Message)
+	assert.Error(t, results[0].Error)
+}
+
+func TestParseAuto_RFC3164_EmbeddedNewline(t *testing.T) {
+	// Regression test for issue #15: embedded newlines in RFC 3164 messages
+	// must be preserved when using octet-counted framing.
+	msg := "<13>Dec  2 16:31:03 host app: line1\nline2"
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	p := NewParserAuto(
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+		syslog.WithBestEffort(),
+	)
+	p.Parse(strings.NewReader(stream))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	sm := results[0].Message.(*rfc3164.SyslogMessage)
+	require.NotNil(t, sm.Message)
+	assert.Contains(t, *sm.Message, "line1\nline2")
 }

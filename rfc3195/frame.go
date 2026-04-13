@@ -39,6 +39,9 @@ var keywordToType = map[string]FrameType{
 }
 
 // Frame represents a parsed BEEP frame.
+//
+// For data frames (MSG, RPY, ERR, ANS, NUL), Payload contains exactly Size
+// bytes. Payload is nil when Size is 0 or for SEQ frames.
 type Frame struct {
 	Type    FrameType
 	Channel uint32
@@ -47,25 +50,59 @@ type Frame struct {
 	Seqno   uint32
 	Size    uint32
 	Ansno   uint32 // only meaningful for ANS frames
-	Payload []byte // exactly Size bytes; nil for SEQ frames
+	Payload []byte
 
 	// SEQ frame fields (RFC 3081 §3.1.3)
 	Ackno  uint32 // only meaningful for SEQ frames
 	Window uint32 // only meaningful for SEQ frames
 }
 
+const (
+	// maxInt31 is the maximum value for channel, msgno, size, and ansno
+	// per RFC 3080 §2.2.1 ABNF (0..2147483647).
+	maxInt31 = 2147483647
+
+	// maxHeaderLen caps the frame header line length to prevent unbounded
+	// buffering from a malicious sender that never sends a newline.
+	maxHeaderLen = 128
+
+	// DefaultMaxPayloadSize is the default maximum payload size (2 MB).
+	// Callers can override via ScannerOption.
+	DefaultMaxPayloadSize = 2 * 1024 * 1024
+)
+
 // Scanner reads BEEP frames from an io.Reader.
 type Scanner struct {
-	r *bufio.Reader
+	r              *bufio.Reader
+	maxPayloadSize int
+}
+
+// ScannerOption configures a Scanner.
+type ScannerOption func(*Scanner)
+
+// WithMaxPayloadSize sets the maximum payload size the scanner will allocate.
+// Frames declaring a size larger than this are rejected with an error.
+// A value of 0 means no limit (not recommended for untrusted input).
+func WithMaxPayloadSize(n int) ScannerOption {
+	return func(s *Scanner) {
+		s.maxPayloadSize = n
+	}
 }
 
 // NewScanner creates a Scanner that reads BEEP frames from r.
-func NewScanner(r io.Reader) *Scanner {
+func NewScanner(r io.Reader, opts ...ScannerOption) *Scanner {
 	br, ok := r.(*bufio.Reader)
 	if !ok {
-		br = bufio.NewReader(r)
+		br = bufio.NewReaderSize(r, maxHeaderLen)
 	}
-	return &Scanner{r: br}
+	s := &Scanner{
+		r:              br,
+		maxPayloadSize: DefaultMaxPayloadSize,
+	}
+	for _, opt := range opts {
+		opt(s)
+	}
+	return s
 }
 
 // Scan reads the next BEEP frame from the underlying reader.
@@ -77,6 +114,11 @@ func (s *Scanner) Scan() (Frame, error) {
 			return Frame{}, io.EOF
 		}
 		return Frame{}, fmt.Errorf("reading frame header: %w", err)
+	}
+
+	// Reject excessively long header lines
+	if len(line) > maxHeaderLen {
+		return Frame{}, fmt.Errorf("frame header too long (%d bytes, max %d)", len(line), maxHeaderLen)
 	}
 
 	// Strip trailing CRLF
@@ -110,7 +152,7 @@ func (s *Scanner) parseSEQ(fields [][]byte) (Frame, error) {
 		return Frame{}, fmt.Errorf("SEQ frame requires 4 fields, got %d", len(fields))
 	}
 
-	channel, err := parseUint32(fields[1], "channel")
+	channel, err := parseInt31(fields[1], "channel")
 	if err != nil {
 		return Frame{}, err
 	}
@@ -142,11 +184,11 @@ func (s *Scanner) parseDataFrame(ft FrameType, fields [][]byte) (Frame, error) {
 		return Frame{}, fmt.Errorf("%s frame requires %d fields, got %d", ft, expectedFields, len(fields))
 	}
 
-	channel, err := parseUint32(fields[1], "channel")
+	channel, err := parseInt31(fields[1], "channel")
 	if err != nil {
 		return Frame{}, err
 	}
-	msgno, err := parseUint32(fields[2], "msgno")
+	msgno, err := parseInt31(fields[2], "msgno")
 	if err != nil {
 		return Frame{}, err
 	}
@@ -160,22 +202,38 @@ func (s *Scanner) parseDataFrame(ft FrameType, fields [][]byte) (Frame, error) {
 	if err != nil {
 		return Frame{}, err
 	}
-	size, err := parseUint32(fields[5], "size")
+	size, err := parseInt31(fields[5], "size")
 	if err != nil {
 		return Frame{}, err
 	}
 
 	var ansno uint32
 	if ft == FrameANS {
-		ansno, err = parseUint32(fields[6], "ansno")
+		ansno, err = parseInt31(fields[6], "ansno")
 		if err != nil {
 			return Frame{}, err
 		}
 	}
 
-	// Read exactly 'size' bytes of payload
-	payload := make([]byte, size)
+	// RFC 3080 §2.2.1: NUL frames must have continuation='.' and size=0
+	if ft == FrameNUL {
+		if more {
+			return Frame{}, fmt.Errorf("NUL frame must have continuation '.', got '*'")
+		}
+		if size != 0 {
+			return Frame{}, fmt.Errorf("NUL frame must have size 0, got %d", size)
+		}
+	}
+
+	// Reject payloads exceeding the configured limit before allocating
+	if s.maxPayloadSize > 0 && int(size) > s.maxPayloadSize {
+		return Frame{}, fmt.Errorf("frame payload size %d exceeds max %d", size, s.maxPayloadSize)
+	}
+
+	// Read exactly 'size' bytes of payload; nil when size is 0
+	var payload []byte
 	if size > 0 {
+		payload = make([]byte, size)
 		if _, err := io.ReadFull(s.r, payload); err != nil {
 			return Frame{}, fmt.Errorf("reading payload (%d bytes): %w", size, err)
 		}
@@ -202,6 +260,21 @@ func (s *Scanner) parseDataFrame(ft FrameType, fields [][]byte) (Frame, error) {
 	}, nil
 }
 
+// parseInt31 parses a uint value in the range 0..2147483647 (2^31-1).
+// RFC 3080 §2.2.1 uses this range for channel, msgno, size, and ansno.
+func parseInt31(b []byte, name string) (uint32, error) {
+	v, err := strconv.ParseUint(string(b), 10, 32)
+	if err != nil {
+		return 0, fmt.Errorf("invalid %s %q: %w", name, b, err)
+	}
+	if v > maxInt31 {
+		return 0, fmt.Errorf("invalid %s %q: value %d exceeds max %d", name, b, v, maxInt31)
+	}
+	return uint32(v), nil
+}
+
+// parseUint32 parses a uint value in the range 0..4294967295.
+// Used for seqno (RFC 3080) and ackno/window (RFC 3081 §3.1.3).
 func parseUint32(b []byte, name string) (uint32, error) {
 	v, err := strconv.ParseUint(string(b), 10, 32)
 	if err != nil {

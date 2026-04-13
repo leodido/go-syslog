@@ -115,12 +115,19 @@ func (p *parser) Parse(r io.Reader) {
 			// End of exchange
 			return
 
+		case FrameERR:
+			// Server signaling an error condition (RFC 3195 §4.2)
+			p.emit(&syslog.Result{
+				Error: fmt.Errorf("rfc3195 raw: received ERR frame: %s", frame.Payload),
+			})
+			return
+
 		case FrameSEQ:
 			// Flow control — skip silently
 			continue
 
 		default:
-			// MSG, RPY, ERR frames are not expected in RAW profile data flow
+			// MSG, RPY frames are not expected in RAW profile data flow
 			// but we skip them rather than aborting
 			continue
 		}
@@ -141,10 +148,8 @@ func (p *parser) processANS(frame Frame) {
 
 	msg, err := p.internal.Parse(payload)
 	result := &syslog.Result{Message: msg, Error: err}
-
-	if p.bestEffort || err == nil {
-		p.emit(result)
-	} else {
-		p.emit(&syslog.Result{Error: err})
+	if !p.bestEffort && err != nil {
+		result.Message = nil
 	}
+	p.emit(result)
 }

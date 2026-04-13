@@ -259,7 +259,29 @@ func TestRawParser_FrameScanError(t *testing.T) {
 	assert.ErrorContains(t, results[0].Error, "frame scan error")
 }
 
+func TestRawParser_ERRFrameEmitsError(t *testing.T) {
+	// ERR frame signals server error — parser should emit error and stop
+	payload := validRFC5424 + "\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		"ERR 1 0 . " + strconv.Itoa(len(payload)) + " 12\r\nserver errorEND\r\n" +
+		beepFrame("ANS", 1, 0, '.', len(payload), 1, payload)
+
+	var results []*syslog.Result
+	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	// First ANS emitted, then ERR terminates — second ANS never reached
+	require.Len(t, results, 2)
+	assert.NoError(t, results[0].Error)
+	assert.ErrorContains(t, results[1].Error, "ERR frame")
+	assert.ErrorContains(t, results[1].Error, "server error")
+}
+
 func TestRawParser_UnexpectedFrameTypesSkipped(t *testing.T) {
+	// MSG and RPY frames are skipped (ERR is handled separately)
 	payload := validRFC5424 + "\r\n"
 	input := "MSG 0 0 . 0 5\r\nhelloEND\r\n" +
 		"RPY 0 0 . 5 2\r\nokEND\r\n" +

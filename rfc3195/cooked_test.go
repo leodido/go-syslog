@@ -3,6 +3,7 @@ package rfc3195
 import (
 	"strings"
 	"testing"
+	"time"
 
 	syslog "github.com/leodido/go-syslog/v4"
 	"github.com/stretchr/testify/assert"
@@ -646,6 +647,103 @@ func TestCookedParser_RPYFrameSkipped(t *testing.T) {
 
 	require.Len(t, results, 1)
 	assert.NoError(t, results[0].Error)
+}
+
+func TestCookedParser_WithCookedYear(t *testing.T) {
+	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>with year</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	var results []*syslog.Result
+	p := NewCookedParser(
+		WithCookedYear(2025),
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+	)
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Timestamp)
+	assert.Equal(t, 2025, msg.Timestamp.Year())
+	assert.Equal(t, time.January, msg.Timestamp.Month())
+	assert.Equal(t, 2, msg.Timestamp.Day())
+}
+
+func TestCookedParser_WithCookedTimezone(t *testing.T) {
+	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>with tz</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	loc, err := time.LoadLocation("America/New_York")
+	require.NoError(t, err)
+
+	var results []*syslog.Result
+	p := NewCookedParser(
+		WithCookedTimezone(loc),
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+	)
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Timestamp)
+	assert.Equal(t, "America/New_York", msg.Timestamp.Location().String())
+}
+
+func TestCookedParser_WithCookedYearAndTimezone(t *testing.T) {
+	entry := `<entry facility='4' severity='2' timestamp='Mar 15 10:30:00'>both</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	loc, err := time.LoadLocation("Europe/Rome")
+	require.NoError(t, err)
+
+	var results []*syslog.Result
+	p := NewCookedParser(
+		WithCookedYear(2024),
+		WithCookedTimezone(loc),
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+	)
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Timestamp)
+	assert.Equal(t, 2024, msg.Timestamp.Year())
+	assert.Equal(t, time.March, msg.Timestamp.Month())
+	assert.Equal(t, "Europe/Rome", msg.Timestamp.Location().String())
+}
+
+func TestCookedParser_TimestampDefaultYear0(t *testing.T) {
+	// Without WithCookedYear, year defaults to 0
+	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>no year</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Timestamp)
+	assert.Equal(t, 0, msg.Timestamp.Year())
 }
 
 // Compile-time interface check

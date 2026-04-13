@@ -163,6 +163,32 @@ func TestCookedParser_PriorityComputation(t *testing.T) {
 	assert.Equal(t, uint8(7), *msg.Severity)
 }
 
+func TestCookedParser_PriorityRoundTrip(t *testing.T) {
+	// Verify Priority, Facility, and Severity are consistent for a
+	// standard-range value: priority = facility*8 + severity, and
+	// facility = priority/8, severity = priority%8.
+	entry := `<entry facility='4' severity='2'>round-trip</entry>`
+	input := cookedInput(entry)
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Priority)
+	assert.Equal(t, uint8(34), *msg.Priority)                        // 4*8 + 2
+	assert.Equal(t, uint8(4), *msg.Facility)                         // 34 / 8
+	assert.Equal(t, uint8(2), *msg.Severity)                         // 34 % 8
+	assert.Equal(t, *msg.Facility*8+*msg.Severity, *msg.Priority)    // round-trip
+	assert.Equal(t, *msg.Priority/8, *msg.Facility)                  // decompose back
+	assert.Equal(t, *msg.Priority%8, *msg.Severity)                  // decompose back
+}
+
 // Invalid attribute values
 
 func TestCookedParser_Facility24_Accepted(t *testing.T) {

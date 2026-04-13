@@ -34,12 +34,34 @@ func WithRawElementListener(f RawElementListener) syslog.ParserOption {
 	}
 }
 
+// WithCookedYear returns a parser option that sets the year for parsed
+// timestamps. RFC 3164 timestamps (used in COOKED <entry> elements) do
+// not include a year; without this option the year defaults to 0.
+func WithCookedYear(year int) syslog.ParserOption {
+	return func(p syslog.Parser) syslog.Parser {
+		p.(*cookedParser).year = year
+		return p
+	}
+}
+
+// WithCookedTimezone returns a parser option that sets the timezone for
+// parsed timestamps. When set, timestamps are interpreted in the given
+// location instead of UTC.
+func WithCookedTimezone(loc *time.Location) syslog.ParserOption {
+	return func(p syslog.Parser) syslog.Parser {
+		p.(*cookedParser).timezone = loc
+		return p
+	}
+}
+
 // cookedParser implements syslog.Parser for the RFC 3195 COOKED profile.
 type cookedParser struct {
 	bestEffort       bool
 	maxMessageLength int
 	emit             syslog.ParserListener
 	rawEmit          RawElementListener
+	year             int
+	timezone         *time.Location
 }
 
 // NewCookedParser returns a syslog.Parser for the RFC 3195 COOKED profile.
@@ -201,10 +223,19 @@ func (p *cookedParser) processEntry(entry xmlEntry) {
 
 	// timestamp (optional)
 	if entry.Timestamp != "" {
-		t, err := time.Parse(time.Stamp, entry.Timestamp)
+		var t time.Time
+		var err error
+		if p.timezone != nil {
+			t, err = time.ParseInLocation(time.Stamp, entry.Timestamp, p.timezone)
+		} else {
+			t, err = time.Parse(time.Stamp, entry.Timestamp)
+		}
 		if err != nil {
 			p.emitError(fmt.Errorf("rfc3195 cooked: invalid timestamp %q: %w", entry.Timestamp, err), msg)
 			return
+		}
+		if p.year > 0 {
+			t = t.AddDate(p.year, 0, 0)
 		}
 		msg.Timestamp = &t
 	}

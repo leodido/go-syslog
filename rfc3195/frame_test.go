@@ -1,6 +1,7 @@
 package rfc3195
 
 import (
+	"bufio"
 	"io"
 	"strconv"
 	"strings"
@@ -85,7 +86,7 @@ func TestScan_NUL(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, FrameNUL, f.Type)
 	assert.Equal(t, uint32(0), f.Size)
-	assert.Equal(t, []byte{}, f.Payload)
+	assert.Nil(t, f.Payload) // zero-size payload is nil, not []byte{}
 }
 
 func TestScan_SEQ(t *testing.T) {
@@ -101,7 +102,6 @@ func TestScan_SEQ(t *testing.T) {
 }
 
 func TestScan_MoreIndicator(t *testing.T) {
-	// '*' means intermediate (more frames follow)
 	input := "MSG 0 1 * 0 3\r\nfooEND\r\n"
 	s := NewScanner(strings.NewReader(input))
 	f, err := s.Scan()
@@ -141,7 +141,6 @@ func TestScan_EOF(t *testing.T) {
 }
 
 func TestScan_PayloadWithNewlines(t *testing.T) {
-	// Payload containing CRLF — size-delimited, so newlines are part of payload
 	payload := "line1\r\nline2\r\n"
 	input := "MSG 0 0 . 0 14\r\n" + payload + "END\r\n"
 	s := NewScanner(strings.NewReader(input))
@@ -156,7 +155,7 @@ func TestScan_ZeroSizePayload(t *testing.T) {
 	f, err := s.Scan()
 	require.NoError(t, err)
 	assert.Equal(t, uint32(0), f.Size)
-	assert.Equal(t, []byte{}, f.Payload)
+	assert.Nil(t, f.Payload) // zero-size payload is nil, not []byte{}
 }
 
 // Error cases
@@ -169,7 +168,6 @@ func TestScan_UnknownKeyword(t *testing.T) {
 }
 
 func TestScan_MissingCRLF(t *testing.T) {
-	// Header terminated with just LF, no CR
 	input := "MSG 0 0 . 0 0\n"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -226,7 +224,6 @@ func TestScan_InvalidAnsno(t *testing.T) {
 }
 
 func TestScan_WrongFieldCount_MSG(t *testing.T) {
-	// MSG needs 6 fields, give it 5
 	input := "MSG 0 0 . 0\r\n"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -234,7 +231,6 @@ func TestScan_WrongFieldCount_MSG(t *testing.T) {
 }
 
 func TestScan_WrongFieldCount_ANS(t *testing.T) {
-	// ANS needs 7 fields, give it 6
 	input := "ANS 0 0 . 0 0\r\n"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -242,7 +238,6 @@ func TestScan_WrongFieldCount_ANS(t *testing.T) {
 }
 
 func TestScan_WrongFieldCount_SEQ(t *testing.T) {
-	// SEQ needs 4 fields, give it 3
 	input := "SEQ 0 512\r\n"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -271,7 +266,6 @@ func TestScan_SEQ_InvalidChannel(t *testing.T) {
 }
 
 func TestScan_TruncatedPayload(t *testing.T) {
-	// Declare size=10 but only provide 3 bytes before EOF
 	input := "MSG 0 0 . 0 10\r\nfoo"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -286,7 +280,6 @@ func TestScan_MissingENDTrailer(t *testing.T) {
 }
 
 func TestScan_TruncatedENDTrailer(t *testing.T) {
-	// Payload is correct but END trailer is truncated
 	input := "MSG 0 0 . 0 3\r\nfooEN"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -301,7 +294,6 @@ func TestScan_InvalidContinuation_MultiChar(t *testing.T) {
 }
 
 func TestScan_HeaderReadError(t *testing.T) {
-	// Partial header with no newline and EOF
 	input := "MSG 0 0 . 0 5"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -318,17 +310,7 @@ func TestScan_LargePayload(t *testing.T) {
 	assert.Equal(t, []byte(payload), f.Payload)
 }
 
-func TestNewScanner_WithBufioReader(t *testing.T) {
-	// Verify that passing a *bufio.Reader doesn't double-wrap
-	r := strings.NewReader("SEQ 0 0 4096\r\n")
-	br := NewScanner(r)
-	f, err := br.Scan()
-	require.NoError(t, err)
-	assert.Equal(t, FrameSEQ, f.Type)
-}
-
 func TestScan_ExtraFieldsOnMSG(t *testing.T) {
-	// MSG with 7 fields (extra field) should fail
 	input := "MSG 0 0 . 0 0 99\r\nEND\r\n"
 	s := NewScanner(strings.NewReader(input))
 	_, err := s.Scan()
@@ -343,7 +325,6 @@ func TestScan_SEQ_ExtraFields(t *testing.T) {
 }
 
 func TestScan_PayloadContainingEND(t *testing.T) {
-	// Payload that contains "END\r\n" — size-delimited, so scanner should not be confused
 	payload := "END\r\nEND\r\n"
 	size := len(payload)
 	input := "MSG 0 0 . 0 " + strconv.Itoa(size) + "\r\n" + payload + "END\r\n"
@@ -351,4 +332,135 @@ func TestScan_PayloadContainingEND(t *testing.T) {
 	f, err := s.Scan()
 	require.NoError(t, err)
 	assert.Equal(t, []byte(payload), f.Payload)
+}
+
+// Fix #11: pass an actual *bufio.Reader to exercise the non-wrapping path
+func TestNewScanner_WithBufioReader(t *testing.T) {
+	br := bufio.NewReader(strings.NewReader("SEQ 0 0 4096\r\n"))
+	s := NewScanner(br)
+	f, err := s.Scan()
+	require.NoError(t, err)
+	assert.Equal(t, FrameSEQ, f.Type)
+}
+
+// Fix #1: parseInt31 rejects values > 2^31-1 for channel, msgno, size, ansno
+
+func TestScan_ChannelExceedsInt31(t *testing.T) {
+	// 2147483648 = 2^31, one above max
+	input := "MSG 2147483648 0 . 0 0\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "exceeds max")
+}
+
+func TestScan_MsgnoExceedsInt31(t *testing.T) {
+	input := "MSG 0 2147483648 . 0 0\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "exceeds max")
+}
+
+func TestScan_SizeExceedsInt31(t *testing.T) {
+	input := "MSG 0 0 . 0 2147483648\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "exceeds max")
+}
+
+func TestScan_AnsnoExceedsInt31(t *testing.T) {
+	input := "ANS 0 0 . 0 0 2147483648\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "exceeds max")
+}
+
+func TestScan_SEQ_ChannelExceedsInt31(t *testing.T) {
+	input := "SEQ 2147483648 0 4096\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "exceeds max")
+}
+
+func TestScan_Int31MaxAccepted(t *testing.T) {
+	// 2147483647 = 2^31-1, exactly at max — should succeed
+	input := "MSG 2147483647 2147483647 . 0 0\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	f, err := s.Scan()
+	require.NoError(t, err)
+	assert.Equal(t, uint32(2147483647), f.Channel)
+	assert.Equal(t, uint32(2147483647), f.Msgno)
+}
+
+// seqno and ackno/window are full uint32 — verify max uint32 is accepted
+
+func TestScan_SeqnoMaxUint32(t *testing.T) {
+	input := "MSG 0 0 . 4294967295 0\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	f, err := s.Scan()
+	require.NoError(t, err)
+	assert.Equal(t, uint32(4294967295), f.Seqno)
+}
+
+func TestScan_SEQ_AcknoMaxUint32(t *testing.T) {
+	input := "SEQ 0 4294967295 4294967295\r\n"
+	s := NewScanner(strings.NewReader(input))
+	f, err := s.Scan()
+	require.NoError(t, err)
+	assert.Equal(t, uint32(4294967295), f.Ackno)
+	assert.Equal(t, uint32(4294967295), f.Window)
+}
+
+// Fix #2: max payload size
+
+func TestScan_PayloadExceedsMaxSize(t *testing.T) {
+	input := "MSG 0 0 . 0 1000\r\n" + strings.Repeat("A", 1000) + "END\r\n"
+	s := NewScanner(strings.NewReader(input), WithMaxPayloadSize(100))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "exceeds max")
+}
+
+func TestScan_PayloadAtMaxSize(t *testing.T) {
+	payload := strings.Repeat("A", 100)
+	input := "MSG 0 0 . 0 100\r\n" + payload + "END\r\n"
+	s := NewScanner(strings.NewReader(input), WithMaxPayloadSize(100))
+	f, err := s.Scan()
+	require.NoError(t, err)
+	assert.Equal(t, []byte(payload), f.Payload)
+}
+
+func TestScan_MaxPayloadSizeZeroMeansNoLimit(t *testing.T) {
+	payload := strings.Repeat("A", 4096)
+	input := "MSG 0 0 . 0 4096\r\n" + payload + "END\r\n"
+	s := NewScanner(strings.NewReader(input), WithMaxPayloadSize(0))
+	f, err := s.Scan()
+	require.NoError(t, err)
+	assert.Equal(t, 4096, len(f.Payload))
+}
+
+// Fix #6: NUL frame validation
+
+func TestScan_NUL_IntermediateContinuation(t *testing.T) {
+	// NUL with '*' continuation is a poorly-formed frame per RFC 3080 §2.2.1
+	input := "NUL 0 0 * 0 0\r\nEND\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "NUL frame must have continuation '.'")
+}
+
+func TestScan_NUL_NonZeroSize(t *testing.T) {
+	// NUL with size > 0 is a poorly-formed frame per RFC 3080 §2.2.1
+	input := "NUL 0 0 . 0 5\r\noops!END\r\n"
+	s := NewScanner(strings.NewReader(input))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "NUL frame must have size 0")
+}
+
+// Fix #7: header too long
+
+func TestScan_HeaderTooLong(t *testing.T) {
+	// Build a header line longer than maxHeaderLen (128 bytes)
+	long := "MSG 0 0 . 0 0" + strings.Repeat(" ", 200) + "\r\n"
+	s := NewScanner(strings.NewReader(long))
+	_, err := s.Scan()
+	assert.ErrorContains(t, err, "header too long")
 }

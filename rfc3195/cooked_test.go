@@ -829,6 +829,50 @@ func TestCookedParser_WithCookedYearAndTimezone(t *testing.T) {
 	assert.Equal(t, "Europe/Rome", msg.Timestamp.Location().String())
 }
 
+func TestCookedParser_WithCookedYear_NegativeIgnored(t *testing.T) {
+	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>neg year</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	var results []*syslog.Result
+	p := NewCookedParser(
+		WithCookedYear(-1),
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+	)
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Timestamp)
+	assert.Equal(t, 0, msg.Timestamp.Year(), "negative year should be ignored")
+}
+
+func TestCookedParser_WithCookedYear_ZeroIgnored(t *testing.T) {
+	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>zero year</entry>`
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, entry) +
+		beepFrame("NUL", 1, 0, '.', len(entry), -1, "")
+
+	var results []*syslog.Result
+	p := NewCookedParser(
+		WithCookedYear(0),
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+	)
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	require.NotNil(t, msg.Timestamp)
+	assert.Equal(t, 0, msg.Timestamp.Year(), "zero year should be ignored")
+}
+
 func TestCookedParser_TimestampDefaultYear0(t *testing.T) {
 	// Without WithCookedYear, year defaults to 0
 	entry := `<entry facility='4' severity='2' timestamp='Jan  2 15:04:05'>no year</entry>`

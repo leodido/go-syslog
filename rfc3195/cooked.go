@@ -37,9 +37,12 @@ func WithRawElementListener(f RawElementListener) syslog.ParserOption {
 // WithCookedYear returns a parser option that sets the year for parsed
 // timestamps. RFC 3164 timestamps (used in COOKED <entry> elements) do
 // not include a year; without this option the year defaults to 0.
+// Values <= 0 are ignored (year remains 0).
 func WithCookedYear(year int) syslog.ParserOption {
 	return func(p syslog.Parser) syslog.Parser {
-		p.(*cookedParser).year = year
+		if year > 0 {
+			p.(*cookedParser).year = year
+		}
 		return p
 	}
 }

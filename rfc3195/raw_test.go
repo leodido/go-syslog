@@ -12,8 +12,10 @@ import (
 )
 
 // beepFrame builds a raw BEEP data frame string.
+// Size is computed automatically from len(payload).
 // For ANS frames, pass ansno >= 0. For other types, ansno is ignored.
-func beepFrame(keyword string, channel, msgno int, more byte, seqno, size int, ansno int, payload string) string {
+func beepFrame(keyword string, channel, msgno int, more byte, seqno int, ansno int, payload string) string {
+	size := len(payload)
 	header := fmt.Sprintf("%s %d %d %c %d %d", keyword, channel, msgno, more, seqno, size)
 	if keyword == "ANS" {
 		header += " " + strconv.Itoa(ansno)
@@ -33,8 +35,8 @@ const validRFC3164 = "<34>Oct 11 22:14:15 mymachine su: test"
 
 func TestRawParser_SingleMessage_RFC5424(t *testing.T) {
 	payload := validRFC5424 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -51,8 +53,8 @@ func TestRawParser_SingleMessage_RFC5424(t *testing.T) {
 
 func TestRawParser_SingleMessage_RFC3164(t *testing.T) {
 	payload := validRFC3164 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParserRFC3164(syslog.WithListener(func(r *syslog.Result) {
@@ -71,9 +73,9 @@ func TestRawParser_MultipleMessages(t *testing.T) {
 	msg1 := "<1>1 - - - - - -\r\n"
 	msg2 := "<2>1 - - - - - -\r\n"
 	seq := len(msg1)
-	input := beepFrame("ANS", 1, 0, '.', 0, len(msg1), 0, msg1) +
-		beepFrame("ANS", 1, 0, '.', seq, len(msg2), 1, msg2) +
-		"NUL 1 0 . " + strconv.Itoa(seq+len(msg2)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, msg1) +
+		beepFrame("ANS", 1, 0, '.', seq, 1, msg2) +
+		beepFrame("NUL", 1, 0, '.', seq+len(msg2), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -92,9 +94,9 @@ func TestRawParser_MultipleMessages(t *testing.T) {
 func TestRawParser_SEQFramesSkipped(t *testing.T) {
 	payload := validRFC5424 + "\r\n"
 	input := seqFrame(0, 0, 4096) +
-		beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
+		beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
 		seqFrame(1, len(payload), 4096) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -110,9 +112,9 @@ func TestRawParser_SEQFramesSkipped(t *testing.T) {
 func TestRawParser_NULTerminates(t *testing.T) {
 	payload := validRFC5424 + "\r\n"
 	// NUL before second ANS — second message should not be emitted
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n" +
-		beepFrame("ANS", 1, 0, '.', 0, len(payload), 1, payload)
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "") +
+		beepFrame("ANS", 1, 0, '.', 0, 1, payload)
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -125,9 +127,8 @@ func TestRawParser_NULTerminates(t *testing.T) {
 }
 
 func TestRawParser_EOFWithoutNUL(t *testing.T) {
-	// Stream ends without NUL — parser should still emit the message
 	payload := validRFC5424 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload)
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload)
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -140,10 +141,10 @@ func TestRawParser_EOFWithoutNUL(t *testing.T) {
 	assert.NoError(t, results[0].Error)
 }
 
-func TestRawParser_EmptyPayload(t *testing.T) {
-	// ANS with only CRLF payload — should be skipped (empty after stripping)
-	input := beepFrame("ANS", 1, 0, '.', 0, 2, 0, "\r\n") +
-		"NUL 1 0 . 2 0\r\nEND\r\n"
+func TestRawParser_EmptyPayload_OnlyCRLF(t *testing.T) {
+	// ANS with only CRLF payload — should be skipped (empty after stripping one CRLF)
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, "\r\n") +
+		beepFrame("NUL", 1, 0, '.', 2, -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -156,9 +157,8 @@ func TestRawParser_EmptyPayload(t *testing.T) {
 }
 
 func TestRawParser_ZeroSizePayload(t *testing.T) {
-	// ANS with zero-size payload — should be skipped
-	input := beepFrame("ANS", 1, 0, '.', 0, 0, 0, "") +
-		"NUL 1 0 . 0 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, "") +
+		beepFrame("NUL", 1, 0, '.', 0, -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -170,11 +170,30 @@ func TestRawParser_ZeroSizePayload(t *testing.T) {
 	assert.Len(t, results, 0)
 }
 
+func TestRawParser_TrimSuffix_NotTrimRight(t *testing.T) {
+	// Payload ending with \r\n\r\n — TrimSuffix strips exactly one CRLF,
+	// leaving \r\n which is passed to the syslog parser (and fails).
+	// TrimRight would have stripped all trailing CR/LF bytes.
+	payload := "not-syslog\r\n\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
+
+	var results []*syslog.Result
+	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	// The remaining "not-syslog\r\n" is passed to the parser and fails
+	require.Len(t, results, 1)
+	assert.Error(t, results[0].Error)
+}
+
 func TestRawParser_InvalidSyslogMessage_Strict(t *testing.T) {
-	// Invalid syslog message (no priority) — strict mode should emit error only
 	payload := "not a syslog message\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -189,10 +208,9 @@ func TestRawParser_InvalidSyslogMessage_Strict(t *testing.T) {
 }
 
 func TestRawParser_InvalidSyslogMessage_BestEffort(t *testing.T) {
-	// Invalid syslog message with best effort — should emit partial result
 	payload := "not a syslog message\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(
@@ -206,13 +224,12 @@ func TestRawParser_InvalidSyslogMessage_BestEffort(t *testing.T) {
 
 	require.Len(t, results, 1)
 	assert.Error(t, results[0].Error)
-	// Best effort still emits the result (with error)
 }
 
 func TestRawParser_MaxMessageLength(t *testing.T) {
 	payload := validRFC5424 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(
@@ -229,7 +246,6 @@ func TestRawParser_MaxMessageLength(t *testing.T) {
 }
 
 func TestRawParser_FrameScanError(t *testing.T) {
-	// Malformed frame header
 	input := "INVALID\r\n"
 
 	var results []*syslog.Result
@@ -244,12 +260,11 @@ func TestRawParser_FrameScanError(t *testing.T) {
 }
 
 func TestRawParser_UnexpectedFrameTypesSkipped(t *testing.T) {
-	// MSG and RPY frames should be skipped, only ANS processed
 	payload := validRFC5424 + "\r\n"
 	input := "MSG 0 0 . 0 5\r\nhelloEND\r\n" +
 		"RPY 0 0 . 5 2\r\nokEND\r\n" +
-		beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+		beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	var results []*syslog.Result
 	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
@@ -290,10 +305,9 @@ func TestRawParserRFC3164_HasBestEffort(t *testing.T) {
 }
 
 func TestRawParser_WithMachineOptions(t *testing.T) {
-	// Verify that machine options are passed through via WithMachineOptions
 	payload := validRFC5424 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	noopOpt := func(m syslog.Machine) syslog.Machine { return m }
 
@@ -312,10 +326,9 @@ func TestRawParser_WithMachineOptions(t *testing.T) {
 }
 
 func TestRawParser_DefaultListener(t *testing.T) {
-	// Verify default noop listener doesn't panic
 	payload := validRFC5424 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	p := NewParser()
 	assert.NotPanics(t, func() {
@@ -326,12 +339,50 @@ func TestRawParser_DefaultListener(t *testing.T) {
 func TestRawParserRFC3164_DefaultListener(t *testing.T) {
 	p := NewParserRFC3164()
 	payload := validRFC3164 + "\r\n"
-	input := beepFrame("ANS", 1, 0, '.', 0, len(payload), 0, payload) +
-		"NUL 1 0 . " + strconv.Itoa(len(payload)) + " 0\r\nEND\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
 
 	assert.NotPanics(t, func() {
 		p.Parse(strings.NewReader(input))
 	})
+}
+
+func TestRawParser_MaxMessageLengthPassedToScanner(t *testing.T) {
+	// When maxMessageLength is set, the scanner should reject oversized frames
+	// before the RAW parser even sees the payload
+	payload := validRFC5424 + "\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
+
+	var results []*syslog.Result
+	p := NewParser(
+		syslog.WithMaxMessageLength(5),
+		syslog.WithListener(func(r *syslog.Result) {
+			results = append(results, r)
+		}),
+	)
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.Error(t, results[0].Error)
+}
+
+func TestRawParser_NoMaxMessageLength(t *testing.T) {
+	// When maxMessageLength is 0 (default), scanner uses DefaultMaxPayloadSize
+	payload := validRFC5424 + "\r\n"
+	input := beepFrame("ANS", 1, 0, '.', 0, 0, payload) +
+		beepFrame("NUL", 1, 0, '.', len(payload), -1, "")
+
+	var results []*syslog.Result
+	p := NewParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
 }
 
 // Verify the parser satisfies syslog.Parser at compile time

@@ -221,8 +221,18 @@ func (p *cookedParser) processEntry(entry xmlEntry) {
 		return
 	}
 
-	// ComputeFromPriority sets Priority, Facility, and Severity in one call.
-	msg.ComputeFromPriority(uint8(fac)*8 + uint8(sev))
+	// Set Facility and Severity directly — the DTD allows values beyond
+	// the standard syslog priority range (facility 0-23, severity 0-7).
+	// ComputeFromPriority takes uint8, so fac*8+sev would overflow for
+	// facility > 31. Only set Priority when the values encode without loss.
+	facU8 := uint8(fac)
+	sevU8 := uint8(sev)
+	msg.Facility = &facU8
+	msg.Severity = &sevU8
+	if fac <= 23 && sev <= 7 {
+		pri := facU8*8 + sevU8
+		msg.Priority = &pri
+	}
 
 	// timestamp (optional)
 	if entry.Timestamp != "" {

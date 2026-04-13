@@ -166,7 +166,8 @@ func TestCookedParser_PriorityComputation(t *testing.T) {
 // Invalid attribute values
 
 func TestCookedParser_Facility24_Accepted(t *testing.T) {
-	// RFC 3195 §4.4.2 example uses facility='24' — DTD allows 1*3DIGIT
+	// RFC 3195 §4.4.2 example uses facility='24' — DTD allows 1*3DIGIT.
+	// facility > 23 is outside the standard priority range, so Priority is nil.
 	entry := `<entry facility='24' severity='0'>test</entry>`
 	input := cookedInput(entry)
 
@@ -181,6 +182,69 @@ func TestCookedParser_Facility24_Accepted(t *testing.T) {
 	assert.NoError(t, results[0].Error)
 	msg := results[0].Message.(*CookedMessage)
 	assert.Equal(t, uint8(24), *msg.Facility)
+	assert.Equal(t, uint8(0), *msg.Severity)
+	assert.Nil(t, msg.Priority, "facility > 23 cannot encode as uint8 priority")
+}
+
+func TestCookedParser_Facility80_NoOverflow(t *testing.T) {
+	// facility=80 would overflow uint8 in fac*8+sev (80*8=640).
+	// Verify Facility/Severity are set correctly and Priority is nil.
+	entry := `<entry facility='80' severity='3'>test</entry>`
+	input := cookedInput(entry)
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, uint8(80), *msg.Facility)
+	assert.Equal(t, uint8(3), *msg.Severity)
+	assert.Nil(t, msg.Priority, "facility > 31 would overflow uint8 priority")
+}
+
+func TestCookedParser_Facility255_NoOverflow(t *testing.T) {
+	// Max DTD facility value — must not corrupt fields.
+	entry := `<entry facility='255' severity='9'>test</entry>`
+	input := cookedInput(entry)
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, uint8(255), *msg.Facility)
+	assert.Equal(t, uint8(9), *msg.Severity)
+	assert.Nil(t, msg.Priority, "extended range cannot encode as uint8 priority")
+}
+
+func TestCookedParser_Severity8_NoPriority(t *testing.T) {
+	// severity=8 is valid per DTD but outside standard 0-7 range.
+	entry := `<entry facility='4' severity='8'>test</entry>`
+	input := cookedInput(entry)
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, uint8(4), *msg.Facility)
+	assert.Equal(t, uint8(8), *msg.Severity)
+	assert.Nil(t, msg.Priority, "severity > 7 cannot encode as standard priority")
 }
 
 func TestCookedParser_InvalidFacility_OutOfRange(t *testing.T) {
@@ -229,10 +293,10 @@ func TestCookedParser_Severity9_Accepted(t *testing.T) {
 
 	require.Len(t, results, 1)
 	assert.NoError(t, results[0].Error)
-	// Priority = 0*8+9 = 9. ComputeFromPriority recomputes facility/severity
-	// from priority using standard syslog math (fac=9/8=1, sev=9%8=1).
 	msg := results[0].Message.(*CookedMessage)
-	assert.Equal(t, uint8(9), *msg.Priority)
+	assert.Equal(t, uint8(0), *msg.Facility)
+	assert.Equal(t, uint8(9), *msg.Severity)
+	assert.Nil(t, msg.Priority, "severity > 7 is outside standard priority range")
 }
 
 func TestCookedParser_InvalidSeverity_OutOfRange(t *testing.T) {

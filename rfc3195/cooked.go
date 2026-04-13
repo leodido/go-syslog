@@ -166,18 +166,21 @@ func (p *cookedParser) processPayload(payload []byte) {
 func (p *cookedParser) processEntry(entry xmlEntry) {
 	msg := &CookedMessage{}
 
-	// facility (required, 0-23)
+	// facility (required)
+	// DTD: %FACILITY = 1*3DIGIT. RFC 3195 examples use values beyond
+	// RFC 3164's 0-23 range (e.g., facility='80'). Accept 0-255 (uint8).
 	fac, err := strconv.Atoi(entry.Facility)
-	if err != nil || fac < 0 || fac > 23 {
+	if err != nil || fac < 0 || fac > 255 {
 		p.emitError(fmt.Errorf("rfc3195 cooked: invalid facility %q", entry.Facility), msg)
 		return
 	}
 	facU8 := uint8(fac)
 	msg.Facility = &facU8
 
-	// severity (required, 0-7)
+	// severity (required)
+	// DTD: %SEVERITY = DIGIT (0-9). Accept 0-9 per DTD.
 	sev, err := strconv.Atoi(entry.Severity)
-	if err != nil || sev < 0 || sev > 7 {
+	if err != nil || sev < 0 || sev > 9 {
 		p.emitError(fmt.Errorf("rfc3195 cooked: invalid severity %q", entry.Severity), msg)
 		return
 	}

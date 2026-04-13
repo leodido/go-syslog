@@ -144,7 +144,7 @@ func TestCookedParser_MultipleEntries(t *testing.T) {
 }
 
 func TestCookedParser_PriorityComputation(t *testing.T) {
-	// facility=23, severity=7 → priority = 23*8+7 = 191
+	// facility=23, severity=7 → priority = 23*8+7 = 191 (standard syslog max)
 	entry := `<entry facility='23' severity='7'>test</entry>`
 	input := cookedInput(entry)
 
@@ -164,8 +164,26 @@ func TestCookedParser_PriorityComputation(t *testing.T) {
 
 // Invalid attribute values
 
-func TestCookedParser_InvalidFacility_OutOfRange(t *testing.T) {
+func TestCookedParser_Facility24_Accepted(t *testing.T) {
+	// RFC 3195 §4.4.2 example uses facility='24' — DTD allows 1*3DIGIT
 	entry := `<entry facility='24' severity='0'>test</entry>`
+	input := cookedInput(entry)
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, uint8(24), *msg.Facility)
+}
+
+func TestCookedParser_InvalidFacility_OutOfRange(t *testing.T) {
+	entry := `<entry facility='256' severity='0'>test</entry>`
 	input := cookedInput(entry)
 
 	var results []*syslog.Result
@@ -195,8 +213,29 @@ func TestCookedParser_InvalidFacility_NonNumeric(t *testing.T) {
 	assert.ErrorContains(t, results[0].Error, "invalid facility")
 }
 
+func TestCookedParser_Severity9_Accepted(t *testing.T) {
+	// DTD: %SEVERITY = DIGIT (0-9). Value 9 is accepted by the parser
+	// even though RFC 3164 only defines 0-7.
+	entry := `<entry facility='0' severity='9'>test</entry>`
+	input := cookedInput(entry)
+
+	var results []*syslog.Result
+	p := NewCookedParser(syslog.WithListener(func(r *syslog.Result) {
+		results = append(results, r)
+	}))
+
+	p.Parse(strings.NewReader(input))
+
+	require.Len(t, results, 1)
+	assert.NoError(t, results[0].Error)
+	// Priority = 0*8+9 = 9. ComputeFromPriority recomputes facility/severity
+	// from priority using standard syslog math (fac=9/8=1, sev=9%8=1).
+	msg := results[0].Message.(*CookedMessage)
+	assert.Equal(t, uint8(9), *msg.Priority)
+}
+
 func TestCookedParser_InvalidSeverity_OutOfRange(t *testing.T) {
-	entry := `<entry facility='0' severity='8'>test</entry>`
+	entry := `<entry facility='0' severity='10'>test</entry>`
 	input := cookedInput(entry)
 
 	var results []*syslog.Result
@@ -476,7 +515,7 @@ func TestCookedParser_EmptyStream(t *testing.T) {
 // Best effort mode
 
 func TestCookedParser_BestEffort_InvalidFacility(t *testing.T) {
-	entry := `<entry facility='99' severity='0'>test</entry>`
+	entry := `<entry facility='999' severity='0'>test</entry>`
 	input := cookedInput(entry)
 
 	var results []*syslog.Result

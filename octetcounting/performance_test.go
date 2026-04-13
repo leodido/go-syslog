@@ -3,6 +3,7 @@ package octetcounting
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/leodido/go-syslog/v4"
@@ -72,3 +73,43 @@ func BenchmarkParse(b *testing.B) {
 		})
 	}
 }
+
+func BenchmarkParseAuto(b *testing.B) {
+	rfc5424Msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`
+	rfc3164Msg := `<13>Dec  2 16:31:03 host app: Test message`
+
+	cases := []struct {
+		label string
+		input string
+	}{
+		{"RFC5424", fmt.Sprintf("%d %s", len(rfc5424Msg), rfc5424Msg)},
+		{"RFC3164", fmt.Sprintf("%d %s", len(rfc3164Msg), rfc3164Msg)},
+		{"Mixed", fmt.Sprintf("%d %s%d %s", len(rfc5424Msg), rfc5424Msg, len(rfc3164Msg), rfc3164Msg)},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+		b.Run("Auto/"+tc.label, func(b *testing.B) {
+			p := NewParserAuto(
+				syslog.WithListener(func(*syslog.Result) {}),
+				syslog.WithBestEffort(),
+			)
+			for i := 0; i < b.N; i++ {
+				p.Parse(strings.NewReader(tc.input))
+			}
+		})
+	}
+
+	// Direct NewParser for comparison (RFC 5424 only).
+	b.Run("Direct/RFC5424", func(b *testing.B) {
+		p := NewParser(
+			syslog.WithListener(func(*syslog.Result) {}),
+			syslog.WithMachineOptions(rfc5424.WithBestEffort()),
+		)
+		input := fmt.Sprintf("%d %s", len(rfc5424Msg), rfc5424Msg)
+		for i := 0; i < b.N; i++ {
+			p.Parse(strings.NewReader(input))
+		}
+	})
+}
+

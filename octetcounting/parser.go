@@ -7,6 +7,7 @@ import (
 	"io"
 
 	syslog "github.com/leodido/go-syslog/v4"
+	"github.com/leodido/go-syslog/v4/auto"
 	"github.com/leodido/go-syslog/v4/rfc3164"
 	"github.com/leodido/go-syslog/v4/rfc5424"
 )
@@ -27,6 +28,10 @@ type parser struct {
 	stepback         bool // Wheter to retrieve the last token or not
 	emit             syslog.ParserListener
 	stripTrailingNL  bool // Strip trailing \r\n or \n before passing to inner machine
+	// auto-detect fields
+	rfc3164Opts []syslog.MachineOption
+	rfc5424Opts []syslog.MachineOption
+	noFallback  bool
 }
 
 // NewParser returns a syslog.Parser suitable to parse syslog messages sent with transparent - ie. octet counting (RFC 5425) - framing.
@@ -77,6 +82,62 @@ func NewParserRFC3164(opts ...syslog.ParserOption) syslog.Parser {
 	p.internal = rfc3164.NewMachine(p.internalOpts...)
 
 	return p
+}
+
+// NewParserAuto returns a syslog.Parser that auto-detects RFC 3164 vs RFC 5424
+// format per-message using octetcounting framing.
+//
+// Use auto.WithRFC3164MachineOptions and auto.WithRFC5424MachineOptions to
+// pass format-specific options. Use auto.WithoutParserFallback to disable
+// fallback to the other parser on failure.
+func NewParserAuto(opts ...syslog.ParserOption) syslog.Parser {
+	p := &parser{
+		emit:             func(*syslog.Result) { /* noop */ },
+		maxMessageLength: DefaultMaxSize,
+	}
+
+	for _, opt := range opts {
+		p = opt(p).(*parser)
+	}
+
+	// Forward generic machine options (from syslog.WithMachineOptions) to both
+	// inner parsers so callers migrating from NewParser get consistent behavior.
+	// Octet-counting framing knows the exact message length, so embedded
+	// newlines are unambiguous and must be preserved in the MSG field.
+	rfc3164Opts := append([]syslog.MachineOption{rfc3164.WithEmbeddedNewlines()}, p.internalOpts...)
+	rfc3164Opts = append(rfc3164Opts, p.rfc3164Opts...)
+	rfc5424Opts := append(append([]syslog.MachineOption{}, p.internalOpts...), p.rfc5424Opts...)
+
+	autoOpts := []auto.Option{
+		auto.WithRFC3164Options(rfc3164Opts...),
+		auto.WithRFC5424Options(rfc5424Opts...),
+	}
+	if p.noFallback {
+		autoOpts = append(autoOpts, auto.WithoutFallback())
+	}
+
+	p.internal = auto.NewMachine(autoOpts...)
+	if p.bestEffort {
+		p.internal.WithBestEffort()
+	}
+
+	// Strip trailing newline (framing convention, not message content).
+	p.stripTrailingNL = true
+
+	return p
+}
+
+// AutoParserConfigurer implementation for auto-detect parser options.
+func (p *parser) SetRFC3164Options(opts []syslog.MachineOption) {
+	p.rfc3164Opts = append(p.rfc3164Opts, opts...)
+}
+
+func (p *parser) SetRFC5424Options(opts []syslog.MachineOption) {
+	p.rfc5424Opts = append(p.rfc5424Opts, opts...)
+}
+
+func (p *parser) SetNoFallback() {
+	p.noFallback = true
 }
 
 // WithBestEffort implements the syslog.BestEfforter interface.

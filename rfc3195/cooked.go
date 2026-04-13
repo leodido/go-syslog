@@ -122,8 +122,14 @@ func (p *cookedParser) Parse(r io.Reader) {
 	}
 }
 
+// xmlElement is a lightweight struct for element name detection.
+// Metadata elements (<iam>, <path>, <ok/>) are forwarded as raw bytes
+// and never need attribute parsing, so we avoid the cost of a full unmarshal.
+type xmlElement struct {
+	XMLName xml.Name `xml:""`
+}
+
 // xmlEntry maps to the <entry> element attributes per RFC 3195 §7 DTD.
-// Also used for element name detection via XMLName.
 type xmlEntry struct {
 	XMLName    xml.Name `xml:""`
 	Facility   string   `xml:"facility,attr"`
@@ -137,25 +143,32 @@ type xmlEntry struct {
 }
 
 // processPayload parses the XML payload from a BEEP frame.
+// For <entry> elements it performs a full unmarshal to extract attributes.
+// For metadata elements (<iam>, <path>, <ok/>) it only reads the element
+// name and forwards the raw bytes — no attribute parsing needed.
 func (p *cookedParser) processPayload(payload []byte) {
 	if len(payload) == 0 {
 		return
 	}
 
-	var entry xmlEntry
-	if err := xml.Unmarshal(payload, &entry); err != nil {
+	// Detect element name with a lightweight unmarshal (no attributes populated).
+	var elem xmlElement
+	if err := xml.Unmarshal(payload, &elem); err != nil {
 		p.emit(&syslog.Result{
 			Error: fmt.Errorf("rfc3195 cooked: invalid XML: %w", err),
 		})
 		return
 	}
 
-	switch entry.XMLName.Local {
+	switch elem.XMLName.Local {
 	case "entry":
+		var entry xmlEntry
+		// Well-formedness was validated above; this extracts attributes.
+		xml.Unmarshal(payload, &entry) //nolint:errcheck
 		p.processEntry(entry)
 	case "iam", "path", "ok":
 		if p.rawEmit != nil {
-			p.rawEmit(entry.XMLName.Local, payload)
+			p.rawEmit(elem.XMLName.Local, payload)
 		}
 	default:
 		// Unknown elements silently skipped

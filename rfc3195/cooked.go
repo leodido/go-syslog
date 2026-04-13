@@ -174,8 +174,6 @@ func (p *cookedParser) processEntry(entry xmlEntry) {
 		p.emitError(fmt.Errorf("rfc3195 cooked: invalid facility %q", entry.Facility), msg)
 		return
 	}
-	facU8 := uint8(fac)
-	msg.Facility = &facU8
 
 	// severity (required)
 	// DTD: %SEVERITY = DIGIT (0-9). Accept 0-9 per DTD.
@@ -184,12 +182,9 @@ func (p *cookedParser) processEntry(entry xmlEntry) {
 		p.emitError(fmt.Errorf("rfc3195 cooked: invalid severity %q", entry.Severity), msg)
 		return
 	}
-	sevU8 := uint8(sev)
-	msg.Severity = &sevU8
 
-	// priority = facility * 8 + severity
-	msg.ComputeFromPriority(facU8*8 + sevU8)
-	// ComputeFromPriority overwrites Facility/Severity, but they're the same values
+	// ComputeFromPriority sets Priority, Facility, and Severity in one call.
+	msg.ComputeFromPriority(uint8(fac)*8 + uint8(sev))
 
 	// timestamp (optional)
 	if entry.Timestamp != "" {

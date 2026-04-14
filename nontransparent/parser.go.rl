@@ -153,7 +153,9 @@ func (m *machine) HasBestEffort() bool {
 // WithMaxMessageLength does nothing for this parser.
 func (m *machine) WithMaxMessageLength(length int) {}
 
-// WithTrailer ... todo(leodido)
+// WithTrailer sets the trailer byte used to delimit syslog messages in
+// non-transparent framing. Supported values are LF (line feed, default)
+// and NUL (null byte). See RFC 6587 §3.4.2.
 func WithTrailer(t TrailerType) syslog.ParserOption {
     return func(m syslog.Parser) syslog.Parser {
         if val, err := t.Value(); err == nil {

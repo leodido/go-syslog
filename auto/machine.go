@@ -6,6 +6,27 @@ import (
 	"github.com/leodido/go-syslog/v4/rfc5424"
 )
 
+// SafeMachineOptions wraps each MachineOption so that type-assertion panics
+// (from format-specific options applied to the wrong machine type) are
+// recovered instead of crashing. This allows generic options from
+// syslog.WithMachineOptions to be safely forwarded to both inner machines
+// in auto-detect transport parsers.
+func SafeMachineOptions(opts []syslog.MachineOption) []syslog.MachineOption {
+	safe := make([]syslog.MachineOption, len(opts))
+	for i, opt := range opts {
+		opt := opt
+		safe[i] = func(m syslog.Machine) (result syslog.Machine) {
+			defer func() {
+				if r := recover(); r != nil {
+					result = m
+				}
+			}()
+			return opt(m)
+		}
+	}
+	return safe
+}
+
 type machine struct {
 	rfc3164Opts []syslog.MachineOption
 	rfc5424Opts []syslog.MachineOption

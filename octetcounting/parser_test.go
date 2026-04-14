@@ -924,6 +924,28 @@ func TestParseAuto_WithMachineOptions(t *testing.T) {
 	assert.Error(t, results[0].Error)
 }
 
+func TestParseAuto_WithMachineOptions_FormatSpecific(t *testing.T) {
+	// Format-specific options via syslog.WithMachineOptions must not panic
+	// when forwarded to the wrong inner machine type.
+	msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] msg`
+	stream := fmt.Sprintf("%d %s", len(msg), msg)
+
+	var results []*syslog.Result
+	assert.NotPanics(t, func() {
+		p := NewParserAuto(
+			syslog.WithListener(func(r *syslog.Result) {
+				results = append(results, r)
+			}),
+			syslog.WithMachineOptions(rfc5424.WithCompliantMsg()),
+		)
+		p.Parse(strings.NewReader(stream))
+	})
+
+	require.Len(t, results, 1)
+	assert.NotNil(t, results[0].Message)
+	assert.NoError(t, results[0].Error)
+}
+
 func TestParseAuto_RFC3164_EmbeddedNewline(t *testing.T) {
 	// Regression test for issue #15: embedded newlines in RFC 3164 messages
 	// must be preserved when using octet-counted framing.

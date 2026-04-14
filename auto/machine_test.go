@@ -122,18 +122,18 @@ func TestParse_Fallback_PeekSays5424_FallsBackTo3164(t *testing.T) {
 }
 
 func TestParse_Fallback_SecondarySucceeds(t *testing.T) {
-	// Peek says 5424 (digit+space). 5424 strict fails (nil msg).
-	// Fallback to 3164 with best-effort returns partial (non-nil msg).
-	// The 5424 machine is strict (no best-effort) so it returns nil on failure.
-	// The 3164 machine has best-effort so it returns partial on failure.
+	// Best-effort via format-specific options is filtered from strict machines
+	// and only applied to BE machines. The three-tier strategy is:
+	// 1. Strict primary (5424) fails
+	// 2. Strict secondary (3164, truly strict) fails
+	// 3. BE primary (5424) recovers partial
 	m := NewMachine(WithRFC3164Options(rfc3164.WithBestEffort()))
-	// "1 " → peek says 5424. 5424 strict fails. Fallback to 3164 best-effort.
-	// 3164 best-effort extracts priority from "<34>" and returns partial.
 	input := []byte("<34>1 not-a-valid-5424-timestamp")
 	msg, err := m.Parse(input)
-	require.NotNil(t, msg, "3164 best-effort should return partial result via fallback")
+	require.NotNil(t, msg, "best-effort primary should recover partial result")
 	assert.Error(t, err)
-	assert.Equal(t, FormatRFC3164, DetectFormat(msg))
+	// BE recovery uses the peek-chosen parser (5424), not the fallback.
+	assert.Equal(t, FormatRFC5424, DetectFormat(msg))
 }
 
 func TestParse_Fallback_BothFail_ReturnsParseError(t *testing.T) {
@@ -179,6 +179,30 @@ func TestParse_BestEffort_PartialResult_NoFallback(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, FormatRFC5424, DetectFormat(msg))
 	// No fallback should have been attempted since msg is non-nil.
+}
+
+func TestParse_BestEffort_PromotionPreservesNonBEOptions(t *testing.T) {
+	// When best-effort is promoted from format-specific options, non-best-effort
+	// options (like WithCompliantMsg) must be preserved on the strict machines.
+	m := NewMachine(
+		WithRFC5424Options(rfc5424.WithBestEffort(), rfc5424.WithCompliantMsg()),
+	)
+	assert.True(t, m.HasBestEffort())
+	// Valid 5424 with BOM in MSG — WithCompliantMsg must be active on strict machine.
+	input := []byte("<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 - \xEF\xBB\xBFmsg")
+	msg, err := m.Parse(input)
+	require.NotNil(t, msg)
+	assert.NoError(t, err)
+	assert.Equal(t, FormatRFC5424, DetectFormat(msg))
+}
+
+func TestParse_BestEffort_ViaWithBestEffort_AfterPromotion(t *testing.T) {
+	// WithBestEffort() is a no-op if best-effort was already promoted
+	// from format-specific options during NewMachine construction.
+	m := NewMachine(WithRFC5424Options(rfc5424.WithBestEffort()))
+	assert.True(t, m.HasBestEffort())
+	m.WithBestEffort() // should be a no-op
+	assert.True(t, m.HasBestEffort())
 }
 
 func TestParse_BestEffort_ViaWithBestEffort(t *testing.T) {

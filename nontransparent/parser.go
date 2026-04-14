@@ -267,6 +267,10 @@ func NewParserAuto(options ...syslog.ParserOption) syslog.Parser {
 	trailer, _ := m.trailertyp.Value()
 	m.trailer = byte(trailer)
 
+	// Note: unlike octetcounting, we do NOT inject rfc3164.WithEmbeddedNewlines()
+	// here. Non-transparent framing uses LF (or NUL) as the message delimiter,
+	// so embedded newlines are inherently ambiguous and terminate the message.
+	//
 	// Forward generic machine options (from syslog.WithMachineOptions) to both
 	// inner parsers so callers migrating from NewParser get consistent behavior.
 	// Options are wrapped with SafeMachineOptions to recover from type-assertion

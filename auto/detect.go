@@ -4,7 +4,13 @@ package auto
 // whether the input is RFC 5424 or RFC 3164. It returns the detected format.
 //
 // The function examines at most ~6 bytes and runs in O(1) time.
-// See spec.md for the full decision table.
+// Decision table:
+//   - Letter, space, '*'     → RFC 3164 (month name, leading space, Cisco star)
+//   - '0'                    → RFC 3164 (zero-padded or Cisco counter)
+//   - 4+ digits              → RFC 3164 (year prefix / long Cisco counter)
+//   - 1-3 digits + space     → RFC 5424 (VERSION SP)
+//   - 1-3 digits + ':'       → RFC 3164 (Cisco counter)
+//   - Default                → RFC 5424
 func detect(input []byte) Format {
 	// Find the closing '>' of PRI.
 	pos := 0

@@ -12,6 +12,7 @@ To wrap up, this package provides:
 
 - an [RFC5424-compliant parser and builder](/rfc5424)
 - an [RFC3164-compliant parser](/rfc3164) - ie., BSD-syslog messages
+- an [RFC3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195) (RAW and COOKED profiles)
 - a parser that works on streams for syslog with [octet counting](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1) framing technique, see [octetcounting](/octetcounting)
 - a parser that works on streams for syslog with [non-transparent](https://tools.ietf.org/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
 
@@ -196,6 +197,19 @@ Things we do not support:
 - trailers other than `LF` or `NUL`
 - trailers which length is greater than 1 byte
 - trailer change on a frame-by-frame basis
+
+### RFC 3195 (BEEP)
+
+[RFC 3195](https://datatracker.ietf.org/doc/html/rfc3195) defines syslog transport over the [BEEP](https://datatracker.ietf.org/doc/html/rfc3080) protocol. It specifies two profiles:
+
+- **RAW** (§4.2): syslog messages are carried as CRLF-terminated payloads in BEEP ANS frames. The inner messages can be either RFC 5424 or RFC 3164 format.
+- **COOKED** (§4.3): syslog data is encoded as XML `<entry>` elements with attributes for facility, severity, timestamp, tag, and device identity.
+
+The [rfc3195 package](./rfc3195) provides parsers for both profiles. It implements BEEP frame scanning (MSG, RPY, ERR, ANS, NUL, SEQ frames) and extracts syslog messages from the frame payloads.
+
+This is a parsing-only implementation — it does not handle BEEP session management, channel negotiation, or TLS. Feed it a stream of BEEP frames and it will emit parsed syslog messages.
+
+To quickly understand how to use it please have a look at the [example file](./rfc3195/example_test.go).
 
 ## Performances
 

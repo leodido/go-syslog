@@ -6,6 +6,7 @@ import (
 
 	syslog "github.com/leodido/go-syslog/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // mockAutoParser implements syslog.Parser and AutoParserConfigurer for testing.
@@ -103,4 +104,40 @@ func TestWithoutParserFallback_NonConfigurer(t *testing.T) {
 	result := opt(p)
 
 	assert.Same(t, p, result)
+}
+
+func TestSafeMachineOptions_RecoversPanic(t *testing.T) {
+	// An option that panics on the wrong machine type.
+	panickingOpt := func(m syslog.Machine) syslog.Machine {
+		panic("wrong machine type")
+	}
+
+	safe := SafeMachineOptions([]syslog.MachineOption{panickingOpt})
+	require.Len(t, safe, 1)
+
+	// Should not panic; machine returned unchanged.
+	m := NewMachine()
+	assert.NotPanics(t, func() {
+		result := safe[0](m)
+		assert.Equal(t, m, result)
+	})
+}
+
+func TestSafeMachineOptions_PassesThrough(t *testing.T) {
+	// An option that works normally.
+	called := false
+	normalOpt := func(m syslog.Machine) syslog.Machine {
+		called = true
+		return m
+	}
+
+	safe := SafeMachineOptions([]syslog.MachineOption{normalOpt})
+	m := NewMachine()
+	safe[0](m)
+	assert.True(t, called)
+}
+
+func TestSafeMachineOptions_Empty(t *testing.T) {
+	safe := SafeMachineOptions(nil)
+	assert.Empty(t, safe)
 }

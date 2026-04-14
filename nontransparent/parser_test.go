@@ -374,6 +374,28 @@ func TestParseAuto_WithMachineOptions(t *testing.T) {
 	assert.Error(t, results[0].Error)
 }
 
+func TestParseAuto_WithMachineOptions_FormatSpecific(t *testing.T) {
+	// Format-specific options via syslog.WithMachineOptions must not panic
+	// when forwarded to the wrong inner machine type.
+	msg := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] msg`
+	stream := msg + "\n"
+
+	var results []*syslog.Result
+	assert.NotPanics(t, func() {
+		p := NewParserAuto(
+			syslog.WithListener(func(r *syslog.Result) {
+				results = append(results, r)
+			}),
+			syslog.WithMachineOptions(rfc5424.WithCompliantMsg()),
+		)
+		p.Parse(strings.NewReader(stream))
+	})
+
+	require.Len(t, results, 1)
+	assert.NotNil(t, results[0].Message)
+	assert.NoError(t, results[0].Error)
+}
+
 func TestParseAuto_WithTrailer_NUL(t *testing.T) {
 	msg5424 := `<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] msg`
 	msg3164 := `<13>Dec  2 16:31:03 host app: Test`

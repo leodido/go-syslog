@@ -102,11 +102,14 @@ func NewParserAuto(opts ...syslog.ParserOption) syslog.Parser {
 
 	// Forward generic machine options (from syslog.WithMachineOptions) to both
 	// inner parsers so callers migrating from NewParser get consistent behavior.
+	// Options are wrapped with SafeMachineOptions to recover from type-assertion
+	// panics when format-specific options are applied to the wrong machine type.
 	// Octet-counting framing knows the exact message length, so embedded
 	// newlines are unambiguous and must be preserved in the MSG field.
-	rfc3164Opts := append([]syslog.MachineOption{rfc3164.WithEmbeddedNewlines()}, p.internalOpts...)
+	safeOpts := auto.SafeMachineOptions(p.internalOpts)
+	rfc3164Opts := append([]syslog.MachineOption{rfc3164.WithEmbeddedNewlines()}, safeOpts...)
 	rfc3164Opts = append(rfc3164Opts, p.rfc3164Opts...)
-	rfc5424Opts := append(append([]syslog.MachineOption{}, p.internalOpts...), p.rfc5424Opts...)
+	rfc5424Opts := append(append([]syslog.MachineOption{}, safeOpts...), p.rfc5424Opts...)
 
 	autoOpts := []auto.Option{
 		auto.WithRFC3164Options(rfc3164Opts...),

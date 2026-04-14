@@ -269,8 +269,11 @@ func NewParserAuto(options ...syslog.ParserOption) syslog.Parser {
 
 	// Forward generic machine options (from syslog.WithMachineOptions) to both
 	// inner parsers so callers migrating from NewParser get consistent behavior.
-	rfc3164Opts := append(append([]syslog.MachineOption{}, m.internalOpts...), m.rfc3164Opts...)
-	rfc5424Opts := append(append([]syslog.MachineOption{}, m.internalOpts...), m.rfc5424Opts...)
+	// Options are wrapped with SafeMachineOptions to recover from type-assertion
+	// panics when format-specific options are applied to the wrong machine type.
+	safeOpts := auto.SafeMachineOptions(m.internalOpts)
+	rfc3164Opts := append(append([]syslog.MachineOption{}, safeOpts...), m.rfc3164Opts...)
+	rfc5424Opts := append(append([]syslog.MachineOption{}, safeOpts...), m.rfc5424Opts...)
 
 	autoOpts := []auto.Option{
 		auto.WithRFC3164Options(rfc3164Opts...),

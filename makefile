@@ -7,7 +7,7 @@ GOFMT := go fmt
 export GO_TEST=env GOTRACEBACK=all GO111MODULE=on go test $(GO_ARGS)
 
 .PHONY: build
-build: rfc5424/machine.go rfc5424/builder.go nontransparent/parser.go rfc3164/machine.go auto/detect.go
+build: rfc5424/machine.go rfc5424/builder.go nontransparent/parser.go rfc3164/machine.go
 
 rfc5424/machine.go: rfc5424/machine.go.rl common/common.rl
 
@@ -16,8 +16,6 @@ rfc5424/builder.go: rfc5424/builder.go.rl common/common.rl
 rfc3164/machine.go: rfc3164/machine.go.rl common/common.rl
 
 nontransparent/parser.go: nontransparent/parser.go.rl
-
-auto/detect.go: auto/detect.go.rl
 
 rfc5424/builder.go rfc5424/machine.go:
 	$(RAGEL) -Z -G2 -e -o $@ $<
@@ -32,12 +30,6 @@ rfc3164/machine.go:
 	$(GOFMT) $@
 
 nontransparent/parser.go:
-	$(RAGEL) -Z -G2 -e -o $@ $<
-	$(REMOVECOMMENTS) $@
-	$(SNAKE2CAMEL) $@
-	$(GOFMT) $@
-
-auto/detect.go:
 	$(RAGEL) -Z -G2 -e -o $@ $<
 	$(REMOVECOMMENTS) $@
 	$(SNAKE2CAMEL) $@
@@ -176,6 +168,6 @@ dots: docs
 imgs: dots docs/nontransparent.png docs/rfc5424_pri.png docs/rfc5424_version.png docs/rfc5424_timestamp.png docs/rfc5424_hostname.png docs/rfc5424_appname.png docs/rfc5424_procid.png docs/rfc5424_msgid.png docs/rfc5424_structureddata.png docs/rfc5424_msg.png docs/rfc5424_msg_any.png docs/rfc5424_msg_compliant.png docs/rfc3164_pri.png docs/rfc3164_timestamp.png docs/rfc3164_hostname.png docs/rfc3164_tag.png docs/rfc3164_content.png docs/rfc3164_msg.png
 
 .PHONY: clean
-clean: rfc5424/machine.go rfc5424/builder.go nontransparent/parser.go rfc3164/machine.go auto/detect.go
+clean: rfc5424/machine.go rfc5424/builder.go nontransparent/parser.go rfc3164/machine.go
 	@rm -f $?
 	@rm -rf docs

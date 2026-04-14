@@ -27,6 +27,32 @@ func SafeMachineOptions(opts []syslog.MachineOption) []syslog.MachineOption {
 	return safe
 }
 
+// filterBestEffort returns a copy of opts with any option that enables
+// best-effort removed. Detection works by applying each option to a probe
+// machine and checking HasBestEffort() before and after.
+func filterBestEffort(opts []syslog.MachineOption) []syslog.MachineOption {
+	var filtered []syslog.MachineOption
+	for _, opt := range opts {
+		// Probe with a fresh rfc5424 machine to detect if the option
+		// enables best-effort. Use a recover to handle format-specific
+		// options that panic on the wrong machine type.
+		enablesBE := func() (result bool) {
+			defer func() {
+				if r := recover(); r != nil {
+					result = false // can't probe; assume not best-effort
+				}
+			}()
+			probe := rfc5424.NewMachine()
+			opt(probe)
+			return probe.HasBestEffort()
+		}()
+		if !enablesBE {
+			filtered = append(filtered, opt)
+		}
+	}
+	return filtered
+}
+
 type machine struct {
 	rfc3164Opts []syslog.MachineOption
 	rfc5424Opts []syslog.MachineOption
@@ -49,14 +75,28 @@ func NewMachine(opts ...Option) syslog.Machine {
 		opt(m)
 	}
 
+	// Build inner machines with all options to detect if any enable best-effort.
 	m.m3164 = rfc3164.NewMachine(m.rfc3164Opts...)
 	m.m5424 = rfc5424.NewMachine(m.rfc5424Opts...)
 
-	// If machine options baked best-effort into either inner machine,
-	// promote to the auto level so HasBestEffort() reports correctly
-	// and the transport layer emits partial results.
+	// If options baked best-effort into either inner machine, promote to
+	// the auto level and rebuild strict machines without best-effort.
+	// This preserves the three-tier strategy: strict primary → strict
+	// fallback → best-effort primary.
 	if m.m3164.HasBestEffort() || m.m5424.HasBestEffort() {
-		m.WithBestEffort()
+		m.bestEffort = true
+		// BE machines get all original options plus best-effort on both.
+		m.m3164BE = m.m3164
+		if !m.m3164BE.HasBestEffort() {
+			m.m3164BE.WithBestEffort()
+		}
+		m.m5424BE = m.m5424
+		if !m.m5424BE.HasBestEffort() {
+			m.m5424BE.WithBestEffort()
+		}
+		// Strict machines are rebuilt, filtering out best-effort options.
+		m.m3164 = rfc3164.NewMachine(filterBestEffort(m.rfc3164Opts)...)
+		m.m5424 = rfc5424.NewMachine(filterBestEffort(m.rfc5424Opts)...)
 	}
 
 	return m
@@ -67,6 +107,9 @@ func NewMachine(opts ...Option) syslog.Machine {
 // fallback. Best-effort is only used as a last resort when both strict
 // parsers fail, recovering partial data from the peek-chosen parser.
 func (m *machine) WithBestEffort() {
+	if m.bestEffort {
+		return // already enabled (e.g., via option promotion in NewMachine)
+	}
 	m.bestEffort = true
 	m.m3164BE = rfc3164.NewMachine(m.rfc3164Opts...)
 	m.m3164BE.WithBestEffort()

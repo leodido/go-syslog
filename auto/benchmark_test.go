@@ -60,10 +60,22 @@ func BenchmarkDirect_RFC3164(b *testing.B) {
 	}
 }
 
-// BenchmarkAutoDetect_Fallback measures the cost when peek guesses wrong
-// and fallback triggers (two parse attempts, both fail).
-func BenchmarkAutoDetect_Fallback(b *testing.B) {
+// BenchmarkAutoDetect_AllFail measures the worst-case path when no parser
+// succeeds: detect + strict primary fail + strict fallback fail + ParseError
+// allocation with defensive copy.
+func BenchmarkAutoDetect_AllFail(b *testing.B) {
 	m := NewMachine()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m.Parse(benchGarbage)
+	}
+}
+
+// BenchmarkAutoDetect_BestEffort measures the cost of best-effort recovery:
+// detect + strict primary fail + strict fallback fail + best-effort primary
+// returns partial result.
+func BenchmarkAutoDetect_BestEffort(b *testing.B) {
+	m := NewMachine(WithRFC5424Options(rfc5424.WithBestEffort()))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		m.Parse(benchGarbage)

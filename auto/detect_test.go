@@ -128,6 +128,26 @@ func TestDetect_OtherByteAfterPRI(t *testing.T) {
 	assert.Equal(t, FormatRFC5424, detect([]byte("<34>\x01binary")))
 }
 
+func TestDetect_MalformedPRI(t *testing.T) {
+	// detect() scans for the first '>' without validating PRI structure.
+	// Both RFC parsers reject malformed PRI at col 0 regardless of the
+	// detection result, so the choice here is inconsequential — these
+	// tests document the current behavior.
+
+	// Empty PRI value: <> — '>' at pos 1, classifies based on next byte.
+	assert.Equal(t, FormatRFC5424, detect([]byte("<>1 rest")))
+	assert.Equal(t, FormatRFC3164, detect([]byte("<>Oct 11 msg")))
+
+	// Non-numeric PRI: <abc> — '>' at pos 4, classifies based on next byte.
+	assert.Equal(t, FormatRFC5424, detect([]byte("<abc>1 rest")))
+	assert.Equal(t, FormatRFC3164, detect([]byte("<abc>Oct 11 msg")))
+
+	// Double '>': <34>> — first '>' is PRI closer, second '>' is post-PRI
+	// byte which is not letter/digit/space/'*' → default RFC 5424.
+	assert.Equal(t, FormatRFC5424, detect([]byte("<34>>1 rest")))
+	assert.Equal(t, FormatRFC5424, detect([]byte("<34>>Oct 11 msg")))
+}
+
 func TestDetect_EdgePriorities(t *testing.T) {
 	// Various priority values — detection depends on post-PRI bytes, not PRI value
 	assert.Equal(t, FormatRFC5424, detect([]byte("<0>1 msg")))

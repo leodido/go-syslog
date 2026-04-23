@@ -14,7 +14,7 @@ import (
 func SafeMachineOptions(opts []syslog.MachineOption) []syslog.MachineOption {
 	safe := make([]syslog.MachineOption, len(opts))
 	for i, opt := range opts {
-		opt := opt
+		opt := opt // TODO: remove when dropping Go 1.21 (loop var scoping, go.dev/blog/loopvar-preview)
 		safe[i] = func(m syslog.Machine) (result syslog.Machine) {
 			defer func() {
 				if r := recover(); r != nil {

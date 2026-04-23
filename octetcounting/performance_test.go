@@ -88,7 +88,7 @@ func BenchmarkParseAuto(b *testing.B) {
 	}
 
 	for _, tc := range cases {
-		tc := tc
+		tc := tc // TODO: remove when dropping Go 1.21 (loop var scoping, go.dev/blog/loopvar-preview)
 		b.Run("Auto/"+tc.label, func(b *testing.B) {
 			p := NewParserAuto(
 				syslog.WithListener(func(*syslog.Result) {}),

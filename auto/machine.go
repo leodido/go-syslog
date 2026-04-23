@@ -172,7 +172,10 @@ func (m *machine) Parse(input []byte) (syslog.Message, error) {
 	}
 
 	return nil, &ParseError{
-		Err:        err,
+		Err: err,
+		// Defensive copy: input may alias a bufio.Reader internal buffer
+		// (e.g., octetcounting scanner's Peek) that is overwritten on the
+		// next scan. The copy ensures RawMessage remains valid after Parse returns.
 		RawMessage: append([]byte(nil), input...),
 	}
 }

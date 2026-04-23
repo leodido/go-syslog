@@ -322,6 +322,10 @@ func TestParse_NilInput(t *testing.T) {
 	msg, err := m.Parse(nil)
 	assert.Nil(t, msg)
 	require.Error(t, err)
+
+	var pe *ParseError
+	require.True(t, errors.As(err, &pe))
+	assert.Nil(t, pe.RawMessage)
 }
 
 func TestParse_PRIOnly(t *testing.T) {
@@ -329,6 +333,10 @@ func TestParse_PRIOnly(t *testing.T) {
 	msg, err := m.Parse([]byte("<34>"))
 	assert.Nil(t, msg)
 	require.Error(t, err)
+
+	var pe *ParseError
+	require.True(t, errors.As(err, &pe))
+	assert.Equal(t, []byte("<34>"), pe.RawMessage)
 }
 
 // --- Interface compliance ---

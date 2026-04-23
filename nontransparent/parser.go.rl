@@ -52,6 +52,10 @@ type machine struct{
     emit         syslog.ParserListener
     readError    error
     lastChunk    []byte // store last candidate message also if it does not ends with a trailer
+    // auto-detect fields (used by parser_auto.go)
+    rfc3164Opts []syslog.MachineOption
+    rfc5424Opts []syslog.MachineOption
+    noFallback  bool
 }
 
 // Exec implements the ragel.Parser interface.

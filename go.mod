@@ -1,6 +1,6 @@
 module github.com/leodido/go-syslog/v4
 
-go 1.21
+go 1.22
 
 require (
 	github.com/davecgh/go-spew v1.1.1

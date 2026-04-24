@@ -12,6 +12,7 @@ To wrap up, this package provides:
 
 - an [RFC5424-compliant parser and builder](/rfc5424)
 - an [RFC3164-compliant parser](/rfc3164) - ie., BSD-syslog messages
+- an [auto-detect parser](/auto) that determines RFC 3164 vs RFC 5424 format per-message
 - an [RFC3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195) (RAW and COOKED profiles)
 - a parser that works on streams for syslog with [octet counting](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1) framing technique, see [octetcounting](/octetcounting)
 - a parser that works on streams for syslog with [non-transparent](https://tools.ietf.org/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
@@ -25,6 +26,8 @@ For example:
 - UDP carrying one message per packet ([RFC5426](https://tools.ietf.org/html/rfc5426))
 
 ## Installation
+
+Requires **Go 1.22** or later.
 
 ```
 go get github.com/leodido/go-syslog/v4
@@ -164,6 +167,27 @@ str, _ := msg.String()
 // <191>1 - - - - - -
 ```
 
+### Auto-detect
+
+Suppose you don't know whether incoming messages are RFC 5424 or RFC 3164. The [auto](/auto) package figures it out per-message.
+
+```go
+m := auto.NewMachine()
+msg, err := m.Parse(input)
+fmt.Println(auto.DetectFormat(msg)) // "rfc5424" or "rfc3164"
+```
+
+You can pass format-specific options to each inner parser:
+
+```go
+m := auto.NewMachine(
+    auto.WithRFC3164Options(rfc3164.WithYear(rfc3164.Year{YYYY: 2025})),
+    auto.WithRFC5424Options(rfc5424.WithCompliantMsg()),
+)
+```
+
+It also works with the stream parsers via `NewParserAuto` - see [octet counting](#octet-counting) and [non-transparent](#non-transparent) below.
+
 ## Message transfer
 
 Excluding encapsulating one message for packet in packet protocols there are two ways to transfer syslog messages over streams.
@@ -182,6 +206,18 @@ The [octecounting package](./octetcounting) parses messages stream following suc
 
 To quickly understand how to use it please have a look at the [example file](./octetcounting/example_test.go).
 
+If you have mixed RFC 5424 and RFC 3164 messages in the same stream, use `NewParserAuto`:
+
+```go
+p := octetcounting.NewParserAuto(
+    syslog.WithListener(func(r *syslog.Result) {
+        fmt.Println(auto.DetectFormat(r.Message))
+    }),
+    syslog.WithBestEffort(),
+)
+p.Parse(reader)
+```
+
 ### Non transparent
 
 The [RFC6587](https://tools.ietf.org/html/rfc6587#section-3.4.2) also describes the **non-transparent framing** transport of syslog messages.
@@ -191,6 +227,18 @@ In such case the messages are separated by a trailer, usually a line feed.
 The [nontransparent package](./nontransparent) parses message stream following such [technique](https://tools.ietf.org/html/rfc6587#section-3.4.2).
 
 To quickly understand how to use it please have a look at the [example file](./nontransparent/example_test.go).
+
+Same as octet counting, use `NewParserAuto` for mixed-format streams:
+
+```go
+p := nontransparent.NewParserAuto(
+    syslog.WithListener(func(r *syslog.Result) {
+        fmt.Println(auto.DetectFormat(r.Message))
+    }),
+    syslog.WithBestEffort(),
+)
+p.Parse(reader)
+```
 
 Things we do not support:
 

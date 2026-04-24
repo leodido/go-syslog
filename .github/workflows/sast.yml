@@ -26,6 +26,8 @@ jobs:
             '1.22',
             '1.23',
             '1.24',
+            '1.25',
+            '1.26',
         ]
         include:
           # Set the minimum Go patch version for the given Go minor
@@ -35,6 +37,10 @@ jobs:
             GO_VERSION: '~1.23.0'
           - go: '1.24'
             GO_VERSION: '~1.24.0'
+          - go: '1.25'
+            GO_VERSION: '~1.25.0'
+          - go: '1.26'
+            GO_VERSION: '~1.26.0'
 
     steps:
       - name: Check out the source code

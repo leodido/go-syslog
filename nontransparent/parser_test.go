@@ -154,7 +154,6 @@ func init() {
 
 func TestParse(t *testing.T) {
 	for _, tc := range testCases {
-		tc := tc
 
 		// Test with trailer LF
 		var inputWithLF = tc.input

@@ -60,7 +60,6 @@ var benchCases = []benchCase{
 
 func BenchmarkParse(b *testing.B) {
 	for _, tc := range benchCases {
-		tc := tc
 		if tc.maxLength == 0 {
 			tc.maxLength = 8192
 		}
@@ -88,7 +87,6 @@ func BenchmarkParseAuto(b *testing.B) {
 	}
 
 	for _, tc := range cases {
-		tc := tc // TODO: remove when dropping Go 1.21 (loop var scoping, go.dev/blog/loopvar-preview)
 		b.Run("Auto/"+tc.label, func(b *testing.B) {
 			p := NewParserAuto(
 				syslog.WithListener(func(*syslog.Result) {}),

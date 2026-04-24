@@ -1703,7 +1703,6 @@ func runTestCases(t *testing.T, tcs []testCase, machineOpts ...syslog.MachineOpt
 	t.Helper()
 
 	for _, tc := range tcs {
-		tc := tc
 
 		t.Run(syslogtesting.RightPad(string(tc.input), 50), func(t *testing.T) {
 			t.Parallel()

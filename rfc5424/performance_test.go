@@ -98,7 +98,6 @@ var benchCases = []benchCase{
 
 func BenchmarkParse(b *testing.B) {
 	for _, tc := range benchCases {
-		tc := tc
 		m := NewMachine(WithBestEffort())
 		b.Run(syslogtesting.RightPad(tc.label, 50), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
@@ -110,7 +109,6 @@ func BenchmarkParse(b *testing.B) {
 
 func BenchmarkParseCompliantMessage(b *testing.B) {
 	for _, tc := range benchCases {
-		tc := tc
 		m := NewMachine(WithBestEffort(), WithCompliantMsg())
 		b.Run(syslogtesting.RightPad(tc.label, 50), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {

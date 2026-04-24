@@ -20,7 +20,6 @@ func TestParserParse(t *testing.T) {
 	p := NewParser()
 	pBest := NewParser(WithBestEffort())
 	for _, tc := range testCases {
-		tc := tc
 		t.Run(syslogtesting.RightPad(string(tc.input), 50), func(t *testing.T) {
 			t.Parallel()
 

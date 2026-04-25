@@ -255,7 +255,7 @@ Things we do not support:
 
 The [rfc3195 package](./rfc3195) provides parsers for both profiles. It implements BEEP frame scanning (MSG, RPY, ERR, ANS, NUL, SEQ frames) and extracts syslog messages from the frame payloads.
 
-This is a parsing-only implementation — it does not handle BEEP session management, channel negotiation, or TLS. Feed it a stream of BEEP frames and it will emit parsed syslog messages.
+This is a parsing-only implementation - it does not handle BEEP session management, channel negotiation, or TLS. Feed it a stream of BEEP frames and it will emit parsed syslog messages.
 
 To quickly understand how to use it please have a look at the [example file](./rfc3195/example_test.go).
 

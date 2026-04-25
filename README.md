@@ -91,7 +91,7 @@ Let's look at an example.
 
 ```go
 i := []byte("<1>1 A - - - - - -")
-p := NewParser(WithBestEffort())
+p := rfc5424.NewParser(rfc5424.WithBestEffort())
 m, e := p.Parse(i)
 ```
 

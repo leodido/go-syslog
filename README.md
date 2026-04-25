@@ -188,6 +188,8 @@ m := auto.NewMachine(
 
 It also works with the stream parsers via `NewParserAuto` - see [octet counting](#octet-counting) and [non-transparent](#non-transparent) below.
 
+Performance-wise, auto-detect peeks at a few bytes after the PRI to pick the format - no allocations, no copying. It's as fast as calling the right parser yourself.
+
 ## Message transfer
 
 Excluding encapsulating one message for packet in packet protocols there are two ways to transfer syslog messages over streams.

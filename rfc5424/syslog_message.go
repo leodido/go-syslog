@@ -8,29 +8,37 @@ import (
 )
 
 type syslogMessage struct {
-	prioritySet    bool // We explictly flag the setting of priority since its zero value is a valid priority by RFC 5424
-	timestampSet   bool // We explictly flag the setting of timestamp since its zero value is a valid timestamp by RFC 5424
-	hasElements    bool
-	priority       uint8
-	version        uint16
-	timestamp      time.Time
-	hostname       string
-	appname        string
-	procID         string
-	msgID          string
-	structuredData map[string]map[string]string
-	message        string
+	prioritySet      bool // We explictly flag the setting of priority since its zero value is a valid priority by RFC 5424
+	priorityOptional bool
+	timestampSet     bool // We explictly flag the setting of timestamp since its zero value is a valid timestamp by RFC 5424
+	hasElements      bool
+	priority         uint8
+	version          uint16
+	timestamp        time.Time
+	hostname         string
+	appname          string
+	procID           string
+	msgID            string
+	structuredData   map[string]map[string]string
+	message          string
 }
 
 func (sm *syslogMessage) minimal() bool {
-	return sm.prioritySet && common.ValidPriority(sm.priority) && common.ValidVersion(sm.version)
+	if !common.ValidVersion(sm.version) {
+		return false
+	}
+	if sm.prioritySet {
+		return common.ValidPriority(sm.priority)
+	}
+	return sm.priorityOptional
 }
 
-// export is meant to be called on minimally-valid messages
-// thus it presumes priority and version values exists and are correct
+// export is meant to be called on minimally-valid messages.
 func (sm *syslogMessage) export() *SyslogMessage {
 	out := &SyslogMessage{}
-	out.ComputeFromPriority(sm.priority)
+	if sm.prioritySet {
+		out.ComputeFromPriority(sm.priority)
+	}
 	out.Version = sm.version
 
 	if sm.timestampSet {

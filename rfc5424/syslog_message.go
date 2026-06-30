@@ -86,10 +86,12 @@ type SyslogMessage struct {
 	StructuredData *map[string]map[string]string
 }
 
-// Valid tells whether the receiving RFC5424 SyslogMessage is well-formed or not.
-//
-// A minimally well-formed RFC5424 syslog message contains at least a priority ([1, 191] or 0) and the version (]0, 999]).
+// Valid reports parser-level structural validity. A valid VERSION is required;
+// PRI may be absent, but when present it must be valid. Valid does not imply
+// that String can serialize the message: serialization always requires PRI.
 func (sm *SyslogMessage) Valid() bool {
-	// A nil priority or a 0 version means that the message is not valid
-	return sm.Base.Valid() && common.ValidVersion(sm.Version)
+	if !common.ValidVersion(sm.Version) {
+		return false
+	}
+	return sm.Priority == nil || common.ValidPriority(*sm.Priority)
 }

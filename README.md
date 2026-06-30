@@ -85,7 +85,9 @@ RFC5424 parser has the ability to perform partial matches (until it can).
 
 With this mode enabled, when the parsing process errors out it returns the message collected until that position, and the error that caused the parser to stop.
 
-Notice that in this modality the output is returned _iff_ it represents a minimally valid message - ie., a message containing almost a priority field in `[1,191]` within angular brackets, followed by a version in `]0,999]` (in the case of RFC5424).
+By default, best-effort parsing returns a partial RFC5424 message only after a
+valid PRI and VERSION have been parsed. With `WithOptionalPriority()`, PRI may
+be absent and a valid VERSION is the parser-level minimum.
 
 Let's look at an example.
 
@@ -126,6 +128,11 @@ Both `m` and `e` have a value since at the column the parser stopped it already 
 ### Builder
 
 This library also provides a builder to construct valid syslog messages.
+
+`SyslogMessage.Valid()` reports parser-level structural validity. A message
+with a valid VERSION and no PRI can therefore be valid after priorityless
+parsing, but `String()` deliberately remains stricter and returns an error
+unless PRI is present.
 
 Notice that its API ignores input values that does not match the grammar.
 

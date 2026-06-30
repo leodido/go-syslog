@@ -92,7 +92,7 @@ func Example_currentyear() {
 }
 
 func Example_withtimezone() {
-	cet, _ := time.LoadLocation("CET")
+	cet := time.FixedZone("CET", 60*60)
 	i := []byte(`<13>Jan 30 02:08:03 host app: Test`)
 	p := NewParser(WithTimezone(cet))
 	m, _ := p.Parse(i)

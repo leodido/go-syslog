@@ -18,10 +18,22 @@ func TestOptionalPriorityIsDisabledByDefault(t *testing.T) {
 }
 
 func TestOptionalPriorityDoesNotAcceptMalformedPresentPriority(t *testing.T) {
-	msg, err := NewMachine(WithOptionalPriority()).Parse([]byte("<abc>" + prioritylessRFC5424))
+	tests := []string{
+		"<abc>",
+		"<>",
+		"<192>",
+		"<34x>",
+		"<34",
+	}
 
-	assert.Nil(t, msg)
-	assert.Error(t, err)
+	for _, prefix := range tests {
+		t.Run(prefix, func(t *testing.T) {
+			msg, err := NewMachine(WithOptionalPriority()).Parse([]byte(prefix + prioritylessRFC5424))
+
+			assert.Nil(t, msg)
+			assert.Error(t, err)
+		})
+	}
 }
 
 func TestOptionalPriorityParsesPrioritylessMessage(t *testing.T) {

@@ -5,6 +5,7 @@ import (
 
 	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Additional test cases to increase coverage of the generated machine.go Parse function
@@ -706,13 +707,30 @@ func TestSyslogMessageValid(t *testing.T) {
 	sm := &SyslogMessage{}
 	assert.False(t, sm.Valid())
 
-	sm.SetPriority(1).SetVersion(1)
+	sm.SetVersion(1)
+	assert.True(t, sm.Valid())
+
+	sm.SetPriority(1)
 	assert.True(t, sm.Valid())
 
 	sm2 := &SyslogMessage{}
 	sm2.SetPriority(1)
-	// Version 0 is invalid
 	assert.False(t, sm2.Valid())
+
+	invalidPriority := uint8(192)
+	sm3 := &SyslogMessage{Version: 1}
+	sm3.Priority = &invalidPriority
+	assert.False(t, sm3.Valid())
+}
+
+func TestStringRequiresPriority(t *testing.T) {
+	sm := &SyslogMessage{}
+	sm.SetVersion(1)
+
+	rendered, err := sm.String()
+
+	assert.Empty(t, rendered)
+	require.EqualError(t, err, "invalid syslog")
 }
 
 // Test parser with CompliantMsg option

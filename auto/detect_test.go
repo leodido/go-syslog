@@ -126,6 +126,23 @@ func TestDetect_NoPRI(t *testing.T) {
 	assert.Equal(t, FormatRFC5424, detect([]byte("<34")))
 }
 
+func TestDetect_NoPRI_NearMissesDefaultToRFC5424(t *testing.T) {
+	tests := []string{
+		"Jax  1 00:00:00 host app: msg",
+		"JanX 1 00:00:00 host app: msg",
+		"oct 11 22:14:15 host app: msg",
+		"202-01-03T14:07:15Z host app: msg",
+		"20250-01-03T14:07:15Z host app: msg",
+		"2025/01/03 host app: msg",
+	}
+
+	for _, input := range tests {
+		t.Run(input, func(t *testing.T) {
+			assert.Equal(t, FormatRFC5424, detect([]byte(input)))
+		})
+	}
+}
+
 func TestDetect_EmptyAfterPRI(t *testing.T) {
 	// Nothing after '>' → default RFC 5424
 	assert.Equal(t, FormatRFC5424, detect([]byte("<34>")))

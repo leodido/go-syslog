@@ -471,6 +471,13 @@ func TestRFC3339FractionRejectsMoreThanSixDigits(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestRFC3339FractionRejectsEmptyFraction(t *testing.T) {
+	msg, err := NewMachine(WithRFC3339()).Parse([]byte("<182>2024-07-25T18:54:02.Z esxi-a vmkernel: message"))
+
+	assert.Nil(t, msg)
+	assert.Error(t, err)
+}
+
 func TestRFC3339FractionRequiresOption(t *testing.T) {
 	msg, err := NewMachine().Parse([]byte("<182>2024-07-25T18:54:02.265Z esxi-a vmkernel: message"))
 

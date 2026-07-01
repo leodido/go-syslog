@@ -8,9 +8,11 @@ import (
 )
 
 var (
-	benchRFC5424 = []byte(`<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`)
-	benchRFC3164 = []byte(`<13>Dec  2 16:31:03 host app: Test message for benchmarking`)
-	benchGarbage = []byte(`<34>1 not-a-valid-anything-at-all`)
+	benchRFC5424             = []byte(`<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`)
+	benchRFC3164             = []byte(`<13>Dec  2 16:31:03 host app: Test message for benchmarking`)
+	benchPrioritylessRFC5424 = []byte(`1 2018-10-11T22:14:15.003Z mymach.it e - 1 - message`)
+	benchPrioritylessRFC3164 = []byte(`Dec  2 16:31:03 host app: Test message for benchmarking`)
+	benchGarbage             = []byte(`<34>1 not-a-valid-anything-at-all`)
 )
 
 // BenchmarkPeekOnly measures the peek detection function in isolation.
@@ -23,6 +25,18 @@ func BenchmarkPeekOnly_RFC5424(b *testing.B) {
 func BenchmarkPeekOnly_RFC3164(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		detect(benchRFC3164)
+	}
+}
+
+func BenchmarkPeekOnly_PrioritylessRFC5424(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		detect(benchPrioritylessRFC5424)
+	}
+}
+
+func BenchmarkPeekOnly_PrioritylessRFC3164(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		detect(benchPrioritylessRFC3164)
 	}
 }
 

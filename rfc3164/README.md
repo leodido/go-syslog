@@ -54,6 +54,18 @@ When PRI is absent, `Priority`, `Facility`, and `Severity` are nil. A fully
 parsed priorityless message is still valid: `SyslogMessage.Valid()` requires
 its timestamp and message fields when no priority is present.
 
+### RFC3339 Timestamps
+
+Enable `WithRFC3339()` for senders that place an RFC3339 timestamp in an
+RFC3164-style message:
+
+```go
+p := rfc3164.NewParser(rfc3164.WithRFC3339())
+```
+
+The extension accepts timezone offsets and fractional seconds up to six digits.
+Stamp timestamps remain accepted.
+
 ### Timezone Configuration
 
 By default, timestamps without timezone information use UTC. You can specify a different timezone:

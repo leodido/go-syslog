@@ -162,7 +162,7 @@ time = hhmmss (timesecfrac? when { m.secfrac });
 timestamp = (datemmm sp datemday sp time) >mark %set_timestamp @err(err_timestamp);
 timestamp_lenient = (datemmm sp datemday_lenient sp time) >mark %set_timestamp @err(err_timestamp);
 
-rfc3339 = fulldate >mark 'T' hhmmss timeoffset %set_rfc3339 @err(err_rfc3339);
+rfc3339 = fulldate >mark 'T' fulltime %set_rfc3339 @err(err_rfc3339);
 
 # note > RFC 3164 says "The Domain Name MUST NOT be included in the HOSTNAME field"
 # note > this could mean that the we may need to create and to use a labelrange = graph{1,63} here if we want the parser to be stricter.

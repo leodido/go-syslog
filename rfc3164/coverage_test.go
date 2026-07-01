@@ -7,6 +7,7 @@ import (
 	"github.com/leodido/go-syslog/v4"
 	syslogtesting "github.com/leodido/go-syslog/v4/testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Additional test cases to exercise more paths in the generated machine.go Parse function.
@@ -423,4 +424,75 @@ func TestExportNilDashFields(t *testing.T) {
 	assert.Nil(t, out.Hostname)
 	assert.Nil(t, out.Appname)
 	assert.Nil(t, out.ProcID)
+}
+
+func TestRFC3339FractionPrecision(t *testing.T) {
+	tests := []struct {
+		name       string
+		timestamp  string
+		nanosecond int
+		offset     int
+	}{
+		{
+			name:       "one digit UTC",
+			timestamp:  "2024-07-25T18:54:02.2Z",
+			nanosecond: 200000000,
+			offset:     0,
+		},
+		{
+			name:       "six digits with offset",
+			timestamp:  "2024-07-25T18:54:02.123456+02:30",
+			nanosecond: 123456000,
+			offset:     2*60*60 + 30*60,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			input := "<182>" + tt.timestamp + " esxi-a vmkernel: message"
+			msg, err := NewMachine(WithRFC3339()).Parse([]byte(input))
+
+			require.NoError(t, err)
+			require.NotNil(t, msg)
+			sm, ok := msg.(*SyslogMessage)
+			require.True(t, ok)
+			require.NotNil(t, sm.Timestamp)
+			assert.Equal(t, tt.nanosecond, sm.Timestamp.Nanosecond())
+			_, offset := sm.Timestamp.Zone()
+			assert.Equal(t, tt.offset, offset)
+		})
+	}
+}
+
+func TestRFC3339FractionRejectsMoreThanSixDigits(t *testing.T) {
+	msg, err := NewMachine(WithRFC3339()).Parse([]byte("<182>2024-07-25T18:54:02.1234567Z esxi-a vmkernel: message"))
+
+	assert.Nil(t, msg)
+	assert.Error(t, err)
+}
+
+func TestRFC3339FractionRequiresOption(t *testing.T) {
+	msg, err := NewMachine().Parse([]byte("<182>2024-07-25T18:54:02.265Z esxi-a vmkernel: message"))
+
+	assert.Nil(t, msg)
+	assert.Error(t, err)
+}
+
+func TestRFC3339FractionParserFacade(t *testing.T) {
+	msg, err := NewParser(WithRFC3339()).Parse([]byte("<182>2024-07-25T18:54:02.265Z esxi-a vmkernel: Event message"))
+
+	require.NoError(t, err)
+	require.NotNil(t, msg)
+	sm, ok := msg.(*SyslogMessage)
+	require.True(t, ok)
+	require.NotNil(t, sm.Timestamp)
+	require.NotNil(t, sm.Priority)
+	require.NotNil(t, sm.Hostname)
+	require.NotNil(t, sm.Appname)
+	require.NotNil(t, sm.Message)
+	assert.Equal(t, 265000000, sm.Timestamp.Nanosecond())
+	assert.Equal(t, uint8(182), *sm.Priority)
+	assert.Equal(t, "esxi-a", *sm.Hostname)
+	assert.Equal(t, "vmkernel", *sm.Appname)
+	assert.Equal(t, "Event message", *sm.Message)
 }

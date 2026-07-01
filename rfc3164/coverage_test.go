@@ -464,6 +464,24 @@ func TestRFC3339FractionPrecision(t *testing.T) {
 	}
 }
 
+func TestRFC3339FractionWithoutPriority(t *testing.T) {
+	msg, err := NewMachine(WithOptionalPriority(), WithRFC3339()).Parse([]byte("2024-07-25T18:54:02.265Z esxi-a vmkernel: Event message"))
+
+	require.NoError(t, err)
+	require.NotNil(t, msg)
+	sm, ok := msg.(*SyslogMessage)
+	require.True(t, ok)
+	assert.Nil(t, sm.Priority)
+	require.NotNil(t, sm.Timestamp)
+	require.NotNil(t, sm.Hostname)
+	require.NotNil(t, sm.Appname)
+	require.NotNil(t, sm.Message)
+	assert.Equal(t, 265000000, sm.Timestamp.Nanosecond())
+	assert.Equal(t, "esxi-a", *sm.Hostname)
+	assert.Equal(t, "vmkernel", *sm.Appname)
+	assert.Equal(t, "Event message", *sm.Message)
+}
+
 func TestRFC3339FractionRejectsMoreThanSixDigits(t *testing.T) {
 	msg, err := NewMachine(WithRFC3339()).Parse([]byte("<182>2024-07-25T18:54:02.1234567Z esxi-a vmkernel: message"))
 

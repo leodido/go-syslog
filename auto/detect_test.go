@@ -110,7 +110,17 @@ func TestDetect_RFC3164_RFC3339Timestamp(t *testing.T) {
 }
 
 func TestDetect_NoPRI(t *testing.T) {
-	// No '>' found → default RFC 5424
+	months := []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+	for _, month := range months {
+		t.Run(month, func(t *testing.T) {
+			input := fmt.Sprintf("%s  1 00:00:00 host app: msg", month)
+			assert.Equal(t, FormatRFC3164, detect([]byte(input)))
+		})
+	}
+
+	assert.Equal(t, FormatRFC3164, detect([]byte("2025-01-03T14:07:15Z host app: msg")))
+	assert.Equal(t, FormatRFC5424, detect([]byte("1 2025-01-03T14:07:15Z host app - - - msg")))
+	assert.Equal(t, FormatRFC5424, detect([]byte("1 2025-01-03T14:07:15Z host app - - - value > threshold")))
 	assert.Equal(t, FormatRFC5424, detect([]byte("no pri here")))
 	assert.Equal(t, FormatRFC5424, detect([]byte("")))
 	assert.Equal(t, FormatRFC5424, detect([]byte("<34")))

@@ -167,6 +167,57 @@ func TestParse_WithoutFallback_ValidMessage(t *testing.T) {
 	assert.Equal(t, FormatRFC5424, DetectFormat(msg))
 }
 
+func TestParse_WithoutFallback_PrioritylessRFC3164(t *testing.T) {
+	m := NewMachine(
+		WithoutFallback(),
+		WithRFC3164Options(rfc3164.WithOptionalPriority()),
+	)
+
+	msg, err := m.Parse([]byte("Oct 11 22:14:15 mymachine su: message"))
+
+	require.NoError(t, err)
+	require.NotNil(t, msg)
+	assert.Equal(t, FormatRFC3164, DetectFormat(msg))
+	sm, ok := msg.(*rfc3164.SyslogMessage)
+	require.True(t, ok)
+	assert.Nil(t, sm.Priority)
+}
+
+func TestParse_WithoutFallback_PrioritylessRFC3164RFC3339(t *testing.T) {
+	m := NewMachine(
+		WithoutFallback(),
+		WithRFC3164Options(
+			rfc3164.WithOptionalPriority(),
+			rfc3164.WithRFC3339(),
+		),
+	)
+
+	msg, err := m.Parse([]byte("2025-01-03T14:07:15Z host app: message"))
+
+	require.NoError(t, err)
+	require.NotNil(t, msg)
+	assert.Equal(t, FormatRFC3164, DetectFormat(msg))
+	sm, ok := msg.(*rfc3164.SyslogMessage)
+	require.True(t, ok)
+	assert.Nil(t, sm.Priority)
+}
+
+func TestParse_WithoutFallback_PrioritylessRFC5424(t *testing.T) {
+	m := NewMachine(
+		WithoutFallback(),
+		WithRFC5424Options(rfc5424.WithOptionalPriority()),
+	)
+
+	msg, err := m.Parse([]byte("1 2025-01-03T14:07:15Z host app - - - message"))
+
+	require.NoError(t, err)
+	require.NotNil(t, msg)
+	assert.Equal(t, FormatRFC5424, DetectFormat(msg))
+	sm, ok := msg.(*rfc5424.SyslogMessage)
+	require.True(t, ok)
+	assert.Nil(t, sm.Priority)
+}
+
 // --- Best-effort ---
 
 func TestParse_BestEffort_PartialResult_NoFallback(t *testing.T) {

@@ -193,9 +193,23 @@ m := auto.NewMachine(
 )
 ```
 
+To accept messages that omit PRI, enable the parser option for both inner
+formats. Strict PRI handling remains the default when these options are absent.
+
+```go
+m := auto.NewMachine(
+    auto.WithRFC3164Options(rfc3164.WithOptionalPriority()),
+    auto.WithRFC5424Options(rfc5424.WithOptionalPriority()),
+)
+```
+
 It also works with the stream parsers via `NewParserAuto` - see [octet counting](#octet-counting) and [non-transparent](#non-transparent) below.
 
-Performance-wise, auto-detect peeks at a few bytes after the PRI to pick the format - no allocations, no copying. It's as fast as calling the right parser yourself.
+Auto-detect chooses a format before parsing. Inputs beginning with `<` scan for
+the first `>` and then use the existing post-PRI VERSION-versus-timestamp
+heuristic. Inputs without PRI use narrow leading signatures: an RFC3164 month
+or four-digit RFC3339 year selects RFC3164, while other inputs default to
+RFC5424.
 
 ## Message transfer
 

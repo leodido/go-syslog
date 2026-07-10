@@ -203,11 +203,10 @@ m := auto.NewMachine(
 )
 ```
 
-`NewParserAuto` also provides auto-detection to the stream parsers for
-PRI-bearing messages - see [octet counting](#octet-counting) and
-[non-transparent](#non-transparent) below. Stream framing still requires the
-syslog payload to begin with PRI, so priorityless auto-detection currently
-applies only when parsing directly with `auto.Machine`.
+The stream packages also expose `NewParserAuto` - see
+[octet counting](#octet-counting) and [non-transparent](#non-transparent)
+below. Their auto-detect parsers currently require each syslog payload to begin
+with PRI. Priorityless auto-detection is available only through `auto.Machine`.
 
 Auto-detect chooses a format before parsing. Inputs beginning with `<` scan for
 the first `>` and then use the existing post-PRI VERSION-versus-timestamp

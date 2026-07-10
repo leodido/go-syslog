@@ -1,8 +1,8 @@
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-**A parser for Syslog messages and transports**.
+**Parsers for syslog messages and transports**
 
-> [Blazing fast](#Performances) Syslog parsers
+> [Blazing fast](#performance) Syslog parsers
 
 _By [@leodido](https://github.com/leodido)_.
 
@@ -10,18 +10,18 @@ _This is the official continuation of influxdata/go-syslog_.
 
 This module includes:
 
-- an [RFC5424-compliant parser and builder](/rfc5424)
-- an [RFC3164-compliant parser](/rfc3164) - ie., BSD-syslog messages
-- an [auto-detect parser](/auto) that determines RFC 3164 vs RFC 5424 format per-message
-- an [RFC3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195) (RAW and COOKED profiles)
-- a parser that works on streams for syslog with [octet counting](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1) framing technique, see [octetcounting](/octetcounting)
-- a parser that works on streams for syslog with [non-transparent](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
+- an [RFC 5424-compliant parser and builder](/rfc5424)
+- an [RFC 3164-compliant parser](/rfc3164) for BSD syslog messages
+- an [auto-detect parser](/auto) that selects RFC 3164 or RFC 5424 per message
+- an [RFC 3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195), including RAW and COOKED profiles
+- an [octet-counting stream parser](/octetcounting) for [RFC 6587 transparent framing](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1)
+- a [non-transparent stream parser](/nontransparent) for [RFC 6587 delimiter framing](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2)
 
 It can parse syslog messages received over:
 
-- TLS with octet count ([RFC5425](https://datatracker.ietf.org/doc/html/rfc5425))
-- TCP with non-transparent framing or with octet count ([RFC 6587](https://datatracker.ietf.org/doc/html/rfc6587))
-- UDP carrying one message per packet ([RFC5426](https://datatracker.ietf.org/doc/html/rfc5426))
+- TLS with octet counting ([RFC 5425](https://datatracker.ietf.org/doc/html/rfc5425))
+- TCP with non-transparent framing or octet counting ([RFC 6587](https://datatracker.ietf.org/doc/html/rfc6587))
+- UDP carrying one message per packet ([RFC 5426](https://datatracker.ietf.org/doc/html/rfc5426))
 
 ## Installation
 
@@ -41,7 +41,7 @@ The [docs](docs/) directory contains `.dot` files representing the finite-state 
 
 [![Build with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/leodido/go-syslog)
 
-Parse RFC5424 messages with `rfc5424.NewParser`. The RFC3164 parser uses the
+Parse RFC 5424 messages with `rfc5424.NewParser`. The RFC 3164 parser uses the
 same interface; its options are demonstrated in
 [rfc3164/example_test.go](./rfc3164/example_test.go).
 
@@ -75,7 +75,7 @@ This results in `m` being equal to:
 // })
 ```
 
-`e` is nil because the input is a valid RFC5424 message.
+`e` is nil because the input is a valid RFC 5424 message.
 
 ### Messages without PRI
 
@@ -89,7 +89,7 @@ rfc5424Parser := rfc5424.NewParser(rfc5424.WithOptionalPriority())
 
 When PRI is absent, `Priority`, `Facility`, and `Severity` are nil. Options can
 be combined; for example, VMware ESXi messages commonly need both optional PRI
-and fractional RFC3339 timestamps:
+and fractional RFC 3339 timestamps:
 
 ```go
 esxiParser := rfc3164.NewParser(
@@ -101,7 +101,7 @@ esxiParser := rfc3164.NewParser(
 ### Best effort mode
 
 With `WithBestEffort()`, a parse error returns the fields collected before the
-failure. An RFC5424 partial result requires PRI and VERSION, or VERSION alone
+failure. An RFC 5424 partial result requires PRI and VERSION, or VERSION alone
 when `WithOptionalPriority()` is also set.
 
 ```go
@@ -133,17 +133,17 @@ m, e := p.Parse(i)
 ```
 
 Both `m` and `e` are non-nil because the parser collected a valid partial
-RFC5424 message before the error.
+RFC 5424 message before the error.
 
 ### Builder
 
-Use `SyslogMessage` to construct RFC5424 messages. `Valid()` checks parser-level
+Use `SyslogMessage` to construct RFC 5424 messages. `Valid()` checks parser-level
 structure; `String()` requires PRI. Setters ignore values that do not match the
 grammar.
 
 ```go
 msg := &rfc5424.SyslogMessage{}
-msg.SetTimestamp("not a RFC3339MICRO timestamp")
+msg.SetTimestamp("invalid timestamp")
 msg.Valid() // Not yet a valid message (try msg.Valid())
 msg.SetPriority(191)
 msg.SetVersion(1)
@@ -177,7 +177,7 @@ str, _ := msg.String()
 
 ### Auto-detect
 
-Use the [auto](/auto) package when a source mixes RFC5424 and RFC3164 messages.
+Use the [auto](/auto) package when a source mixes RFC 5424 and RFC 3164 messages.
 
 ```go
 m := auto.NewMachine()
@@ -208,28 +208,25 @@ The stream packages also expose `NewParserAuto` - see
 below. Their auto-detect parsers currently require each syslog payload to begin
 with PRI. Priorityless auto-detection is available only through `auto.Machine`.
 
-For messages without PRI, auto-detection recognizes RFC3164 timestamps that
+For messages without PRI, auto-detection recognizes RFC 3164 timestamps that
 start with a three-letter month or a four-digit year followed by `-`. Other
-priorityless inputs are tried as RFC5424 first. Unless `WithoutFallback()` is
+priorityless inputs are tried as RFC 5424 first. Unless `WithoutFallback()` is
 set, a complete parse failure causes the other parser to be tried.
 
 ## Message transfer
 
-Excluding encapsulating one message for packet in packet protocols there are two ways to transfer syslog messages over streams.
-
-The older - ie., the **non-transparent** framing - and the newer one - ie., the **octet counting** framing - which is reliable and has not been seen to cause problems noted with the non-transparent one.
-
-This library provide stream parsers for both.
+Packet-oriented transports carry one syslog message per packet. Stream
+transports use non-transparent or octet-counting framing. This library provides
+parsers for both stream formats.
 
 ### Octet counting
 
-In short, [RFC5425](https://datatracker.ietf.org/doc/html/rfc5425#section-4.3) and [RFC6587](https://datatracker.ietf.org/doc/html/rfc6587), aside from the protocol considerations, describe a **transparent framing** technique for Syslog messages that uses the **octect counting** technique - ie., the message length of the incoming message.
+[RFC 5425](https://datatracker.ietf.org/doc/html/rfc5425#section-4.3) and
+[RFC 6587](https://datatracker.ietf.org/doc/html/rfc6587) describe transparent
+framing with octet counting. Each message is prefixed with its byte length.
 
-Each Syslog message is sent with a prefix representing the number of bytes it is made of.
-
-The [octecounting package](./octetcounting) parses messages stream following such rule.
-
-To quickly understand how to use it please have a look at the [example file](./octetcounting/example_test.go).
+The [octetcounting package](./octetcounting) parses this framing. See its
+[examples](./octetcounting/example_test.go).
 
 If you have mixed RFC 5424 and RFC 3164 messages in the same stream, use `NewParserAuto`:
 
@@ -243,17 +240,14 @@ p := octetcounting.NewParserAuto(
 p.Parse(reader)
 ```
 
-### Non transparent
+### Non-transparent framing
 
-The [RFC6587](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2) also describes the **non-transparent framing** transport of syslog messages.
+[RFC 6587](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2)
+also defines non-transparent framing, in which a delimiter—usually a line
+feed—separates messages. The [nontransparent package](./nontransparent) parses
+this framing. See its [examples](./nontransparent/example_test.go).
 
-In such case the messages are separated by a trailer, usually a line feed.
-
-The [nontransparent package](./nontransparent) parses message stream following such [technique](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2).
-
-To quickly understand how to use it please have a look at the [example file](./nontransparent/example_test.go).
-
-Same as octet counting, use `NewParserAuto` for mixed-format streams:
+As with octet counting, use `NewParserAuto` for mixed-format streams:
 
 ```go
 p := nontransparent.NewParserAuto(
@@ -265,11 +259,11 @@ p := nontransparent.NewParserAuto(
 p.Parse(reader)
 ```
 
-Things we do not support:
+Unsupported delimiter configurations:
 
 - trailers other than `LF` or `NUL`
-- trailers which length is greater than 1 byte
-- trailer change on a frame-by-frame basis
+- trailers longer than one byte
+- changing the trailer between frames
 
 ### RFC 3195 (BEEP)
 
@@ -280,19 +274,21 @@ Things we do not support:
 
 The [rfc3195 package](./rfc3195) provides parsers for both profiles. It implements BEEP frame scanning (MSG, RPY, ERR, ANS, NUL, SEQ frames) and extracts syslog messages from the frame payloads.
 
-This is a parsing-only implementation - it does not handle BEEP session management, channel negotiation, or TLS. Feed it a stream of BEEP frames and it will emit parsed syslog messages.
+This parser does not handle BEEP session management, channel negotiation, or
+TLS. Feed it BEEP frames and it emits parsed syslog messages. See the
+[examples](./rfc3195/example_test.go).
 
-To quickly understand how to use it please have a look at the [example file](./rfc3195/example_test.go).
+## Performance
 
-## Performances
-
-To run the benchmark execute the following command.
+Run the benchmarks with:
 
 ```bash
 make bench
 ```
 
-On my machine<sup>[1](#mymachine)</sup> these are the results obtained paring RFC5424 syslog messages with best effort mode on.
+The following results were measured on
+[this machine](#mymachine) while parsing RFC 5424 messages with best-effort mode
+enabled.
 
 ```
 [no]_empty_input__________________________________-10  32072733   185.3 ns/op   272 B/op   4 allocs/op
@@ -316,16 +312,15 @@ On my machine<sup>[1](#mymachine)</sup> these are the results obtained paring RF
 [ok]_with_UTF-8_structured_data_param_value,_with_-10   8864156   660.6 ns/op   858 B/op  15 allocs/op
 ```
 
-As you can see it takes:
+Approximate parsing times:
 
-* ~125ns to parse the smallest legal message
+- 125 ns for the smallest legal message
+- less than 1 µs for an average legal message
+- 2 µs for a very long legal message
 
-* less than 1µs to parse an average legal message
-
-* ~2µs to parse a very long legal message
-
-Other RFC5424 implementations, like this [one](https://github.com/roguelazer/rust-syslog-rfc5424) in Rust, spend 8µs to parse an average legal message.
+For comparison, this [Rust RFC 5424 implementation](https://github.com/roguelazer/rust-syslog-rfc5424)
+reports 8 µs for an average legal message.
 
 ---
 
-* <a name="mymachine">[1]</a>: Apple M1 Pro
+<a id="mymachine"></a>Test system: Apple M1 Pro

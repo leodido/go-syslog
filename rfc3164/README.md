@@ -1,6 +1,6 @@
 # RFC 3164 Syslog Parser
 
-This package parses RFC3164 (BSD syslog) messages. It accepts the standard
+This package parses RFC 3164 (BSD syslog) messages. It accepts the standard
 format by default and provides the opt-in extensions listed below.
 
 ## Message Format
@@ -46,9 +46,9 @@ When PRI is absent, `Priority`, `Facility`, and `Severity` are nil. A fully
 parsed priorityless message is still valid: `SyslogMessage.Valid()` requires
 its timestamp and message fields when no priority is present.
 
-### RFC3339 Timestamps
+### RFC 3339 Timestamps
 
-`WithRFC3339()` accepts RFC3339 timestamps in RFC3164-style messages:
+`WithRFC3339()` accepts RFC 3339 timestamps in RFC 3164-style messages:
 
 ```go
 p := rfc3164.NewParser(rfc3164.WithRFC3339())
@@ -59,7 +59,8 @@ Stamp timestamps remain accepted.
 
 ### Timezone Configuration
 
-By default, timestamps without timezone information use UTC. You can specify a different timezone:
+Timestamps without timezone information use UTC by default. To use another
+timezone:
 
 ```go
 loc, _ := time.LoadLocation("America/New_York")
@@ -70,7 +71,7 @@ p := rfc3164.NewParser(
 
 ### Year Specification
 
-RFC3164 timestamps don't include the year. Specify it explicitly:
+RFC 3164 timestamps do not include the year. Specify it explicitly:
 
 ```go
 p := rfc3164.NewParser(
@@ -172,7 +173,7 @@ ntp server <your-ntp-server>
 
 ### Format Ambiguities
 
-RFC3164 leaves several fields underspecified:
+RFC 3164 leaves several fields underspecified:
 
 - No standard field delimiters beyond whitespace
 - Hostname and tag can be ambiguous
@@ -185,14 +186,14 @@ Unsupported formats tracked in
 [issue #61](https://github.com/leodido/go-syslog/issues/61) include:
 
 - BSD-style timestamps that contain a year
-- Unix-epoch timestamps, including fractional epochs
+- Unix epoch timestamps, including fractional epochs
 - named timezone tokens embedded after a timestamp, such as `IST` or `SST`
 - counter, hostname, or task fields outside the supported Cisco IOS ordering
-- RFC5424-like envelopes that use an `app[pid]:` tag instead of separate fields
+- RFC 5424-like envelopes that use an `app[pid]:` tag instead of separate fields
 
 ### Cisco IOS Limitations
 
 - Component ordering must match the parser options. A mismatch can fail parsing
   or assign fields incorrectly.
-- RFC5424-style structured data from `logging host X session-id` or
+- RFC 5424-style structured data from `logging host X session-id` or
   `sequence-num-session` is not supported. See issue #35.

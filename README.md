@@ -15,13 +15,13 @@ This module includes:
 - an [auto-detect parser](/auto) that determines RFC 3164 vs RFC 5424 format per-message
 - an [RFC3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195) (RAW and COOKED profiles)
 - a parser that works on streams for syslog with [octet counting](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1) framing technique, see [octetcounting](/octetcounting)
-- a parser that works on streams for syslog with [non-transparent](https://tools.ietf.org/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
+- a parser that works on streams for syslog with [non-transparent](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
 
 It can parse syslog messages received over:
 
-- TLS with octet count ([RFC5425](https://tools.ietf.org/html/rfc5425))
-- TCP with non-transparent framing or with octet count ([RFC 6587](https://tools.ietf.org/html/rfc6587))
-- UDP carrying one message per packet ([RFC5426](https://tools.ietf.org/html/rfc5426))
+- TLS with octet count ([RFC5425](https://datatracker.ietf.org/doc/html/rfc5425))
+- TCP with non-transparent framing or with octet count ([RFC 6587](https://datatracker.ietf.org/doc/html/rfc6587))
+- UDP carrying one message per packet ([RFC5426](https://datatracker.ietf.org/doc/html/rfc5426))
 
 ## Installation
 
@@ -223,7 +223,7 @@ This library provide stream parsers for both.
 
 ### Octet counting
 
-In short, [RFC5425](https://tools.ietf.org/html/rfc5425#section-4.3) and [RFC6587](https://tools.ietf.org/html/rfc6587), aside from the protocol considerations, describe a **transparent framing** technique for Syslog messages that uses the **octect counting** technique - ie., the message length of the incoming message.
+In short, [RFC5425](https://datatracker.ietf.org/doc/html/rfc5425#section-4.3) and [RFC6587](https://datatracker.ietf.org/doc/html/rfc6587), aside from the protocol considerations, describe a **transparent framing** technique for Syslog messages that uses the **octect counting** technique - ie., the message length of the incoming message.
 
 Each Syslog message is sent with a prefix representing the number of bytes it is made of.
 
@@ -245,11 +245,11 @@ p.Parse(reader)
 
 ### Non transparent
 
-The [RFC6587](https://tools.ietf.org/html/rfc6587#section-3.4.2) also describes the **non-transparent framing** transport of syslog messages.
+The [RFC6587](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2) also describes the **non-transparent framing** transport of syslog messages.
 
 In such case the messages are separated by a trailer, usually a line feed.
 
-The [nontransparent package](./nontransparent) parses message stream following such [technique](https://tools.ietf.org/html/rfc6587#section-3.4.2).
+The [nontransparent package](./nontransparent) parses message stream following such [technique](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2).
 
 To quickly understand how to use it please have a look at the [example file](./nontransparent/example_test.go).
 

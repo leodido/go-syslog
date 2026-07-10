@@ -79,6 +79,27 @@ This results in `m` being equal to:
 
 And `e` being equal to `nil` since the `i` byte slice contains a perfectly valid RFC5424 message.
 
+### Messages without PRI
+
+Both parsers require PRI by default. Use `WithOptionalPriority()` to accept an
+otherwise valid message without it:
+
+```go
+rfc3164Parser := rfc3164.NewParser(rfc3164.WithOptionalPriority())
+rfc5424Parser := rfc5424.NewParser(rfc5424.WithOptionalPriority())
+```
+
+When PRI is absent, `Priority`, `Facility`, and `Severity` are nil. Options can
+be combined; for example, VMware ESXi messages commonly need both optional PRI
+and fractional RFC3339 timestamps:
+
+```go
+esxiParser := rfc3164.NewParser(
+    rfc3164.WithOptionalPriority(),
+    rfc3164.WithRFC3339(),
+)
+```
+
 ### Best effort mode
 
 RFC5424 parser has the ability to perform partial matches (until it can).

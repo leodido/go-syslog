@@ -19,8 +19,8 @@ func WithBestEffort() syslog.MachineOption {
 // or
 // - a free-form message (0-255) not starting with a BOM marker.
 //
-// Ref.: https://tools.ietf.org/html/rfc5424#section-6.4
-// Ref.: https://tools.ietf.org/html/rfc5424#section-6
+// Ref.: https://datatracker.ietf.org/doc/html/rfc5424#section-6.4
+// Ref.: https://datatracker.ietf.org/doc/html/rfc5424#section-6
 func WithCompliantMsg() syslog.MachineOption {
 	return func(m syslog.Machine) syslog.Machine {
 		m.(*machine).compliantMsg = true

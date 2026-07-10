@@ -55,7 +55,7 @@ func (sm *syslogMessage) export() *SyslogMessage {
 	}
 	if sm.content != "-" && sm.content != "" {
 		// Content is usually process ID
-		// See https://tools.ietf.org/html/rfc3164#section-5.3
+		// See https://datatracker.ietf.org/doc/html/rfc3164#section-5.3
 		out.ProcID = &sm.content
 	}
 	if sm.message != "" {

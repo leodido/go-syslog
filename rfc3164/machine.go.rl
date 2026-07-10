@@ -188,7 +188,7 @@ ciscoextras = msgcount? <: sequence? <: ciscoHostname?;
 
 # Section 4.1.3
 # note > alnum{1,32} is too restrictive (eg., no dashes)
-# note > see https://tools.ietf.org/html/rfc2234#section-2.1 for an interpretation of "ABNF alphanumeric" as stated by RFC 3164 regarding the tag
+# note > see https://datatracker.ietf.org/doc/html/rfc2234#section-2.1 for an interpretation of "ABNF alphanumeric" as stated by RFC 3164 regarding the tag
 # note > while RFC3164 assumes only ABNF alphanumeric process names, many BSD-syslog contains processe names with additional characters (-, _, .)
 # note > should be {1,32} but Unifi thinks it can be up to 48 characters
 tag = (print -- [ :\[]){1,48} >mark %set_tag @err(err_tag);

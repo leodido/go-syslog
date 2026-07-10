@@ -59,6 +59,44 @@ func Example_readme() {
 	// Message: 'su root' failed
 }
 
+func Example_optionalPriority() {
+	p := NewParser(WithOptionalPriority())
+	msg, err := p.Parse([]byte("Oct 11 22:14:15 mymachine su: message"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m := msg.(*SyslogMessage)
+	fmt.Println("Priority absent:", m.Priority == nil)
+	fmt.Println("Hostname:", *m.Hostname)
+	fmt.Println("Message:", *m.Message)
+
+	// Output:
+	// Priority absent: true
+	// Hostname: mymachine
+	// Message: message
+}
+
+func Example_optionalPriorityRFC3339() {
+	p := NewParser(WithOptionalPriority(), WithRFC3339())
+	msg, err := p.Parse([]byte("2024-07-25T18:54:02.265Z esxi-a vmkernel: Event message"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m := msg.(*SyslogMessage)
+	fmt.Println("Priority absent:", m.Priority == nil)
+	fmt.Println("Timestamp:", m.Timestamp.Format(time.RFC3339Nano))
+	fmt.Println("Hostname:", *m.Hostname)
+	fmt.Println("App name:", *m.Appname)
+
+	// Output:
+	// Priority absent: true
+	// Timestamp: 2024-07-25T18:54:02.265Z
+	// Hostname: esxi-a
+	// App name: vmkernel
+}
+
 func Example_currentyear() {
 	i := []byte(`<13>Dec  2 16:31:03 host app: Test`)
 	p := NewParser(WithYear(CurrentYear{}))

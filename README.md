@@ -229,11 +229,10 @@ The stream packages also expose `NewParserAuto` - see
 below. Their auto-detect parsers currently require each syslog payload to begin
 with PRI. Priorityless auto-detection is available only through `auto.Machine`.
 
-Auto-detect chooses a format before parsing. Inputs beginning with `<` scan for
-the first `>` and then use the existing post-PRI VERSION-versus-timestamp
-heuristic. Inputs without PRI use narrow leading signatures: an RFC3164 month
-or four-digit RFC3339 year selects RFC3164, while other inputs default to
-RFC5424.
+For messages without PRI, auto-detection recognizes RFC3164 timestamps that
+start with a three-letter month or a four-digit year followed by `-`. Other
+priorityless inputs are tried as RFC5424 first. Unless `WithoutFallback()` is
+set, a complete parse failure causes the other parser to be tried.
 
 ## Message transfer
 

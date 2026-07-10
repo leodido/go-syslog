@@ -1,50 +1,42 @@
 # RFC 3164 Syslog Parser
 
-This package implements a parser for RFC3164 (BSD syslog) messages with extensions for common non-standard formats.
+This package parses RFC3164 (BSD syslog) messages. It accepts the standard
+format by default and provides the opt-in extensions listed below.
 
-## Overview
-
-RFC3164 is the original syslog protocol specification, commonly known as BSD syslog. Unlike [RFC5424](../rfc5424), RFC3164 has a loosely defined format, making it challenging to parse reliably. This parser handles the standard format plus common variations.
-
-## Standard RFC3164 Format
+## Message Format
 
 ```
 <PRI>TIMESTAMP HOSTNAME TAG[PROCID]: MESSAGE
 ```
 
-Example:
-
 ```
 <34>Oct 11 22:14:15 mymachine su: 'su root' failed for lonvick on /dev/pts/8
 ```
 
-## Basic Usage
+## Usage
 
 ```go
 import "github.com/leodido/go-syslog/v4/rfc3164"
 
-// Create a parser
 p := rfc3164.NewParser()
 
-// Parse a message
 msg, err := p.Parse([]byte("<34>Oct 11 22:14:15 mymachine su: 'su root' failed"))
 if err != nil {
     log.Fatal(err)
 }
 
-// Access parsed fields
 m := msg.(*rfc3164.SyslogMessage)
 fmt.Printf("Priority: %d\n", *m.Priority)
 fmt.Printf("Hostname: %s\n", *m.Hostname)
 fmt.Printf("Message: %s\n", *m.Message)
 ```
 
-## Parser Options
+## Options
 
 ### Optional Priority
 
-PRI remains required by default. For senders that omit PRI but otherwise emit
-RFC3164 messages, enable `WithOptionalPriority()`:
+PRI is required by default. `WithOptionalPriority()` accepts an otherwise valid
+message without it:
 
 ```go
 p := rfc3164.NewParser(rfc3164.WithOptionalPriority())
@@ -56,8 +48,7 @@ its timestamp and message fields when no priority is present.
 
 ### RFC3339 Timestamps
 
-Enable `WithRFC3339()` for senders that place an RFC3339 timestamp in an
-RFC3164-style message:
+`WithRFC3339()` accepts RFC3339 timestamps in RFC3164-style messages:
 
 ```go
 p := rfc3164.NewParser(rfc3164.WithRFC3339())
@@ -97,9 +88,9 @@ p := rfc3164.NewParser(
 )
 ```
 
-### Cisco IOS Support
+### Cisco IOS
 
-Cisco IOS devices send non-standard syslog messages with additional fields before the timestamp. This parser supports these extensions.
+Cisco IOS can add fields before the timestamp. Their order is configurable.
 
 ```
 <PRI>[msgcount:] [sequence:] [hostname:] [*]TIMESTAMP: MESSAGE
@@ -111,7 +102,7 @@ Example:
 <189>237: 000485: router1: *Jan 8 19:46:03.295: %LINEPROTO-5-UPDOWN: Line protocol on Interface Loopback100, changed state to up
 ```
 
-#### Enabling Cisco Support
+#### Configuration
 
 ```go
 import (
@@ -134,8 +125,6 @@ p := rfc3164.NewParser(
 
 #### Cisco Components
 
-For Cisco IOS configuration details, see the `WithCiscoIOSComponents()` function documentation.
-
 | Component        | Description             | Cisco Command                                                        |
 | ---------------- | ----------------------- | -------------------------------------------------------------------- |
 | Message Counter  | Remote logging counter  | Enabled by default; disable with `no logging message-counter syslog` |
@@ -144,11 +133,10 @@ For Cisco IOS configuration details, see the `WithCiscoIOSComponents()` function
 | Milliseconds     | Timestamp precision     | `service timestamps log datetime msec`                               |
 | Asterisk         | NTP sync indicator      | Appears when NTP not synchronized                                    |
 
-#### Configuration Matching Requirement
+#### Matching Device Configuration
 
-**Important**: Your parser configuration must match your Cisco device configuration. The parser cannot auto-detect which components are present because they share similar formats (mostly digits followed by colon).
-
-What happens when there's a mismatch?
+Parser options must match the fields emitted by the device. Numeric components
+cannot be distinguished reliably from their values alone.
 
 ```go
 // Device sends both message counter and sequence number: <189>237: 000485: *Jan 8 19:46:03.295: ...
@@ -160,7 +148,7 @@ p := rfc3164.NewParser(
 // Parser found digits where it expects timestamp, indicating sequence parsing should be enabled.
 ```
 
-##### Cisco Device Configuration
+##### Example Device Configuration
 
 ```cisco
 conf t
@@ -182,9 +170,9 @@ ntp server <your-ntp-server>
 
 ## Known Limitations
 
-### Ambiguities
+### Format Ambiguities
 
-RFC3164 has an underspecified format, leading to parsing challenges:
+RFC3164 leaves several fields underspecified:
 
 - No standard field delimiters beyond whitespace
 - Hostname and tag can be ambiguous
@@ -193,9 +181,8 @@ RFC3164 has an underspecified format, leading to parsing challenges:
 
 ### Other Vendor Formats
 
-The opt-in extensions above do not cover every device syntax. The remaining
-formats tracked in [issue #61](https://github.com/leodido/go-syslog/issues/61)
-include:
+Unsupported formats tracked in
+[issue #61](https://github.com/leodido/go-syslog/issues/61) include:
 
 - BSD-style timestamps that contain a year
 - Unix-epoch timestamps, including fractional epochs
@@ -205,6 +192,7 @@ include:
 
 ### Cisco IOS Limitations
 
-**Component Ordering**: When Cisco components are selectively disabled on the device but the parser expects them, parsing will fail or produce incorrect results. Always match your parser configuration to your device configuration.
-
-**Structured Data**: Cisco IOS messages with RFC5424-style structured data blocks (from `logging host X session-id` or `sequence-num-session`) are not currently supported. See issue #35 for details.
+- Component ordering must match the parser options. A mismatch can fail parsing
+  or assign fields incorrectly.
+- RFC5424-style structured data from `logging host X session-id` or
+  `sequence-num-session` is not supported. See issue #35.

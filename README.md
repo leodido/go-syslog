@@ -8,7 +8,7 @@ _By [@leodido](https://github.com/leodido)_.
 
 _This is the official continuation of influxdata/go-syslog_.
 
-To wrap up, this package provides:
+This module includes:
 
 - an [RFC5424-compliant parser and builder](/rfc5424)
 - an [RFC3164-compliant parser](/rfc3164) - ie., BSD-syslog messages
@@ -17,9 +17,7 @@ To wrap up, this package provides:
 - a parser that works on streams for syslog with [octet counting](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1) framing technique, see [octetcounting](/octetcounting)
 - a parser that works on streams for syslog with [non-transparent](https://tools.ietf.org/html/rfc6587#section-3.4.2) framing technique, see [nontransparent](/nontransparent)
 
-This library provides the pieces to parse Syslog messages transported following various RFCs.
-
-For example:
+It can parse syslog messages received over:
 
 - TLS with octet count ([RFC5425](https://tools.ietf.org/html/rfc5425))
 - TCP with non-transparent framing or with octet count ([RFC 6587](https://tools.ietf.org/html/rfc6587))
@@ -43,9 +41,9 @@ The [docs](docs/) directory contains `.dot` files representing the finite-state 
 
 [![Build with Ona](https://ona.com/build-with-ona.svg)](https://app.ona.com/#https://github.com/leodido/go-syslog)
 
-Suppose you want to parse a given sequence of bytes as a RFC5424 message.
-
-_Notice that the same interface applies for RFC3164. But you can always take a look at the [examples file](./rfc3164/example_test.go)._
+Parse RFC5424 messages with `rfc5424.NewParser`. The RFC3164 parser uses the
+same interface; its options are demonstrated in
+[rfc3164/example_test.go](./rfc3164/example_test.go).
 
 ```go
 i := []byte(`<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`)
@@ -77,7 +75,7 @@ This results in `m` being equal to:
 // })
 ```
 
-And `e` being equal to `nil` since the `i` byte slice contains a perfectly valid RFC5424 message.
+`e` is nil because the input is a valid RFC5424 message.
 
 ### Messages without PRI
 
@@ -102,23 +100,15 @@ esxiParser := rfc3164.NewParser(
 
 ### Best effort mode
 
-RFC5424 parser has the ability to perform partial matches (until it can).
-
-With this mode enabled, when the parsing process errors out it returns the message collected until that position, and the error that caused the parser to stop.
-
-By default, best-effort parsing returns a partial RFC5424 message only after a
-valid PRI and VERSION have been parsed. With `WithOptionalPriority()`, PRI may
-be absent and a valid VERSION is the parser-level minimum.
-
-Let's look at an example.
+With `WithBestEffort()`, a parse error returns the fields collected before the
+failure. An RFC5424 partial result requires PRI and VERSION, or VERSION alone
+when `WithOptionalPriority()` is also set.
 
 ```go
 i := []byte("<1>1 A - - - - - -")
 p := rfc5424.NewParser(rfc5424.WithBestEffort())
 m, e := p.Parse(i)
 ```
-
-This results in `m` being equal to the following `SyslogMessage` instance.
 
 ```go
 // (*rfc5424.SyslogMessage)({
@@ -138,26 +128,18 @@ This results in `m` being equal to the following `SyslogMessage` instance.
 // })
 ```
 
-And, at the same time, in `e` reporting the error that actually stopped the parser.
-
 ```go
 // expecting a RFC3339MICRO timestamp or a nil value [col 5]
 ```
 
-Both `m` and `e` have a value since at the column the parser stopped it already was able to construct a minimally valid RFC5424 `SyslogMessage`.
+Both `m` and `e` are non-nil because the parser collected a valid partial
+RFC5424 message before the error.
 
 ### Builder
 
-This library also provides a builder to construct valid syslog messages.
-
-`SyslogMessage.Valid()` reports parser-level structural validity. A message
-with a valid VERSION and no PRI can therefore be valid after priorityless
-parsing, but `String()` deliberately remains stricter and returns an error
-unless PRI is present.
-
-Notice that its API ignores input values that does not match the grammar.
-
-Let's have a look to an example.
+Use `SyslogMessage` to construct RFC5424 messages. `Valid()` checks parser-level
+structure; `String()` requires PRI. Setters ignore values that do not match the
+grammar.
 
 ```go
 msg := &rfc5424.SyslogMessage{}
@@ -168,7 +150,7 @@ msg.SetVersion(1)
 msg.Valid() // Now it is minimally valid
 ```
 
-Printing `msg` you will verify it contains a `nil` timestamp (since an invalid one has been given).
+The invalid timestamp is ignored, so `Timestamp` remains nil.
 
 ```go
 // (*rfc5424.SyslogMessage)({
@@ -188,8 +170,6 @@ Printing `msg` you will verify it contains a `nil` timestamp (since an invalid o
 // })
 ```
 
-Finally you can serialize the message into a string.
-
 ```go
 str, _ := msg.String()
 // <191>1 - - - - - -
@@ -197,7 +177,7 @@ str, _ := msg.String()
 
 ### Auto-detect
 
-Suppose you don't know whether incoming messages are RFC 5424 or RFC 3164. The [auto](/auto) package figures it out per-message.
+Use the [auto](/auto) package when a source mixes RFC5424 and RFC3164 messages.
 
 ```go
 m := auto.NewMachine()
@@ -205,7 +185,7 @@ msg, err := m.Parse(input)
 fmt.Println(auto.DetectFormat(msg)) // "rfc5424" or "rfc3164"
 ```
 
-You can pass format-specific options to each inner parser:
+Pass format-specific options to each inner parser:
 
 ```go
 m := auto.NewMachine(
@@ -214,8 +194,7 @@ m := auto.NewMachine(
 )
 ```
 
-To accept messages that omit PRI, enable the parser option for both inner
-formats. Strict PRI handling remains the default when these options are absent.
+Priorityless auto-detection requires the option on both inner parsers:
 
 ```go
 m := auto.NewMachine(

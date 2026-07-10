@@ -52,6 +52,27 @@ func Example() {
 	// }
 }
 
+func Example_optionalPriority() {
+	p := NewParser(WithOptionalPriority())
+	msg, err := p.Parse([]byte("1 2023-04-05T16:20:56Z loki.example.com su - ID47 - some message"))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	m := msg.(*SyslogMessage)
+	fmt.Println("Priority absent:", m.Priority == nil)
+	fmt.Println("Version:", m.Version)
+	fmt.Println("Hostname:", *m.Hostname)
+	fmt.Println("Message:", *m.Message)
+
+	// Output:
+	// Priority absent: true
+	// Version: 1
+	// Hostname: loki.example.com
+	// Message: some message
+}
+
 func Example_besteffort() {
 	i := []byte(`<1>1 A - - - - - -`)
 	p := NewParser(WithBestEffort())

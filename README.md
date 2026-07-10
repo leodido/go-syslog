@@ -233,41 +233,37 @@ Run the benchmarks with:
 make bench
 ```
 
-The following results were measured on
-[this machine](#mymachine) while parsing RFC 5424 messages with best-effort mode
-enabled.
+The following `BenchmarkParse` results were measured on an Apple M4 Pro with
+14 logical CPUs, using Go 1.24.4 on `darwin/arm64`. Best-effort mode was enabled;
+`make bench` uses a five-second benchmark time.
 
 ```
-[no]_empty_input__________________________________-10  32072733   185.3 ns/op   272 B/op   4 allocs/op
-[no]_multiple_syslog_messages_on_multiple_lines___-10  27058381   219.8 ns/op   267 B/op   7 allocs/op
-[no]_impossible_timestamp_________________________-10   8732960   683.8 ns/op   555 B/op  12 allocs/op
-[no]_malformed_structured_data____________________-10  17997814   335.6 ns/op   499 B/op   8 allocs/op
-[no]_with_duplicated_structured_data_id___________-10   9254920   645.7 ns/op   672 B/op  15 allocs/op
-[ok]_minimal______________________________________-10  48347473   123.2 ns/op   227 B/op   5 allocs/op
-[ok]_average_message______________________________-10   6058492   986.8 ns/op  1344 B/op  20 allocs/op
-[ok]_complicated_message__________________________-10   7052536   843.2 ns/op  1232 B/op  23 allocs/op
-[ok]_very_long_message____________________________-10   2644068  2279.0 ns/op  2272 B/op  21 allocs/op
-[ok]_all_max_length_and_complete__________________-10   3611186  1675.0 ns/op  1848 B/op  27 allocs/op
-[ok]_all_max_length_except_structured_data_and_mes-10   5729514  1059.0 ns/op   851 B/op  12 allocs/op
-[ok]_minimal_with_message_containing_newline______-10  43165338   142.9 ns/op   230 B/op   6 allocs/op
-[ok]_w/o_procid,_w/o_structured_data,_with_message-10  14832892   397.8 ns/op   308 B/op   9 allocs/op
-[ok]_minimal_with_UTF-8_message___________________-10  20229313   306.2 ns/op   339 B/op   6 allocs/op
-[ok]_minimal_with_UTF-8_message_starting_with_BOM_-10  19721539   306.7 ns/op   355 B/op   6 allocs/op
-[ok]_with_structured_data_id,_w/o_structured_data_-10  13860580   435.7 ns/op   538 B/op  10 allocs/op
-[ok]_with_multiple_structured_data________________-10   8368731   721.9 ns/op  1173 B/op  15 allocs/op
-[ok]_with_escaped_backslash_within_structured_data-10   9730569   632.6 ns/op   864 B/op  16 allocs/op
-[ok]_with_UTF-8_structured_data_param_value,_with_-10   8864156   660.6 ns/op   858 B/op  15 allocs/op
+[no]_empty_input__________________________________-14  45358116   127.3 ns/op   272 B/op   4 allocs/op
+[no]_multiple_syslog_messages_on_multiple_lines___-14  38895066   154.8 ns/op   283 B/op   7 allocs/op
+[no]_impossible_timestamp_________________________-14  12993157   463.4 ns/op   571 B/op  12 allocs/op
+[no]_malformed_structured_data____________________-14  25974694   228.3 ns/op   515 B/op   8 allocs/op
+[no]_with_duplicated_structured_data_id___________-14  13554434   440.4 ns/op   688 B/op  15 allocs/op
+[ok]_minimal______________________________________-14  64324653   91.11 ns/op   243 B/op   5 allocs/op
+[ok]_average_message______________________________-14   8714227   704.8 ns/op  1360 B/op  20 allocs/op
+[ok]_complicated_message__________________________-14   8980812   625.4 ns/op  1248 B/op  23 allocs/op
+[ok]_very_long_message____________________________-14   3569872    1642 ns/op  2288 B/op  21 allocs/op
+[ok]_all_max_length_and_complete__________________-14   4835001    1261 ns/op  1864 B/op  27 allocs/op
+[ok]_all_max_length_except_structured_data_and_mes-14   7233706   816.2 ns/op   867 B/op  12 allocs/op
+[ok]_minimal_with_message_containing_newline______-14  58016277   103.0 ns/op   246 B/op   6 allocs/op
+[ok]_w/o_procid,_w/o_structured_data,_with_message-14  22200367   269.7 ns/op   324 B/op   9 allocs/op
+[ok]_minimal_with_UTF-8_message___________________-14  28426178   212.2 ns/op   355 B/op   6 allocs/op
+[ok]_minimal_with_UTF-8_message_starting_with_BOM_-14  27452876   220.4 ns/op   371 B/op   6 allocs/op
+[ok]_with_structured_data_id,_w/o_structured_data_-14  20122576   299.7 ns/op   554 B/op  10 allocs/op
+[ok]_with_multiple_structured_data________________-14  11264368   526.1 ns/op  1189 B/op  15 allocs/op
+[ok]_with_escaped_backslash_within_structured_data-14  13686079   443.7 ns/op   880 B/op  16 allocs/op
+[ok]_with_UTF-8_structured_data_param_value,_with_-14  13543791   439.2 ns/op   874 B/op  15 allocs/op
 ```
 
 Approximate parsing times:
 
-- 125 ns for the smallest legal message
-- less than 1 µs for an average legal message
-- 2 µs for a very long legal message
+- 91 ns for the smallest legal message
+- 705 ns for an average legal message
+- 1.64 µs for a very long legal message
 
 For comparison, this [Rust RFC 5424 implementation](https://github.com/roguelazer/rust-syslog-rfc5424)
 reports 8 µs for an average legal message.
-
----
-
-<a id="mymachine"></a>Test system: Apple M1 Pro

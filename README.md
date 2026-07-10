@@ -46,36 +46,17 @@ same interface; its options are demonstrated in
 [rfc3164/example_test.go](./rfc3164/example_test.go).
 
 ```go
-i := []byte(`<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`)
+input := []byte(`<165>4 2018-10-11T22:14:15.003Z mymach.it e - 1 [ex@32473 iut="3"] An application event log entry...`)
 p := rfc5424.NewParser()
-m, e := p.Parse(i)
+msg, err := p.Parse(input)
+if err != nil {
+    log.Fatal(err)
+}
+
+m := msg.(*rfc5424.SyslogMessage)
+fmt.Println(*m.Priority, m.Version, *m.Hostname)
+// 165 4 mymach.it
 ```
-
-This results in `m` being equal to:
-
-```go
-// (*rfc5424.SyslogMessage)({
-//  Base: (syslog.Base) {
-//   Facility: (*uint8)(20),
-//   Severity: (*uint8)(5),
-//   Priority: (*uint8)(165),
-//   Timestamp: (*time.Time)(2018-10-11 22:14:15.003 +0000 UTC),
-//   Hostname: (*string)((len=9) "mymach.it"),
-//   Appname: (*string)((len=1) "e"),
-//   ProcID: (*string)(<nil>),
-//   MsgID: (*string)((len=1) "1"),
-//   Message: (*string)((len=33) "An application event log entry...")
-//  },
-//  Version: (uint16) 4,
-//  StructuredData: (*map[string]map[string]string)((len=1) {
-//   (string) (len=8) "ex@32473": (map[string]string) (len=1) {
-//    (string) (len=3) "iut": (string) (len=1) "3"
-//   }
-//  })
-// })
-```
-
-`e` is nil because the input is a valid RFC 5424 message.
 
 ### Messages without PRI
 
@@ -105,34 +86,18 @@ failure. An RFC 5424 partial result requires PRI and VERSION, or VERSION alone
 when `WithOptionalPriority()` is also set.
 
 ```go
-i := []byte("<1>1 A - - - - - -")
+input := []byte("<1>1 A - - - - - -")
 p := rfc5424.NewParser(rfc5424.WithBestEffort())
-m, e := p.Parse(i)
-```
+msg, err := p.Parse(input)
+partial := msg.(*rfc5424.SyslogMessage)
 
-```go
-// (*rfc5424.SyslogMessage)({
-//  Base: (syslog.Base) {
-//   Facility: (*uint8)(0),
-//   Severity: (*uint8)(1),
-//   Priority: (*uint8)(1),
-//   Timestamp: (*time.Time)(<nil>),
-//   Hostname: (*string)(<nil>),
-//   Appname: (*string)(<nil>),
-//   ProcID: (*string)(<nil>),
-//   MsgID: (*string)(<nil>),
-//   Message: (*string)(<nil>)
-//  },
-//  Version: (uint16) 1,
-//  StructuredData: (*map[string]map[string]string)(<nil>)
-// })
-```
-
-```go
+fmt.Println(*partial.Priority, partial.Version)
+fmt.Println(err)
+// 1 1
 // expecting a RFC3339MICRO timestamp or a nil value [col 5]
 ```
 
-Both `m` and `e` are non-nil because the parser collected a valid partial
+Both `msg` and `err` are non-nil because the parser collected a valid partial
 RFC 5424 message before the error.
 
 ### Builder
@@ -144,34 +109,16 @@ grammar.
 ```go
 msg := &rfc5424.SyslogMessage{}
 msg.SetTimestamp("invalid timestamp")
-msg.Valid() // Not yet a valid message (try msg.Valid())
+fmt.Println(msg.Timestamp == nil, msg.Valid())
+
 msg.SetPriority(191)
 msg.SetVersion(1)
-msg.Valid() // Now it is minimally valid
-```
+str, err := msg.String()
 
-The invalid timestamp is ignored, so `Timestamp` remains nil.
-
-```go
-// (*rfc5424.SyslogMessage)({
-//  Base: (syslog.Base) {
-//   Facility: (*uint8)(23),
-//   Severity: (*uint8)(7),
-//   Priority: (*uint8)(191),
-//   Timestamp: (*time.Time)(<nil>),
-//   Hostname: (*string)(<nil>),
-//   Appname: (*string)(<nil>),
-//   ProcID: (*string)(<nil>),
-//   MsgID: (*string)(<nil>),
-//   Message: (*string)(<nil>)
-//  },
-//  Version: (uint16) 1,
-//  StructuredData: (*map[string]map[string]string)(<nil>)
-// })
-```
-
-```go
-str, _ := msg.String()
+fmt.Println(msg.Valid(), err)
+fmt.Println(str)
+// true false
+// true <nil>
 // <191>1 - - - - - -
 ```
 

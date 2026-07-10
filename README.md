@@ -1,4 +1,4 @@
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 **Parsers for syslog messages and transports**
 
@@ -10,12 +10,12 @@ _This is the official continuation of influxdata/go-syslog_.
 
 This module includes:
 
-- an [RFC 5424-compliant parser and builder](/rfc5424)
-- an [RFC 3164-compliant parser](/rfc3164) for BSD syslog messages
-- an [auto-detect parser](/auto) that selects RFC 3164 or RFC 5424 per message
-- an [RFC 3195 parser](/rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195), including RAW and COOKED profiles
-- an [octet-counting stream parser](/octetcounting) for [RFC 6587 transparent framing](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1)
-- a [non-transparent stream parser](/nontransparent) for [RFC 6587 delimiter framing](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2)
+- an [RFC 5424-compliant parser and builder](./rfc5424)
+- an [RFC 3164-compliant parser](./rfc3164) for BSD syslog messages
+- an [auto-detect parser](./auto) that selects RFC 3164 or RFC 5424 per message
+- an [RFC 3195 parser](./rfc3195) for syslog over [BEEP](https://datatracker.ietf.org/doc/html/rfc3195), including RAW and COOKED profiles
+- an [octet-counting stream parser](./octetcounting) for [RFC 6587 transparent framing](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.1)
+- a [non-transparent stream parser](./nontransparent) for [RFC 6587 delimiter framing](https://datatracker.ietf.org/doc/html/rfc6587#section-3.4.2)
 
 It can parse syslog messages received over:
 
@@ -124,7 +124,7 @@ fmt.Println(str)
 
 ### Auto-detect
 
-Use the [auto](/auto) package when a source mixes RFC 5424 and RFC 3164 messages.
+Use the [auto](./auto) package when a source mixes RFC 5424 and RFC 3164 messages.
 
 ```go
 m := auto.NewMachine()

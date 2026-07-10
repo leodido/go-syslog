@@ -264,6 +264,3 @@ Approximate parsing times:
 - 91 ns for the smallest legal message
 - 705 ns for an average legal message
 - 1.64 µs for a very long legal message
-
-For comparison, this [Rust RFC 5424 implementation](https://github.com/roguelazer/rust-syslog-rfc5424)
-reports 8 µs for an average legal message.

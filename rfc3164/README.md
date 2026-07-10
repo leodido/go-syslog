@@ -191,6 +191,18 @@ RFC3164 has an underspecified format, leading to parsing challenges:
 - No year in timestamps
 - No timezone specification in basic format
 
+### Other Vendor Formats
+
+The opt-in extensions above do not cover every device syntax. The remaining
+formats tracked in [issue #61](https://github.com/leodido/go-syslog/issues/61)
+include:
+
+- BSD-style timestamps that contain a year
+- Unix-epoch timestamps, including fractional epochs
+- named timezone tokens embedded after a timestamp, such as `IST` or `SST`
+- counter, hostname, or task fields outside the supported Cisco IOS ordering
+- RFC5424-like envelopes that use an `app[pid]:` tag instead of separate fields
+
 ### Cisco IOS Limitations
 
 **Component Ordering**: When Cisco components are selectively disabled on the device but the parser expects them, parsing will fail or produce incorrect results. Always match your parser configuration to your device configuration.
